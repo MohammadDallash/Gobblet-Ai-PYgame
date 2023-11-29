@@ -49,4 +49,4 @@ The computer AI will make its moves, and you will be prompted for your moves.
 
 
 
-Enjoy playing Gobblet!****
+****Enjoy playing Gobblet!****
