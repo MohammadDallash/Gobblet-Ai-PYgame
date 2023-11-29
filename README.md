@@ -7,7 +7,6 @@ Welcome to Gobblet, a classic two-player abstract strategy game where players ai
 ## Table of Contents
 
 - [Game Rules](#game-rules)
-- [Game State Diagram](#game-state-diagram)
 - [Usage](#usage)
   - [Player vs Player](#player-vs-player)
   - [Player vs Computer](#player-vs-computer)
@@ -22,11 +21,6 @@ The rules are simple:
 2. A larger piece can cover a smaller one, and players can move pieces to uncover their own or their opponent's pieces.
 
 You can read more about the game rules [here](https://www.boardspace.net/gobblet/english/gobblet_rules.pdf).
-
-
-## Game State Diagram
-
-![Gobblet Game drawio](https://github.com/MohammadDallash/Gobblet-Ai-PYgame/assets/54954479/0fb688d8-ceb6-4401-97bf-1feec5d7ca08)
 
 
 ## Usage
