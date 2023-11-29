@@ -1,7 +1,7 @@
 import pygame
 from menu import *
-from sprite import Spritesheet
-from music import MusicPlayer
+from util.sprite import Spritesheet
+from util.music import MusicPlayer
 class Game():
     def __init__(self):
         pygame.init()
