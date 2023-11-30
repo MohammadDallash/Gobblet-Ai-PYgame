@@ -1,7 +1,8 @@
 import pygame
-from menu import *
-from util.sprite import Spritesheet
-from util.music import MusicPlayer
+from states.menu import *
+from util.sprite import *
+from util.music import *
+from util.helpers import *
 class Game():
     def __init__(self):
         pygame.init()
@@ -11,17 +12,18 @@ class Game():
         self.DISPLAY_W, self.DISPLAY_H = 500, 300
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
-        self.font_name = "8-BIT WONDER.TTF"
+        self.font_name = "assets/font/f.TTF"
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
+        self.helper = Helper()
         self.main_menu = MainMenu(self)
         self.options = OptionsMenu(self)
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
         self.KEY_PRESS = False
         self.music_player = MusicPlayer()
-        self.music_player.load_track("deep-cinematic-ballad_medium-178309.mp3")
+        self.music_player.load_track("assets\sound\deep-cinematic-ballad_medium-178309.mp3")
         self.music_player.play()
-        self.sprite_sheet = Spritesheet("trainer_sheet.png")
+        self.sprite_sheet = Spritesheet("assets/sprites/trainer_sheet.png")
         self.sprites = [
             {"name": "trainer1.png", "x": self.DISPLAY_W // 4, "y": self.DISPLAY_H // 4, "width": 128, "height": 128, "dynamic": False},
             {"name": "trainer2.png", "x": self.DISPLAY_W // 2, "y": self.DISPLAY_H // 2, "width": 128, "height": 128, "dynamic": True},
@@ -30,6 +32,9 @@ class Game():
         self.initial_sprite_position = None  # Store the initial position of the dragged sprite
         self.dragged_sprite = None  # Keep track of the currently dragged sprite
         
+        
+   
+    
 
     def game_loop(self):
         
@@ -40,7 +45,7 @@ class Game():
                 self.playing = False
             self.update_sprite_position()
             self.display.fill(self.BLACK)
-            self.draw_text("hooo", 20, self.DISPLAY_W / 2, self.DISPLAY_H / 2)
+            self.helper.draw_text(self , "hooo", 20, self.DISPLAY_W / 2, self.DISPLAY_H / 2)
             self.window.blit(self.display, (0, 0))
 
             # Draw all sprites
@@ -115,14 +120,3 @@ class Game():
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.KEY_PRESS = False, False, False, False, False
 
 
-    def draw_text(self, text, size, x, y):
-        font = pygame.font.Font(self.font_name, size)
-        text_surface = font.render(text, True, self.WHITE)
-        text_rect = text_surface.get_rect()
-        text_rect.center = (x, y)
-        self.display.blit(text_surface, text_rect)
-        return text_rect
-    def window_resulotion(self, width, height):
-        self.DISPLAY_W, self.DISPLAY_H = width, height
-        self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
-        self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))

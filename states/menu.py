@@ -7,9 +7,10 @@ class Menu():
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = - 100
+        
 
     def draw_cursor(self):
-        self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
+        self.game.helper.draw_text(self.game, '*', 15, self.cursor_rect.x, self.cursor_rect.y)
 
     def blit_screen(self):
         self.game.window.blit(self.game.display, (0, 0))
@@ -24,10 +25,10 @@ class MainMenu(Menu):
         self.optionsx, self.optionsy = self.mid_w, self.mid_h + 50
         self.creditsx, self.creditsy = self.mid_w, self.mid_h + 70
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
-        self.Rec_Main_Menu = self.game.draw_text('Main Menu', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-        self.Rec_Start = self.game.draw_text("Start Game", 20, self.startx, self.starty)
-        self.Rec_Options = self.game.draw_text("Options", 20, self.optionsx, self.optionsy)
-        self.Rec_Credits = self.game.draw_text("Credits", 20, self.creditsx, self.creditsy)
+        self.Rec_Main_Menu = self.game.helper.draw_text(self.game,'Main Menu', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
+        self.Rec_Start = self.game.helper.draw_text(self.game,"Start Game", 20, self.startx, self.starty)
+        self.Rec_Options = self.game.helper.draw_text(self.game,"Options", 20, self.optionsx, self.optionsy)
+        self.Rec_Credits = self.game.helper.draw_text(self.game,"Credits", 20, self.creditsx, self.creditsy)
 
     def display_menu(self):
         self.run_display = True
@@ -35,10 +36,10 @@ class MainMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text('Main Menu', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            self.game.draw_text("Start Game", 20, self.startx, self.starty)
-            self.game.draw_text("Options", 20, self.optionsx, self.optionsy)
-            self.game.draw_text("Credits", 20, self.creditsx, self.creditsy)
+            self.game.helper.draw_text(self.game,'Main Menu', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
+            self.game.helper.draw_text(self.game,"Start Game", 20, self.startx, self.starty)
+            self.game.helper.draw_text(self.game,"Options", 20, self.optionsx, self.optionsy)
+            self.game.helper.draw_text(self.game,"Credits", 20, self.creditsx, self.creditsy)
             self.draw_cursor()
             self.blit_screen()
 
@@ -98,7 +99,7 @@ class OptionsMenu(Menu): #Todo: make options menu : game_mode : computer-to-comp
             self.game.check_events()
             self.check_input()
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text('Options', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.helper.draw_text(self.game,'Options', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.draw_cursor()
             self.blit_screen()
 
@@ -122,7 +123,7 @@ class CreditsMenu(Menu):
                     self.game.curr_menu = self.game.main_menu
                     self.run_display = False
                 self.game.display.fill(self.game.BLACK)
-                self.game.draw_text('Credits', 20, self.game.DISPLAY_W / 2, 50)
+                self.game.helper.draw_text(self.game,'Credits', 20, self.game.DISPLAY_W / 2, 50)
 
                 # List of contributors
                 contributors = [
@@ -133,7 +134,7 @@ class CreditsMenu(Menu):
 
                 y_position = 100
                 for role, name in contributors:
-                    self.game.draw_text(f'{role} : {name}', 15, self.game.DISPLAY_W / 2, y_position)
+                    self.game.helper.draw_text(self.game,f'{role} : {name}', 15, self.game.DISPLAY_W / 2, y_position)
                     y_position += 20
 
                 self.blit_screen()
