@@ -26,6 +26,7 @@ class MenuGUI():
         self.x_pos = x_pos
         self.game = game
         self.justTxt = justTxt
+        self.rec=[]
        
 
     def update_cur_opt(self, actions):
@@ -41,19 +42,21 @@ class MenuGUI():
         width_menu = 3*self.font_size*self.n_options - 3*self.font_size
         start_y =  (self.game.DISPLAY_H - width_menu)//2
         darwing_idx = 0
-
         for options_txt in self.options_str :
             if (darwing_idx == self.cur_option and not self.justTxt ):
                 color = self.game.YELLOW
             else:
                 color = self.game.WHITE
 
-            self.game.helper.draw_text(display, options_txt, color, self.font_size , self.x_pos, start_y )
+            self.rec.append(self.game.helper.draw_text(display, options_txt, color, self.font_size , self.x_pos, start_y ))
             start_y += 3*self.font_size 
             darwing_idx+=1
 
+
            
 ## mouse
+    def mouse_collidepoint(self,x,y,index): 
+        return self.rec[index].collidepoint(x, y)
 
 ## load game background music [music1, music2]
 

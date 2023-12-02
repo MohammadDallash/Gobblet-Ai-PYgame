@@ -12,8 +12,7 @@ class Game():
 
         self.running = True
 
-        self.actions = {"left": False, "right": False, "up" : False, "down" : False, "Esc" : False, "enter": False}
-        self.LEFT_MOUSE_KEY_PRESS = False
+        self.actions = {"left": False, "right": False, "up" : False, "down" : False, "Esc" : False, "enter": False, "LEFT_MOUSE_KEY_PRESS":False}
 
 
         self.DISPLAY_W, self.DISPLAY_H = 1280, 720
@@ -142,23 +141,35 @@ class Game():
             if event.type == pygame.QUIT:
                 self.running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT :
                     self.actions['left'] = True
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     self.actions['right'] = True
-                if event.key == pygame.K_w:
+                if event.key == pygame.K_w or event.key == pygame.K_UP:
                     self.actions['up'] = True
-                if event.key == pygame.K_s:
+                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
                     self.actions['down'] = True
                 if event.key == pygame.K_ESCAPE:
                     self.actions['Esc'] = True
                 if event.key == pygame.K_RETURN:
                     self.actions['enter'] = True
-
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT :
+                    self.actions['left'] = False
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                    self.actions['right'] = False
+                if event.key == pygame.K_w or event.key == pygame.K_UP:
+                    self.actions['up'] = False
+                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                    self.actions['down'] = False
+                if event.key == pygame.K_ESCAPE:
+                    self.actions['Esc'] = False
+                if event.key == pygame.K_RETURN:
+                    self.actions['enter'] = False
             if event.type == pygame.MOUSEBUTTONUP:
                 if not pygame.mouse.get_pressed()[0]:
-                    self.LEFT_MOUSE_KEY_PRESS = False
+                   self.actions["LEFT_MOUSE_KEY_PRESS"] = False
 
             if pygame.mouse.get_pressed()[0]:  # left click
-                self.LEFT_MOUSE_KEY_PRESS = True
+               self.actions["LEFT_MOUSE_KEY_PRESS"] = True
 

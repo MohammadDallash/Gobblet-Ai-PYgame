@@ -1,6 +1,7 @@
 from states.state import State
 from states.credit import Credit
 from util.helpers import MenuGUI
+import pygame
 
 
 
@@ -33,13 +34,25 @@ class Title(State):
                 credit_state.enter_state()
                 
                 ## enter credit state
-
                 pass
             else:
                 self.game.running = False
         
         if (actions['Esc']):
             self.game.running = False
+        if(actions['LEFT_MOUSE_KEY_PRESS']):
+            x,y=pygame.mouse.get_pos()
+            if self.menuGUI.mouse_collidepoint(x,y,0):
+                pass
+            if self.menuGUI.mouse_collidepoint(x,y,1):
+                pass
+            if self.menuGUI.mouse_collidepoint(x,y,2):
+                credit_state = Credit(self.game)
+                ##self.exit_state()## if we want to exit the tile state we woul un comment this but we want to keep them as we want to retrun back to them
+                credit_state.enter_state()
+            if self.menuGUI.mouse_collidepoint(x,y,3):
+                self.game.running = False
+                
     
 
         
