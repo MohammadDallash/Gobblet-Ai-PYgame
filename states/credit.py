@@ -28,21 +28,6 @@ class Credit(State):
         self.helper.draw_text(display,'Credits',self.game.WHITE ,80, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
-        
-
-        #         # List of contributors
-        # contributors = [
-        #             ("Leader", "Dallash"),  
-        #             ("Developer", "Rana Hossny"),
-        #             ("Developer", "Sara Hossny"),          
-        #         ]
-
-        # y_position = 100
-        # for role, name in contributors:
-        #     self.game.helper.draw_text(display,f'{role} : {name}',self.game.WHITE, 15, self.game.DISPLAY_W / 2, y_position)
-            
-        #     y_position += 20
-
 
 
     def enter_state(self):

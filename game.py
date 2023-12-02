@@ -172,4 +172,7 @@ class Game():
 
             if pygame.mouse.get_pressed()[0]:  # left click
                self.actions["LEFT_MOUSE_KEY_PRESS"] = True
-
+    def window_resulotion(self, width, height):
+        self.DISPLAY_W, self.DISPLAY_H = width, height
+        self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
+        self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
