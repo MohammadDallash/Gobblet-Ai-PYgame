@@ -10,7 +10,7 @@ class Option(State):
         State.__init__(self, game)
         self.options_str = ['Volume', 'Player_Mode', 'Music_On', 'Difficulty', 'Resolution']
         self.Volume_options = ['Higher', 'Lower', 'Mute']
-        self.Player_mode_options = ['Player to Player', 'Player to Computer', 'Computer t Computer']
+        self.Player_mode_options = ['Player to Player', 'Player to Computer', 'Computer to Computer']
         self.Music_on_options = ['On', 'Off']
         self.Difficulty_options = ['Easy', 'Hard']
         self.Resolution_options = ['900x700', '1200x400', '1200x800']
@@ -100,7 +100,7 @@ class Option_select(State):
 
         self.cur_option = self.get_choose()
 
-        self.menuGUI = MenuGUI(self.game, self.options_str, 0, font_size=20,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=20,
                                x_pos=self.game.DISPLAY_W / 2 + 500, justTxt=False)
 
     def get_choose(self):
@@ -135,9 +135,18 @@ class Option_select(State):
             self.exit_state()
         if(actions['LEFT_MOUSE_KEY_PRESS']):
             x,y=pygame.mouse.get_pos()
-            if self.menuGUI.mouse_collidepoint(x,y,0) or self.menuGUI.mouse_collidepoint(x,y,1)or self.menuGUI.mouse_collidepoint(x,y,2)or self.menuGUI.mouse_collidepoint(x,y,0) :
-                self.set_choose()
-                self.exit_state()   
+            if self.menuGUI.mouse_collidepoint(x,y,0):
+                self.option_object.set_volume(self.options_str[0])
+                self.exit_state()
+            elif self.menuGUI.mouse_collidepoint(x,y,1):
+                self.option_object.set_volume(self.options_str[1])
+                self.exit_state()
+
+            elif self.menuGUI.mouse_collidepoint(x,y,2) :
+                self.option_object.set_volume(self.options_str[2])
+                self.exit_state()
+
+   
 
 
     def render(self,display):
