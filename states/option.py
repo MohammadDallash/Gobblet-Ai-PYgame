@@ -88,7 +88,7 @@ class Option(State):
         x_str, y_str = self.Resolution.split('x')
         x = int(x_str)
         y = int(y_str)
-        self.game.window_resulotion(x,y)
+        # self.game.window_resulotion(x,y)
 
 class Option_select(State):
     def __init__(self, game, option, T, op):
@@ -125,6 +125,17 @@ class Option_select(State):
            self.option_object.set_Difficulty(self.options_str[self.cur_option])
         elif self.type == 'Resolution_options':
             self.option_object.set_Resolutiony(self.options_str[self.cur_option])
+    def set_choose_with_value(self,value):
+        if self.type == 'Volume_options':
+            self.option_object.set_volume(value)
+        elif self.type == 'Player_mode_options':
+            self.option_object.set_PlayerMode(value)
+        elif self.type == 'Music_on_options':
+            self.option_object.set_music(value)
+        elif self.type == 'Difficulty_options':
+           self.option_object.set_Difficulty(value)
+        elif self.type == 'Resolution_options':
+            self.option_object.set_Resolutiony(value)
         
     def update(self, delta_time, actions):
         self.cur_option = self.menuGUI.update_cur_opt(actions)
@@ -136,15 +147,15 @@ class Option_select(State):
         if(actions['LEFT_MOUSE_KEY_PRESS']):
             x,y=pygame.mouse.get_pos()
             if self.menuGUI.mouse_collidepoint(x,y,0):
-                self.option_object.set_volume(self.options_str[0])
+                self.set_choose_with_value(self.options_str[0])
                 self.exit_state()
             elif self.menuGUI.mouse_collidepoint(x,y,1):
-                self.option_object.set_volume(self.options_str[1])
+                self.set_choose_with_value(self.options_str[1])
                 self.exit_state()
-
-            elif self.menuGUI.mouse_collidepoint(x,y,2) :
-                self.option_object.set_volume(self.options_str[2])
-                self.exit_state()
+            if self.type == 'Resolution_options'or self.type == 'Player_mode_options'or self.type == 'Volume_options':
+                if self.menuGUI.mouse_collidepoint(x,y,2) :
+                    self.set_choose_with_value(self.options_str[2])
+                    self.exit_state()
 
    
 
