@@ -1,8 +1,9 @@
 import pygame
 import os, time, pygame
-from states.title import *
+
 from util.sprite import *
 from util.music import *
+from states.mainMenu import *
 from util.helpers import *
 
 class Game():
@@ -32,7 +33,7 @@ class Game():
 
 
         self.state_stack = []
-        self.title_screen = Title(self)
+        self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
    
 
@@ -98,7 +99,7 @@ class Game():
     def render(self):
        
         self.state_stack[-1].render(self.game_canvas)
-        self.window.blit(pygame.transform.scale(self.game_canvas,(self.DISPLAY_W, self.DISPLAY_H)), (0,0))
+        self.window.blit(pygame.transform.scale(self.game_canvas,(self.DISPLAY_W ,  self.DISPLAY_H)), (0,0))
         
         pygame.display.flip() #It controls when and how changes made in your code will be visible on the screen
 
@@ -172,7 +173,3 @@ class Game():
 
             if pygame.mouse.get_pressed()[0]:  # left click
                self.actions["LEFT_MOUSE_KEY_PRESS"] = True
-    def window_resulotion(self, width, height):
-        self.DISPLAY_W, self.DISPLAY_H = width, height
-        self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
-        self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))

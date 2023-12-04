@@ -6,7 +6,7 @@ from states.option import Option
 
 
 
-class Title(State):
+class MainMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
         
@@ -21,6 +21,13 @@ class Title(State):
         
     def update(self, delta_time, actions):
         self.cur_option = self.menuGUI.update_cur_opt(actions)
+        x, y = pygame.mouse.get_pos()
+        for i in range(len(self.options_str)):
+            if self.menuGUI.mouse_collidepoint(x, y, i):
+                self.menuGUI.cur_option = i
+                self.cur_option = i
+                
+        
 
         if(actions['enter']):
             if (self.cur_option == 0):

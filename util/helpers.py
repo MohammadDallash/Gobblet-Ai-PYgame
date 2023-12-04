@@ -51,7 +51,7 @@ class MenuGUI:
             self.rec.append(text_rect)
 
     def mouse_collidepoint(self, x, y, index):
-        return self.rec[index].collidepoint(x, y)
+        return len(self.rec) == 0 or self.rec[index].collidepoint(x, y)
 
 ## load game background music [music1, music2]
 
