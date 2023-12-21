@@ -10,6 +10,7 @@ class Spritesheet:
         with open(self.meta_data) as f:
             self.data = json.load(f)
         f.close()
+        self.keys_list = list(self.data['frames'].keys())
 
 
 
