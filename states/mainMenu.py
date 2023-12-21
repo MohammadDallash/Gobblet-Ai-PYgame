@@ -1,5 +1,6 @@
 from states.state import State
 from states.credit import Credit
+from states.playing import Playing
 from util.helpers import MenuGUI
 import pygame
 from states.option import Option
@@ -31,8 +32,9 @@ class MainMenu(State):
 
         if(actions['enter']):
             if (self.cur_option == 0):
-                ## enter play state
-                pass
+                playing_state = Playing(self.game)
+                ##self.exit_state()## if we want to exit the tile state we woul un comment this but we want to keep them as we want to retrun back to them
+                playing_state.enter_state()## enter play state
             elif (self.cur_option == 1):
                 option_state=Option(self.game)
                 option_state.enter_state()
@@ -51,7 +53,9 @@ class MainMenu(State):
         if(actions['LEFT_MOUSE_KEY_PRESS']):
             x,y=pygame.mouse.get_pos()
             if self.menuGUI.mouse_collidepoint(x,y,0):
-                pass #using mouse in play state
+                playing_state = Playing(self.game)
+                ##self.exit_state()## if we want to exit the tile state we woul un comment this but we want to keep them as we want to retrun back to them
+                playing_state.enter_state()## enter play state
             if self.menuGUI.mouse_collidepoint(x,y,1):
                 option_state=Option(self.game)
                 option_state.enter_state()
