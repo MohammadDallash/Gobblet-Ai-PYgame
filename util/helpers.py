@@ -1,6 +1,32 @@
 import pygame
 
 
+# get the value of the highest bit in the number.
+# Ex. n = 64 + 32 , get_highest_bit(n) = 64
+# returns 0 if n=0
+def get_highest_bit(n):
+    if(n==0):
+        return 0
+    bit = 0
+    n = int(n/2)
+    while(n!=0):
+        n = n >> 1
+        bit+=1
+    return 1 << bit
+
+
+# @param src,dst -> the source, destenation tiles. 
+# this function checks if a move is allowed from one tile to another.
+def is_valid_move(board, src, dst):
+    val_src = board[src[0]][src[1]]
+    val_dst = board[dst[0]][dst[1]]
+    if(get_highest_bit(val_dst) < get_highest_bit(val_src)):
+        return True
+    else:
+        return False
+
+
+
 class Helper:
     def __init__(self, game):
         self.game = game
@@ -58,3 +84,5 @@ class MenuGUI:
 ## load game sounds 
 
 ## other stuff
+    
+

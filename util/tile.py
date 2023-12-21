@@ -3,7 +3,7 @@ import pygame, csv, os
 class Tile(pygame.sprite.Sprite):
     def __init__(self, imageIdx, x, y, spritesheet):
         pygame.sprite.Sprite.__init__(self)
-        
+       
         self.imgIds = spritesheet.keys_list
 
         self.image = spritesheet.parse_sprite(self.imgIds[imageIdx])
