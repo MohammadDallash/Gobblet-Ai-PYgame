@@ -184,6 +184,7 @@
             <key type="filename">../../../../../Downloads/white_med_down.png</key>
             <key type="filename">../../../../../Downloads/white_med_up.png</key>
             <key type="filename">../../../../../Downloads/white_small.png</key>
+            <key type="filename">../../../../../Downloads/xvoid.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -216,6 +217,7 @@
                     <filename>../../../../../Downloads/white_med_up.png</filename>
                     <filename>../../../../../Downloads/white_med_down.png</filename>
                     <filename>../../../../../Downloads/board_rec.png</filename>
+                    <filename>../../../../../Downloads/xvoid.png</filename>
                 </array>
             </struct>
         </map>

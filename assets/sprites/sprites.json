@@ -87,14 +87,22 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":120,"h":120},
 	"sourceSize": {"w":120,"h":120}
+},
+"xvoid.png":
+{
+	"frame": {"x":1320,"y":0,"w":120,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":120,"h":120},
+	"sourceSize": {"w":120,"h":120}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "sprites.png",
 	"format": "RGBA8888",
-	"size": {"w":1320,"h":120},
+	"size": {"w":1440,"h":120},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:ea43f3283bf673d3e7a3c60315b0edad:157cdd3e1cbd28fecae6f1d43c83a01e:1eabdf11f75e3a4fe3147baf7b5be24b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:d0657f6e4de040d5cbc5fe6cd7b1930b:bf08d74262b7bb8d218ebaea5d9265df:1eabdf11f75e3a4fe3147baf7b5be24b$"
 }
 }
