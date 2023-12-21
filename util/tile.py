@@ -79,7 +79,7 @@ class TileMap():
             # Move to next row
             y += 1
             # Store the size of the tile map
-
+##
 
         self.map_w, self.map_h = x * self.tile_size, y * self.tile_size
         return tiles
