@@ -44,7 +44,7 @@ class TileMap():
 
 
 
-    def draw_map_on_canvis(self, surface):
+    def draw_map_on_canvas(self, surface):
         surface.blit(self.map_surface, (0, 0))
         surface.blit(self.board_surface, (0, 0))
 
