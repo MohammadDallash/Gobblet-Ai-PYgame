@@ -1,38 +1,30 @@
 import pygame, csv, os
 
+
 class Tile(pygame.sprite.Sprite):
+
     def __init__(self, imageIdx, x, y, spritesheet):
         pygame.sprite.Sprite.__init__(self)
-       
-        self.imgIds = spritesheet.keys_list
-
-        self.image = spritesheet.parse_sprite(self.imgIds[imageIdx])
-        # Manual load in: self.image = pygame.image.load(image)
-        self.rect = self.image.get_rect()
+        self.imgIds = spritesheet.keys_list # a list of the images names used in the spritesheet.
+        self.image = spritesheet.parse_sprite(self.imgIds[imageIdx]) # load an image from the spritesheet.
+        self.rect = self.image.get_rect() # get the rect object and change its rectangular coordinates.
         self.rect.x, self.rect.y = x, y
-
+    # draw a surface onto the screen.
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
 class TileMap():
 
     def __init__(self, filename, spritesheet):
-
         self.tile_size = 120
         self.spritesheet = spritesheet
 
         self.map_tiles = self.load_initial_tiles(filename)
 
-
         self.map_surface = pygame.Surface((self.map_w, self.map_h))
         self.board_surface = pygame.Surface((self.map_w, self.map_h))
 
         self.draw_initial_tiles()
-
-
-
-        
-
         self.map_surface.set_colorkey((0, 0, 0))
         self.board_surface.set_colorkey((0, 0, 0))
         self.reconstruct_map()
@@ -48,11 +40,11 @@ class TileMap():
         surface.blit(self.map_surface, (0, 0))
         surface.blit(self.board_surface, (0, 0))
 
-    def reconstruct_map(self, board=None ):
+    def reconstruct_map(self, board=None):
         if(board!=None):
-            n,m = len(board), len(board[0])
-            for y in range (n):
-                for x in range (m):
+            row,col = len(board), len(board[0])
+            for y in range (row):
+                for x in range (col):
                     idx = self.convert[board[y][x] - board[y][x]%2]
                     T = (Tile( idx  + (board[y][x]%2)*6, (x+3) * self.tile_size, (y+1) * self.tile_size, self.spritesheet))
                     T.draw(self.board_surface)
