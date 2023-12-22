@@ -1,8 +1,8 @@
 import pygame, csv, os
+from math import log2
 
 
 class Tile(pygame.sprite.Sprite):
-
     def __init__(self, imageIdx, x, y, spritesheet):
         pygame.sprite.Sprite.__init__(self)
         self.imgIds = spritesheet.keys_list # a list of the images names used in the spritesheet.
@@ -23,30 +23,57 @@ class TileMap():
 
         self.map_surface = pygame.Surface((self.map_w, self.map_h))
         self.board_surface = pygame.Surface((self.map_w, self.map_h))
+        self.inventory_surface = pygame.Surface((self.map_w, self.map_h))
 
         self.draw_initial_tiles()
         self.map_surface.set_colorkey((0, 0, 0))
         self.board_surface.set_colorkey((0, 0, 0))
+        self.inventory_surface.set_colorkey((0, 0, 0))
         self.reconstruct_map()
-        self.convert = {0:4,2:1, 4:0,-2:5}
+        self.reconstruct_inventory()
 
     def draw_initial_tiles(self):
         for tile in self.map_tiles:
             tile.draw(self.map_surface)
 
 
-
     def draw_map_on_canvas(self, surface):
         surface.blit(self.map_surface, (0, 0))
         surface.blit(self.board_surface, (0, 0))
+        surface.blit(self.inventory_surface, (0, 0))
+
+
+    def get_drawing_idx_on_Tilemap(self, number):
+        if (number == -1):
+            return -1
+
+        largest_bit = 256
+        while largest_bit >0:
+            if(largest_bit & number != 0):
+                break
+            largest_bit>>=1 
+        
+        white = 0
+        if(largest_bit > 8):
+            largest_bit /=16
+            white = 1
+        return int(log2(largest_bit))  + (white)*12
+        
+
+    def reconstruct_inventory(self, inventory=[[15,15,15],[240,240,240]]):
+        ##TODO
+        pass
 
     def reconstruct_map(self, board=None):
         if(board!=None):
             row,col = len(board), len(board[0])
             for y in range (row):
                 for x in range (col):
-                    idx = self.convert[board[y][x] - board[y][x]%2]
-                    T = (Tile( idx  + (board[y][x]%2)*6, (x+3) * self.tile_size, (y+1) * self.tile_size, self.spritesheet))
+
+                    idx = self.get_drawing_idx_on_Tilemap(board[y][x])
+                    
+                   
+                    T = (Tile( idx, (x+3) * self.tile_size, (y+1) * self.tile_size, self.spritesheet))
                     T.draw(self.board_surface)
         
 

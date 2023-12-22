@@ -6,14 +6,14 @@ from util.helpers import *
 
 # pieces for each color.
 EMPTY_TILE = -1
-BLACK_SMALL = 0
+BLACK_SMALL = 1
 BLACK_MEDIUM = 2
 BLACK_LARGE = 4
-BLACK_XLARGE = 16
-WHITE_SMALL = 1
-WHITE_MEDIUM = 3
-WHITE_LARGE = 5
-WHITE_XLARGE = 256
+BLACK_XLARGE = 8
+WHITE_SMALL = 16
+WHITE_MEDIUM = 32
+WHITE_LARGE = 64
+WHITE_XLARGE = 128
 
 
 class Playing(State):
@@ -27,17 +27,22 @@ class Playing(State):
         self.game_started = False 
         # Initial board (for testing)                                                             
         self.board = [
-                    [BLACK_LARGE,WHITE_SMALL, BLACK_LARGE,EMPTY_TILE],
-                    [EMPTY_TILE, WHITE_MEDIUM,BLACK_LARGE,EMPTY_TILE],
+                    [BLACK_SMALL,BLACK_MEDIUM, BLACK_LARGE,BLACK_XLARGE],
+                    [WHITE_SMALL,WHITE_MEDIUM, WHITE_LARGE,WHITE_XLARGE],
                     [BLACK_SMALL,WHITE_SMALL, BLACK_LARGE,EMPTY_TILE],
                     [WHITE_SMALL,EMPTY_TILE,  WHITE_LARGE,EMPTY_TILE]] 
 
+        self.inventory=[
+        [15,15,15],   ##inv for black
+        [240,240,240] ##inv for white
+        ]
     def update(self, delta_time, actions):
         #TODO() add check_wins() here 
 
         # draw an image only if a new event happens (like mouse movement) or if the game is just launched.
         if len(pygame.event.get()) > 0 or not self.game_started :
             self.map.reconstruct_map(self.board)
+            self.map.reconstruct_inventory(self.inventory)
             self.game_started = True
         
         if(actions['Esc']):
