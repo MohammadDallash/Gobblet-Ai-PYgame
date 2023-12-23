@@ -1,26 +1,55 @@
 import pygame
+from math import log2
 
-
-# get the value of the highest bit in the number.
-# Ex. n = 64 + 32 , get_highest_bit(n) = 64
+# get the order of the highest bit in the number.
+# Ex. n = 64 + 32 , get_highest_bit(n) = 6
 # returns 0 if n=0
-def get_highest_bit(n):
-    if(n==0):
-        return 0
+def get_highest_power_of_2(n):
     bit = 0
-    n = int(n/2)
+    n >>=1
     while(n!=0):
-        n = n >> 1
+        n >>=1
         bit+=1
-    return 1 << bit
+    return bit
 
 
-# @param src,dst -> the source, destenation tiles. 
-# this function checks if a move is allowed from one tile to another.
-def is_valid_move(board, src, dst):
+# get the tile order in the spritesheet using the tile id. 
+def get_drawing_idx_on_Tilemap(number):
+    if (number == -1):
+        return -1
+    
+    largest_bit = get_highest_power_of_2(number)
+
+    has_white = 0
+    if(largest_bit > 3):
+        largest_bit = largest_bit - 4
+        has_white = 1
+    return largest_bit + has_white*12
+
+
+
+# @param src,dst -> the source, destenation tiles.
+#        board -> board refrence 
+# this function checks if a move is allowed from one tile to another, and makes the move if it's valid.
+
+def make_move(board, src, dst):
+
     val_src = board[src[0]][src[1]]
     val_dst = board[dst[0]][dst[1]]
-    if(get_highest_bit(val_dst) < get_highest_bit(val_src)):
+
+    # check if any of the tiles are white, convert to a unified base.
+    if(val_src > 8):
+        val_src /= 16
+
+    if(val_dst > 8):
+        val_dst /= 16
+
+    val_src_pow2 = get_highest_power_of_2(val_src)
+
+    # if the move is valid, go ahead with it.
+    if val_dst < val_src:
+        board[src[0]][src[1]] = board[src[0]][src[1]] & ~(2 << val_src_pow2)
+        board[dst[0]][dst[1]] = board[dst[0]][dst[1]] |  (2 << val_src_pow2)
         return True
     else:
         return False

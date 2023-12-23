@@ -1,5 +1,18 @@
 import pygame, csv, os
 from math import log2
+from util.helpers import *
+
+# pieces for each color.
+EMPTY_TILE = -1
+BLACK_SMALL = 1
+BLACK_MEDIUM = 2
+BLACK_LARGE = 4
+BLACK_XLARGE = 8
+WHITE_SMALL = 16
+WHITE_MEDIUM = 32
+WHITE_LARGE = 64
+WHITE_XLARGE = 128
+
 
 
 class Tile(pygame.sprite.Sprite):
@@ -18,19 +31,28 @@ class TileMap():
     def __init__(self, filename, spritesheet):
         self.tile_size = 120
         self.spritesheet = spritesheet
-
         self.map_tiles = self.load_initial_tiles(filename)
-
         self.map_surface = pygame.Surface((self.map_w, self.map_h))
         self.board_surface = pygame.Surface((self.map_w, self.map_h))
         self.inventory_surface = pygame.Surface((self.map_w, self.map_h))
-
         self.draw_initial_tiles()
         self.map_surface.set_colorkey((0, 0, 0))
         self.board_surface.set_colorkey((0, 0, 0))
         self.inventory_surface.set_colorkey((0, 0, 0))
         self.reconstruct_map()
         self.reconstruct_inventory()
+
+        self.piece_to_idx = {
+            EMPTY_TILE :   get_drawing_idx_on_Tilemap(EMPTY_TILE),
+            BLACK_SMALL :  get_drawing_idx_on_Tilemap(BLACK_SMALL),
+            BLACK_MEDIUM : get_drawing_idx_on_Tilemap(BLACK_MEDIUM),
+            BLACK_LARGE :  get_drawing_idx_on_Tilemap(BLACK_XLARGE),
+            BLACK_XLARGE : get_drawing_idx_on_Tilemap(BLACK_SMALL),
+            WHITE_SMALL :  get_drawing_idx_on_Tilemap(WHITE_SMALL),
+            WHITE_MEDIUM : get_drawing_idx_on_Tilemap(WHITE_MEDIUM),
+            WHITE_LARGE :  get_drawing_idx_on_Tilemap(WHITE_LARGE),
+            WHITE_XLARGE : get_drawing_idx_on_Tilemap(WHITE_XLARGE)
+        }
 
     def draw_initial_tiles(self):
         for tile in self.map_tiles:
@@ -41,27 +63,9 @@ class TileMap():
         surface.blit(self.map_surface, (0, 0))
         surface.blit(self.board_surface, (0, 0))
         surface.blit(self.inventory_surface, (0, 0))
-
-
-    def get_drawing_idx_on_Tilemap(self, number):
-        if (number == -1):
-            return -1
-
-        largest_bit = 256
-        while largest_bit >0:
-            if(largest_bit & number != 0):
-                break
-            largest_bit>>=1 
-        
-        white = 0
-        if(largest_bit > 8):
-            largest_bit /=16
-            white = 1
-        return int(log2(largest_bit))  + (white)*12
         
 
     def reconstruct_inventory(self, inventory=[[15,15,15],[240,240,240]]):
-        ##TODO
         pass
 
     def reconstruct_map(self, board=None):
@@ -69,10 +73,7 @@ class TileMap():
             row,col = len(board), len(board[0])
             for y in range (row):
                 for x in range (col):
-
-                    idx = self.get_drawing_idx_on_Tilemap(board[y][x])
-                    
-                   
+                    idx = self.piece_to_idx[board[y][x]]   
                     T = (Tile( idx, (x+3) * self.tile_size, (y+1) * self.tile_size, self.spritesheet))
                     T.draw(self.board_surface)
         
