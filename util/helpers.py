@@ -5,6 +5,8 @@ from math import log2
 # Ex. n = 64 + 32 , get_highest_bit(n) = 6
 # returns 0 if n=0
 def get_highest_power_of_2(n):
+    if n ==-1:
+        return -1
     bit = 0
     n >>=1
     while(n!=0):
@@ -24,6 +26,7 @@ def get_drawing_idx_on_Tilemap(number):
     if(largest_bit > 3):
         largest_bit = largest_bit - 4
         has_white = 1
+        
     return largest_bit + has_white*12
 
 

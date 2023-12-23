@@ -10,10 +10,12 @@ BLACK_SMALL = 1
 BLACK_MEDIUM = 2
 BLACK_LARGE = 4
 BLACK_XLARGE = 8
+ALL_BLACK = 15
 WHITE_SMALL = 16
 WHITE_MEDIUM = 32
 WHITE_LARGE = 64
 WHITE_XLARGE = 128
+ALL_WHITE = 240
 
 
 class Playing(State):
@@ -31,11 +33,11 @@ class Playing(State):
                     [WHITE_SMALL,WHITE_MEDIUM, WHITE_LARGE,WHITE_XLARGE],
                     [BLACK_SMALL,WHITE_SMALL, BLACK_LARGE,EMPTY_TILE],
                     [WHITE_SMALL,EMPTY_TILE,  WHITE_LARGE,EMPTY_TILE]] 
-
         self.inventory=[
-        [15,15,15],   ##inv for black
-        [240,240,240] ##inv for white
+        [ALL_BLACK,ALL_BLACK,ALL_BLACK],   ##inv for black
+        [ALL_WHITE,ALL_WHITE,ALL_WHITE] ##inv for white
         ]
+        self.map.reconstruct_map(self.board)
     def update(self, delta_time, actions):
         #TODO() add check_wins() here 
 
