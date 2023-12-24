@@ -181,8 +181,16 @@ class Playing(State):
             # check if the row has 4 pieces of the same color.
             for j in range(4):
                 # if the current piece is white then increment white by 1.
+                if self.board[i][j] > 15 and not self.board[i][j] == -1:
+                    white+=1
                 # if the current piece is black then increment black by 1.
-                print() # to stop error (remove it)
+                elif self.board[i][j] < 16 and not self.board[i][j] == -1:
+                    black+=1
+
+            if white == 4:
+                print("white wins")
+            elif black == 4:
+                print("black wins")
             # reset counters.
             black = 0
             white = 0
@@ -191,14 +199,23 @@ class Playing(State):
             # check if the column has 4 pieces of the same color.
             for j in range(4):
                 # if the current piece is white then increment white by 1.
+                if self.board[j][i] > 15 and not self.board[i][j] == -1:
+                    white+=1
                 # if the current piece is black then increment black by 1.
-                print() # to stop error (remove it)
+                elif self.board[i][j] < 16 and not self.board[i][j] == -1:
+                    black+=1
+
+            if white == 4:
+                print("white wins")
+            elif black == 4:
+                print("black wins")
+
             # reset counters.
             black = 0
             white = 0
         
         #check if the diagonals has 4 pieces of the same color.
         for i in range(4):
-            print() # to stop error (remove it)
+            print("lol") # to stop error (remove it)
 
     
