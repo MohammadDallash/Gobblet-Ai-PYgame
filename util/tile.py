@@ -3,7 +3,7 @@ from math import log2
 from util.helpers import *
 from util.tile import *
 # pieces for each color.
-EMPTY_TILE = -1
+EMPTY_TILE = 0
 BLACK_SMALL = 1
 BLACK_MEDIUM = 2
 BLACK_LARGE = 4
@@ -68,12 +68,13 @@ class TileMap():
         
     # draw inventory on the screen.
     def reconstruct_inventory(self, inventory=[[1,1,1],[16,16,16]]):
-              
+        self.inventory_surface.fill((0,0,0))
         inv_black, inv_white = [],[]
         for i in range(3):
             # get the pieces on top.
-            itr_black = (1 << get_highest_power_of_2(inventory[0][i]))
-            itr_white = (1 << get_highest_power_of_2(inventory[1][i]))
+            
+            itr_black = get_highest_multiple_of_2(inventory[0][i])
+            itr_white =  get_highest_multiple_of_2(inventory[1][i])
 
             # get coordinates for the inventory pieces.
             y = (1+i) * int(self.tile_size*1.5) - int(self.tile_size/2)
@@ -103,6 +104,7 @@ class TileMap():
      return tile
 
     def reconstruct_map(self, board=None):
+        self.board_surface.fill((0,0,0))
         self.tiles_board_position=[]
         if board is not None:
             row, col = len(board), len(board[0])

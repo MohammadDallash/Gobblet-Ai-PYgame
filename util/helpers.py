@@ -4,23 +4,25 @@ from math import log2
 # get the order of the highest bit in the number.
 # Ex. n = 64 + 32 , get_highest_bit(n) = 6
 # returns 0 if n=0
-def get_highest_power_of_2(n):
-    if n ==-1:
-        return -1
+def get_highest_multiple_of_2(n):
+    if n ==0:
+        return 0
     bit = 0
     n >>=1
     while(n!=0):
         n >>=1
         bit+=1
-    return bit
+    return 1<<bit
 
 
 # get the tile order in the spritesheet using the tile id. 
 def get_drawing_idx_on_Tilemap(number):
-    if (number == -1):
+    if (number == 0):
         return -1
-    
-    largest_bit = get_highest_power_of_2(number)
+    if(number == 0):
+        largest_bit = 0
+    else :
+        largest_bit = int( log2(get_highest_multiple_of_2(number)))
 
     has_white = 0
     if(largest_bit > 3):
