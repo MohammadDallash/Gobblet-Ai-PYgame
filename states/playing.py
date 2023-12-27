@@ -46,7 +46,7 @@ class Playing(State):
         ]
         self.map.reconstruct_map(self.board)
     def update(self, delta_time, actions):
-        self.check_wins()
+        #self.check_wins()
         # draw an image only if a new event happens (like mouse movement) or if the game is just launched.
         self.mouse_pos = pygame.mouse.get_pos()
         if len(pygame.event.get()) > 0 or not self.game_started :
