@@ -16,7 +16,7 @@ class Game():
         self.actions = {"left": False, "right": False, "up" : False, "down" : False, "Esc" : False, "enter": False, "LEFT_MOUSE_KEY_PRESS":False}
 
 
-        self.DISPLAY_W, self.DISPLAY_H = 1280, 720
+        self.DISPLAY_W, self.DISPLAY_H = 1200, 720
 
 
         self.game_canvas = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
@@ -24,7 +24,7 @@ class Game():
 
 
 
-        self.BLACK, self.WHITE, self.YELLOW = (0, 0, 0), (255, 255, 255), (255, 255, 0)
+        self.BLACK, self.WHITE, self.YELLOW, self.BROWN = (0, 0, 0), (255, 255, 255), (255, 255, 0), (130,77,47)
 
         self.helper = Helper(self)
 

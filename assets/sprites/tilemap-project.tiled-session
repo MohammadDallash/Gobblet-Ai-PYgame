@@ -1,0 +1,43 @@
+{
+    "activeFile": "sprites.tsx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "data.cssv.tmx": {
+            "scale": 0.25,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 446,
+                "y": 578
+            }
+        },
+        "data.csv": {
+            "scale": 0.45758333333333334,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 674.1941358586778,
+                "y": 86.32307412128944
+            }
+        },
+        "sprites.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/Mohammad Dallash/Documents/GitHub/Gobblet-Ai-PYgame/assets/sprites",
+    "last.imagePath": "C:/Users/Mohammad Dallash/Documents/GitHub/Gobblet-Ai-PYgame/assets/sprites",
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "sprites.tsx",
+        "data.cssv.tmx"
+    ],
+    "project": "tilemap-project.tiled-project",
+    "recentFiles": [
+        "data.cssv.tmx",
+        "sprites.tsx",
+        "data.csv"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}

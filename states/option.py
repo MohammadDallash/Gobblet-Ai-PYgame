@@ -118,8 +118,6 @@ class Option_select(State):
                 self.cur_option = i
         
         
-        
-        
         if(actions['Esc']):
            self.exit_state()
         if(actions['enter']):

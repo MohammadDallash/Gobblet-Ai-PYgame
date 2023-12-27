@@ -1,4 +1,64 @@
 import pygame
+from math import log2
+
+# get the order of the highest bit in the number.
+# Ex. n = 64 + 32 , get_highest_bit(n) = 6
+# returns 0 if n=0
+def get_highest_multiple_of_2(n):
+    if n ==0:
+        return 0
+    bit = 0
+    n >>=1
+    while(n!=0):
+        n >>=1
+        bit+=1
+    return 1<<bit
+
+
+# get the tile order in the spritesheet using the tile id. 
+def get_drawing_idx_on_Tilemap(number):
+    if (number == 0):
+        return -1
+    if(number == 0):
+        largest_bit = 0
+    else :
+        largest_bit = int( log2(get_highest_multiple_of_2(number)))
+
+    has_white = 0
+    if(largest_bit > 3):
+        largest_bit = largest_bit - 4
+        has_white = 1
+        
+    return largest_bit + has_white*12
+
+
+
+# @param src,dst -> the source, destenation tiles.
+#        board -> board refrence 
+# this function checks if a move is allowed from one tile to another, and makes the move if it's valid.
+
+def make_move(board, src, dst):
+
+    val_src = board[src[0]][src[1]]
+    val_dst = board[dst[0]][dst[1]]
+
+    # check if any of the tiles are white, convert to a unified base.
+    if(val_src > 8):
+        val_src /= 16
+
+    if(val_dst > 8):
+        val_dst /= 16
+
+    val_src_pow2 = get_highest_power_of_2(val_src)
+
+    # if the move is valid, go ahead with it.
+    if val_dst < val_src:
+        board[src[0]][src[1]] = board[src[0]][src[1]] & ~(2 << val_src_pow2)
+        board[dst[0]][dst[1]] = board[dst[0]][dst[1]] |  (2 << val_src_pow2)
+        return True
+    else:
+        return False
+
 
 
 class Helper:
@@ -58,3 +118,5 @@ class MenuGUI:
 ## load game sounds 
 
 ## other stuff
+    
+
