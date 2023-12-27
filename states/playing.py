@@ -244,3 +244,32 @@ class Playing(State):
         elif black == 4:
             print("black wins")
 
+
+
+
+        # check if the mouse click is within a certain tile and returns its position.
+        def get_clicked_tile_id(self, board, inv_black, inv_white):
+
+            mouse_location_x, mouse_location_y = pygame.mouse.get_pos()
+            TILE_SIZE = 120
+
+            # check board tiles.
+            for i in range(4):
+                for j in range(4):
+                    rect = board[i][j].get_rect()
+                    if rect.collidepoint(mouse_location_x, mouse_location_y):
+                        return "board", i, j
+
+            # check white inventory tiles
+            for i in range(3):
+                rect = inv_white[i].get_rect()
+                if rect.collidepoint(mouse_location_x, mouse_location_y):
+                    return "white", i, 0
+
+            # check black inventory tiles
+            for i in range(3):
+                rect = inv_black[i].get_rect()
+                if rect.collidepoint(mouse_location_x, mouse_location_y):
+                    return "white", i, 0
+
+            return "empty", -1, -1
