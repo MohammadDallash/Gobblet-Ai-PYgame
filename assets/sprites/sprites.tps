@@ -198,7 +198,7 @@
             <key type="filename">tiles/tileswhiteup2.png</key>
             <key type="filename">tiles/tileswhiteup3.png</key>
             <key type="filename">tiles/zvoid.png</key>
-            <key type="filename">../../../../../Downloads/zboard_rec.png</key>
+            <key type="filename">../../../project assets/sprites/zboard_rec.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -244,8 +244,8 @@
                     <filename>tiles/tileswhiteup1.png</filename>
                     <filename>tiles/tileswhiteup2.png</filename>
                     <filename>tiles/tileswhiteup3.png</filename>
-                    <filename>../../../../../Downloads/zboard_rec.png</filename>
                     <filename>tiles/zvoid.png</filename>
+                    <filename>../../../project assets/sprites/zboard_rec.png</filename>
                 </array>
             </struct>
         </map>
