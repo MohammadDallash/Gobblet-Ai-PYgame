@@ -33,8 +33,6 @@ class PauseMenu(State):
                 p_options_state.enter_state()
                 pass
             elif self.cur_option == 2:
-                # mainmenu_state = MainMenu(self.game)
-                # mainmenu_state.enter_state()
                 self.exit_state()
                 self.exit_state()
                 pass
@@ -54,8 +52,8 @@ class PauseMenu(State):
                 p_options_state.enter_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 2):
-                mainmenu_state = MainMenu(self.game)
-                mainmenu_state.enter_state()
+                self.exit_state()
+                self.exit_state()
             if self.menuGUI.mouse_collidepoint(x, y, 3):
                 self.game.running = False
 
