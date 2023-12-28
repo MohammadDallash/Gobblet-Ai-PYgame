@@ -2,7 +2,7 @@ from states.state import State
 from util.sprite import Spritesheet
 from util.tile import TileMap
 import pygame
-from util.helpers import *
+from util.helpers import Helper
 
 # pieces for each color.
 EMPTY_TILE = 0
@@ -45,6 +45,7 @@ class Playing(State):
         [ALL_WHITE,ALL_WHITE,ALL_WHITE] ##inv for white
         ]
         self.map.reconstruct_map(self.board)
+
     def update(self, delta_time, actions):
         #self.check_wins()
         # draw an image only if a new event happens (like mouse movement) or if the game is just launched.
@@ -52,6 +53,10 @@ class Playing(State):
         if len(pygame.event.get()) > 0 or not self.game_started :
             self.map.reconstruct_map(self.board)
             self.result=self.map.reconstruct_inventory(self.inventory)
+            
+            self.helper.flush_to_file(self.board,self.inventory)
+            print(self.helper.cpp_code("current_state_file.txt"))
+            
             self.game_started = True
         if actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click(pygame.mouse.get_pos())

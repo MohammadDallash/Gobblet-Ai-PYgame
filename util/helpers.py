@@ -1,4 +1,6 @@
 import pygame
+import subprocess
+import platform
 from math import log2
 
 # get the order of the highest bit in the number.
@@ -77,6 +79,41 @@ class Helper:
 
         return text_rect
     
+    def cpp_code(self,file_namee):
+        file_name = 'test.cpp'
+        input_file_name = file_namee
+
+        compilation_command = f"g++ -o {file_name.split('.')[0]} {file_name}"
+
+        executable_name = file_name.split('.')[0]
+
+        executing_command = f"./{executable_name} < {input_file_name}" if platform.system() != 'Windows' else f"{executable_name} < {input_file_name}"
+
+        try:
+            result = subprocess.run(executing_command, shell=True, check=True, capture_output=True, text=True)
+            return result.stdout
+
+        except subprocess.CalledProcessError as e:
+            print(f"Execution failed with error: {e}")
+            print("Error Output:", e.stderr)
+
+
+    def flush_to_file(self,board=[[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4]],inv = [[1,2,3],[1,2,3]]):
+        
+        with open("current_state_file.txt", "w") as f:
+            for row in board:
+                for i in row:
+                    f.write(str(i)+" ")
+
+                f.write("\n")
+
+            f.write("\n")
+
+            for row in inv:
+                for i in row:
+                    f.write(str(i)+" ")
+                f.write("\n")
+
 
 
 class MenuGUI:
@@ -112,6 +149,10 @@ class MenuGUI:
 
     def mouse_collidepoint(self, x, y, index):
         return len(self.rec) == 0 or self.rec[index].collidepoint(x, y)
+    
+
+
+    
 
 ## load game background music [music1, music2]
 
