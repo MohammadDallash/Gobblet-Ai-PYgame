@@ -1,3 +1,4 @@
+from states.pauseMenu import PauseMenu
 from states.state import State
 from util.sprite import Spritesheet
 from util.tile import TileMap
@@ -63,7 +64,8 @@ class Playing(State):
             self.result=self.map.reconstruct_inventory(self.inventory)    
             
         if(actions['Esc']):
-           self.exit_state()
+            pause_menu = PauseMenu(self.game)
+            pause_menu.enter_state()
 
     def handle_mouse_click(self, pos):
         if self.is_click_on_inventory(pos) and not self.selected_shape:

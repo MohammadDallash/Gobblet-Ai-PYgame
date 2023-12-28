@@ -7,7 +7,7 @@ import pygame
 class PauseOptions(State):
     def __init__(self, game):
         State.__init__(self, game)
-        self.options_str = ['Volume', 'Music_On']
+        self.options_str = ['Volume', 'Music']
         self.Volume = ['Higher', 'Lower', 'Mute']
         self.Music_on_options = ['On', 'Off']
         self.volume = 'Higher'
@@ -70,19 +70,19 @@ class PoptionsSelect(State):
     def get_choose(self):
         if self.type == 'Volume':  # Correct the usage here
             return self.options_str.index(self.option_object.volume)
-        elif self.type == 'Music_On':
+        elif self.type == 'Music':
             return self.options_str.index(self.option_object.Music)
 
     def set_choose(self):
         if self.type == 'Volume':
             self.option_object.set_volume(self.options_str[self.cur_option])
-        elif self.type == 'Music_On':
+        elif self.type == 'Music':
             self.option_object.set_music(self.options_str[self.cur_option])
 
     def set_choose_with_value(self, value):
         if self.type == 'Volume':
             self.option_object.set_volume(value)
-        elif self.type == 'Music_On':
+        elif self.type == 'Music':
             self.option_object.set_music(value)
 
     def update(self, delta_time, actions):

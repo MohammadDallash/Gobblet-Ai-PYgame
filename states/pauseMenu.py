@@ -1,4 +1,4 @@
-from states.mainMenu import MainMenu
+# from states.mainMenu import MainMenu
 from states.pauseOptions import PauseOptions
 from states.state import State
 
@@ -26,21 +26,23 @@ class PauseMenu(State):
 
         if actions['enter']:
             if self.cur_option == 0:
-                # return to play state
+                self.exit_state()
                 pass
             elif self.cur_option == 1:
                 p_options_state = PauseOptions(self.game)
                 p_options_state.enter_state()
                 pass
             elif self.cur_option == 2:
-                mainmenu_state = MainMenu(self.game)
-                mainmenu_state.enter_state()
+                # mainmenu_state = MainMenu(self.game)
+                # mainmenu_state.enter_state()
+                self.exit_state()
+                self.exit_state()
                 pass
             else:
                 self.game.running = False
 
         if actions['Esc']:
-            # return to play state
+            self.exit_state()
             pass
         if actions['LEFT_MOUSE_KEY_PRESS']:
             x, y = pygame.mouse.get_pos()
