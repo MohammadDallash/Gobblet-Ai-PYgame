@@ -90,6 +90,12 @@ class Helper:
         executing_command = f"./{executable_name} < {input_file_name}" if platform.system() != 'Windows' else f"{executable_name} < {input_file_name}"
 
         try:
+            subprocess.run(compilation_command, shell=True, check=True)
+            print("Compilation success")
+        except subprocess.CalledProcessError as e:
+            print(f"Compilation failed with error: {e}")
+
+        try:
             result = subprocess.run(executing_command, shell=True, check=True, capture_output=True, text=True)
             return result.stdout
 
