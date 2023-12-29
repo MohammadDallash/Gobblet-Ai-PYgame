@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <string>
+
+
 using namespace std;
 
 const int BOARD_SIZE = 4;
@@ -8,7 +11,7 @@ const int INVENTORY_SIZE = 3;
 
 
 #define fori(size) for(int i=0; i < (size); i++)
-#define forj(size) for(int j=0; j < (size); j+= 1)
+#define forj(size) for(int j=0; j < (size); j++)
 
 
 
@@ -26,7 +29,7 @@ struct State
     int inventory[NUMBER_OF_PLAYERS][INVENTORY_SIZE];
 
     // Using std::string for lastMove
-    string lastMove = "None";
+    string lastMove;
 };
 
 
@@ -68,7 +71,8 @@ void debug_state(State state)
 
 vector<State> generate_possible_states(State curState)
 {
-    return {curState, curState, curState,curState,curState}; //TODO (should be the possible states )
+    vector<State> possibleStates(5, curState); // Initialize vector with 5 copies of curState
+    return possibleStates;
 }
 
 
