@@ -91,7 +91,7 @@ int static_evaluation (State curState)
     //rows
     for(int i = 0; i<4; i++){
         
-        for(int j = 0; j<4; i++){
+        for(int j = 0; j<4; j++){
 
             if(curState.board[i][j] > 15 and curState.board[i][j] != 0)white++;
             if(curState.board[i][j] < 16 and curState.board[i][j] != 0)black++;
@@ -108,7 +108,7 @@ int static_evaluation (State curState)
     //columns
     for(int i = 0; i<4; i++){
         
-        for(int j = 0; j<4; i++){
+        for(int j = 0; j<4; j++){
 
             if(curState.board[j][i] > 15 and curState.board[i][j] != 0)white++;
             if(curState.board[j][i] < 16 and curState.board[i][j] != 0)black++;

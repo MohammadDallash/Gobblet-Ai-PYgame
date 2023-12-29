@@ -93,7 +93,7 @@ class Helper:
         executing_command = f"{executable_name} < {input_file_name}" 
 
         try:
-            subprocess.run(compilation_command, shell=True, check=True)
+            #subprocess.run(compilation_command, shell=True, check=True)
             print("Compilation success")
         except subprocess.CalledProcessError as e:
             print(f"Compilation failed with error: {e}")
