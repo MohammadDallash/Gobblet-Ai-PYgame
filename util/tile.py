@@ -27,6 +27,8 @@ class Tile(pygame.sprite.Sprite):
     # draw a surface onto the screen.
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
+    def get_rect(self):
+        return self.rect
 
 class TileMap():
 
@@ -41,7 +43,6 @@ class TileMap():
         self.map_surface.set_colorkey((0, 0, 0))
         self.board_surface.set_colorkey((0, 0, 0))
         self.inventory_surface.set_colorkey((0, 0, 0))
-        self.tiles_board_positions = []
         self.piece_to_idx = {
             EMPTY_TILE :   get_drawing_idx_on_Tilemap(EMPTY_TILE),
             BLACK_SMALL :  get_drawing_idx_on_Tilemap(BLACK_SMALL),
@@ -92,6 +93,8 @@ class TileMap():
 
         # return the resulting tile list.
         return  [inv_black,inv_white]
+    
+    
     def selected_tile(self, selected_tile_value, position):
      # Get the sprite for the selected tile
      tile = Tile(self.piece_to_idx[selected_tile_value[1]], 0, 0, self.spritesheet) 
@@ -105,26 +108,22 @@ class TileMap():
 
     def reconstruct_map(self, board=None):
         self.board_surface.fill((0,0,0))
-        self.tiles_board_position=[]
+        board_tiles= []
         if board is not None:
             row, col = len(board), len(board[0])
             for y in range(row):
                 row_tiles = []
                 for x in range(col):
-                    idx = self.piece_to_idx[board[y][x]]
+                    idx = self.piece_to_idx[get_highest_multiple_of_2(board[y][x])]
                     tile_x = (x + 3) * self.tile_size
                     tile_y = (y + 1) * self.tile_size    
                     T = Tile(idx, tile_x, tile_y, self.spritesheet)
                     T.draw(self.board_surface)   
-                    # Store the tile's position and size
-                    tile_info = {
-                        'x': tile_x,
-                        'y': tile_y,
-                        'width': self.tile_size,
-                        'height': self.tile_size
-                    }
-                    row_tiles.append(tile_info)  
-                self.tiles_board_positions.append(row_tiles)
+                    row_tiles.append(T)
+                board_tiles.append(row_tiles)
+
+        return board_tiles
+                
 
 
     def read_csv(self, filename):

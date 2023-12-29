@@ -3,7 +3,8 @@ from states.state import State
 from util.sprite import Spritesheet
 from util.tile import TileMap
 import pygame
-from util.helpers import Helper
+from util.helpers import *
+import time
 
 # pieces for each color.
 EMPTY_TILE = 0
@@ -18,6 +19,7 @@ WHITE_LARGE = 64
 WHITE_XLARGE = 128
 ALL_WHITE = 240
 
+BLACK, WHITE= 0 , 1
 
 class Playing(State):
     def __init__(self, game):
@@ -31,10 +33,18 @@ class Playing(State):
         self.mouse_is_pressed = False
         self.selected_tile = None  # Stores (inventory_row, tile_value)
         self.selected_tile_original_pos = None  # Stores original position in inventory
-        self.result = None
+        self.inventory_tiles = None
         self.mouse_pos = (0, 0)
-        self.selected_shape=False
+        self.shape_held=False
+
+        self.source_selected = False # stores whether the source piece is selected
+        self.source_values = []
+        self.board_tiles = [[],[],[],[]]
+
+
+
         self.highlighted_tile_rect = None
+        self.x = 0
         # Initial board (for testing)                                                             
         self.board = [
                     [EMPTY_TILE,BLACK_MEDIUM, BLACK_LARGE,BLACK_XLARGE],
@@ -45,109 +55,127 @@ class Playing(State):
         [ALL_BLACK,ALL_BLACK,ALL_BLACK],   ##inv for black
         [ALL_WHITE,ALL_WHITE,ALL_WHITE] ##inv for white
         ]
+
+
         self.map.reconstruct_map(self.board)
 
     def update(self, delta_time, actions):
         #self.check_wins()
         # draw an image only if a new event happens (like mouse movement) or if the game is just launched.
         self.mouse_pos = pygame.mouse.get_pos()
-        if len(pygame.event.get()) > 0 or not self.game_started :
-            self.map.reconstruct_map(self.board)
-            self.result=self.map.reconstruct_inventory(self.inventory)
+        pygame.mouse.get_pressed()
+     
+        self.board_tiles = self.map.reconstruct_map(self.board)
+        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
             
-            self.helper.flush_to_file(self.board,self.inventory)
-            print(self.helper.cpp_code("current_state_file.txt"))
+            # self.helper.flush_to_file(self.board,self.inventory)
+            # print(self.helper.cpp_code("current_state_file.txt"))
             
-            self.game_started = True
+            
         if actions['LEFT_MOUSE_KEY_PRESS']:
+                print(self.board)
                 self.handle_mouse_click(pygame.mouse.get_pos())
                 self.map.reconstruct_map(self.board)
-                self.result=self.map.reconstruct_inventory(self.inventory)    
-        if not actions['LEFT_MOUSE_KEY_PRESS'] and self.selected_tile:
-            self.handle_mouse_release(pygame.mouse.get_pos())
-            self.map.reconstruct_map(self.board)
-            self.result=self.map.reconstruct_inventory(self.inventory)    
+                self.inventory_tiles=self.map.reconstruct_inventory(self.inventory)
+                time.sleep(0.17)
+    
+        # if not actions['LEFT_MOUSE_KEY_PRESS'] and self.selected_tile:
+        #     self.place_piece(pygame.mouse.get_pos())
+        #     self.map.reconstruct_map(self.board)
+        #     self.inventory_tiles=self.map.reconstruct_inventory(self.inventory)    
             
         if(actions['Esc']):
             pause_menu = PauseMenu(self.game)
             pause_menu.enter_state()
 
     def handle_mouse_click(self, pos):
-        if self.is_click_on_inventory(pos) and not self.selected_shape:
-            self.selected_shape = True
-            self.handle_inventory_click(pos)
-        elif self.selected_shape :
-            self.near_from_board(pos)
+        location,i,j = self.get_clicked_tile_id(self.board_tiles,self.inventory_tiles)
+
+        if location !='empty':
+            self.shape_held = True
+            self.move_piece(location, i , j)
+
+        # elif self.shape_held :
+        #     self.highlight_nearest_tile(pos)
             
             
         
-    def is_click_on_inventory(self, pos):
-        for tile_list in self.result:  
-            for tile in tile_list:
-                if tile.rect.collidepoint(pos):
-                    return True
-        return False
-    def near_from_board(self, pos):
-        for row in self.map.tiles_board_positions:
-            for tile_info in row:
-                tile_rect = pygame.Rect(tile_info['x'], tile_info['y'], tile_info['width'], tile_info['height'])
-                if tile_rect.collidepoint(pos):
-                    # Store the rectangle information instead of drawing
-                    self.highlighted_tile_rect = tile_rect
-                    return
-        self.highlighted_tile_rect = None  # Reset if no tile is highlighted   
+    # # checks if the held piece is near a board tile and highlight that tile.
+    # def highlight_nearest_tile(self, pos):
+    #     for row in self.board_tiles:
+    #         for tile in row:
 
-    def handle_inventory_click(self, pos):
-        # Step 1: Determine which inventory tile and player's inventory is clicked
-        clicked_inventory = None
-        player = None
-        for i, tile_list in enumerate(self.result):  # Assuming result contains inventory tiles
-            for j, tile in enumerate(tile_list):
-                if tile.rect.collidepoint(pos):
-                    clicked_inventory = (j, i)
-                    player = i  # 0 for black, 1 for white
-                    inventory_num=j
-                    break
-            if clicked_inventory is not None:
-                break
+    #             tile_rect = tile.get_rect()
 
-        # Check if a valid inventory tile was clicked
-        if clicked_inventory is None:
-            return
+    #             if tile_rect.collidepoint(pos):
+    #                 # Store the rectangle information instead of drawing
+    #                 self.highlighted_tile_rect = tile_rect
+    #                 return
+    #     self.highlighted_tile_rect = None  # Reset if no tile is highlighted   
 
-        # Step 2 and 3: Find and pick the largest piece
-        player_inventory = self.inventory[player]
-        largest_piece, updated_inventory = self.get_largest_piece(player_inventory[inventory_num])
-        # Step 4: Update the inventory and set the selected piece
-        self.inventory[player][inventory_num] = updated_inventory
-    
-        self.selected_tile = (player, largest_piece)
-        self.selected_tile_original_pos = clicked_inventory
 
-    def get_largest_piece(self, inventory_value):
-        # Masks for black and white pieces
-        masks = [8, 4, 2, 1, 128, 64, 32, 16]
 
-        # Find the largest piece
-        for mask in masks:
-            if inventory_value & mask:
-                # Remove the largest piece from the inventory
-                return mask, inventory_value - mask
+    def move_piece(self, location , i , j):
+        
+        if(not self.source_selected):
+            # save source values.
+            self.source_values = [location, i , j]
+            self.source_selected = True
+        else:
+            # load source values (current values are destenation)
+            source_location = self.source_values[0]
+            source_i = self.source_values[1]
+            source_j = self.source_values[2]
 
-        return None, inventory_value
-    def handle_mouse_release(self,pos):
-        for row_idx, row in enumerate(self.map.tiles_board_positions):
-            for col_idx, tile_info in enumerate(row):
-                tile_rect = pygame.Rect(tile_info['x'], tile_info['y'], tile_info['width'], tile_info['height'])
-                if tile_rect.collidepoint(pos):
-                    
-                    # Update the board with the selected tile value
-                    if self.selected_tile:  # Ensure a tile is selected
-                        self.board[row_idx][col_idx] = self.selected_tile[1]
-                        self.selected_shape = False
-                        self.selected_tile = None
-                        self.highlighted_tile_rect = None
-                        return
+            # if the source is an inventory.
+            if(source_location=='black'):
+                # move piece from source to destenation.
+                # TODO() check if the move is valid before doing anything.
+                largest_piece_in_source = get_highest_multiple_of_2(self.inventory[0][source_i])
+                self.inventory[0][source_i] &= ~(largest_piece_in_source)
+               
+                      
+            elif(source_location =='white'): 
+
+                    # move piece from source to destenation.
+                    # TODO() check if the move is valid before doing anything (remember to set self.source_selected to False).
+                    largest_piece_in_source = get_highest_multiple_of_2(self.inventory[1][source_i])
+                    self.inventory[1][source_i] &= ~(largest_piece_in_source)
+
+            # if the source is a board.
+            elif(source_location=='board'):
+
+                # move piece from source to destenation.
+                # TODO() check if the move is valid before doing anything (remember to set self.source_selected to False).
+                largest_piece_in_source = get_highest_multiple_of_2(self.board[source_i][source_j])
+                self.board[source_i][source_j] &= ~(largest_piece_in_source)
+
+            # apply to destenation.
+            self.board[i][j] |= largest_piece_in_source
+            self.source_selected = False
+
+    # # place held piece on board.
+    # def place_piece(self,pos):
+
+    #     # iterate the board tile by tile.
+    #     for i, row in enumerate(self.board_tiles):
+    #         for j, tile in enumerate(row):
+                
+    #             # get rect -haha- object (used to check if the tile is pressesd).
+    #             tile_rect = tile.get_rect()
+
+    #             # if the rectangle is pressed
+    #             if tile_rect.collidepoint(pos):
+
+    #                 # Update the board with the selected tile value
+    #                 if self.selected_tile:  # Ensure a tile is selected
+
+    #                     self.board[i][j] |= self.selected_tile[1] # TODO() TBD: needs to be fixed by checking if the move is valid.
+
+    #                     self.shape_held = False
+    #                     self.selected_tile = None
+    #                     self.highlighted_tile_rect = None
+    #                     return
                         
 
 
@@ -253,30 +281,29 @@ class Playing(State):
 
 
 
+    # check if the mouse click is within a certain tile and returns its position.
+    def get_clicked_tile_id(self, board, inventory):
 
-        # check if the mouse click is within a certain tile and returns its position.
-        def get_clicked_tile_id(self, board, inv_black, inv_white):
+        mouse_location_x, mouse_location_y = pygame.mouse.get_pos()
+        TILE_SIZE = 120
 
-            mouse_location_x, mouse_location_y = pygame.mouse.get_pos()
-            TILE_SIZE = 120
-
-            # check board tiles.
-            for i in range(4):
-                for j in range(4):
-                    rect = board[i][j].get_rect()
-                    if rect.collidepoint(mouse_location_x, mouse_location_y):
-                        return "board", i, j
-
-            # check white inventory tiles
-            for i in range(3):
-                rect = inv_white[i].get_rect()
+        # check board tiles.
+        for i in range(4):
+            for j in range(4):
+                rect = board[i][j].get_rect()
                 if rect.collidepoint(mouse_location_x, mouse_location_y):
-                    return "white", i, 0
+                    return "board", i, j
 
-            # check black inventory tiles
-            for i in range(3):
-                rect = inv_black[i].get_rect()
-                if rect.collidepoint(mouse_location_x, mouse_location_y):
-                    return "white", i, 0
+        # check white inventory tiles
+        for i in range(3):
+            rect = inventory[1][i].get_rect()
+            if rect.collidepoint(mouse_location_x, mouse_location_y):
+                return "white", i, 0
 
-            return "empty", -1, -1
+        # check black inventory tiles
+        for i in range(3):
+            rect = inventory[0][i].get_rect()
+            if rect.collidepoint(mouse_location_x, mouse_location_y):
+                return "black", i, 0
+
+        return "empty", -1, -1
