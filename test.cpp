@@ -77,10 +77,79 @@ vector<State> generate_possible_states(State curState)
 
 
 
-
+//if curState doesnt have a winner it will return 0
+//if black is the winner in curState it will return +5
+//if white is the winner in curState it will return -5
+//therefore black is the maximizer abd white is the minimizer
 int static_evaluation (State curState)
 {
-    return  100; //TODO (should be the static evaluation )
+    //create 3 loops that checks for a winner in each row, column, diagonal.
+    //counters for each color
+    int black = 0;
+    int white = 0;
+
+    //rows
+    for(int i = 0; i<4; i++){
+        
+        for(int j = 0; j<4; i++){
+
+            if(curState.board[i][j] > 15 and curState.board[i][j] != 0)white++;
+            if(curState.board[i][j] < 16 and curState.board[i][j] != 0)black++;
+        }
+    
+        if(white == 4)return -5;
+        else if(black == 4)return 5;
+
+        //reset counters.
+        black = 0;
+        white = 0;
+    }
+
+    //columns
+    for(int i = 0; i<4; i++){
+        
+        for(int j = 0; j<4; i++){
+
+            if(curState.board[j][i] > 15 and curState.board[i][j] != 0)white++;
+            if(curState.board[j][i] < 16 and curState.board[i][j] != 0)black++;
+
+        }
+
+        if(white == 4)return -5;
+        else if(black == 4)return 5;
+
+        //reset counters.
+        black = 0;
+        white = 0;
+    }
+
+
+    //main diagonal
+    for(int i = 0; i<4; i++){
+        if(curState.board[i][i] > 15 and curState.board[i][i] != 0)white++;
+        if(curState.board[i][i] < 16 and curState.board[i][i] != 0)black++;
+    }
+
+    if(white == 4)return -5;
+    else if(black == 4)return 5;
+
+    //reset counters.
+    black = 0;
+    white = 0;
+
+
+    //other diagonal
+    for(int i = 0; i<4; i++){
+        if(curState.board[i][3-i] > 15 and curState.board[i][3-i] != 0)white++;
+        if(curState.board[i][3-i] < 16 and curState.board[i][3-i] != 0)black++;
+    }
+
+    if(white == 4)return -5;
+    else if(black == 4)return 5;
+
+    //in case of no winner
+    else return 0;
+
 }
 
 
