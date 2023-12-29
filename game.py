@@ -33,23 +33,6 @@ class Game():
 
         self.font_name = "assets/font/f.TTF"
 
-        # self.main_menu = MainMenu(self)
-        # self.options = OptionsMenu(self)
-        # self.credits = CreditsMenu(self)
-        # self.state_stack.append(self.main_menu)
-
-        # self.music_player = MusicPlayer()
-        # self.music_player.load_track("assets\sound\deep-cinematic-ballad_medium-178309.mp3")
-        # self.music_player.play()
-
-        # self.sprite_sheet = Spritesheet("assets/sprites/trainer_sheet.png")
-        # self.sprites = [
-        #     {"name": "trainer1.png", "x": self.DISPLAY_W // 4, "y": self.DISPLAY_H // 4, "width": 128, "height": 128, "dynamic": False},
-        #     {"name": "trainer2.png", "x": self.DISPLAY_W // 2, "y": self.DISPLAY_H // 2, "width": 128, "height": 128, "dynamic": True},
-        #     # Add more sprites as needed
-        # ]
-        # self.initial_sprite_position = None  # Store the initial position of the dragged sprite
-        # self.dragged_sprite = None  # Keep track of the currently dragged sprite
 
     def game_loop(self):
 
@@ -58,16 +41,6 @@ class Game():
             self.update_events()
             self.update()
             self.render()
-
-            # self.update_sprite_position()###############
-
-        ## self.display.fill(self.BLACK)
-        ##self.helper.draw_text(self , "hooo", 20, self.DISPLAY_W / 2, self.DISPLAY_H / 2)
-        ##  self.window.blit(self.display, (0, 0))
-
-        # Draw all sprites
-        # for sprite in self.sprites:
-        #     self.window.blit(self.sprite_sheet.parse_sprite(sprite["name"]), (sprite["x"], sprite["y"]))
 
     def update(self):
         self.state_stack[-1].update(self.dt, self.actions)
@@ -88,36 +61,6 @@ class Game():
         self.window.blit(pygame.transform.scale(self.game_canvas, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
 
         pygame.display.flip()  # It controls when and how changes made in your code will be visible on the screen
-
-    # def update_sprite_position(self):
-    #     if self.KEY_PRESS:
-    #         # Check if any sprite is being clicked
-    #         for sprite in self.sprites:
-    #             sprite_rect = pygame.Rect(
-    #                 sprite["x"],
-    #                 sprite["y"],
-    #                 sprite["width"],
-    #                 sprite["height"]
-    #             )
-    #             if sprite_rect.collidepoint(pygame.mouse.get_pos()):
-    #                 self.dragged_sprite = sprite
-    #                 self.initial_sprite_position = (sprite["x"], sprite["y"])
-
-    #         # Move the dragged sprite to the mouse position
-    #         if self.dragged_sprite and self.dragged_sprite["dynamic"]:
-    #             mouse_x, mouse_y = pygame.mouse.get_pos()
-    #             self.dragged_sprite["x"], self.dragged_sprite["y"] = mouse_x - self.dragged_sprite["width"] / 2, mouse_y - self.dragged_sprite["height"] / 2
-    #     else:
-    #         if not self.check_allowed() and self.dragged_sprite:
-    #             # Reset the dragged sprite to its initial position
-
-    #             self.dragged_sprite["x"], self.dragged_sprite["y"] = self.initial_sprite_position
-    #             self.dragged_sprite = None  # Reset dragged sprite
-
-    # def check_allowed(self):
-    #     # Implement the conditions under which the dragged sprite is allowed to be placed
-    #     pass # Remove this line when you start implementing
-    #     return True
 
     def update_events(self):
         pygame.event.pump()

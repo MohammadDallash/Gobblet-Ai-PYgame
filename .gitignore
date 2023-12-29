@@ -4,3 +4,5 @@ __pycache__/
 *.pyd
 *.pyc
 test.py
+*.txt
+test
