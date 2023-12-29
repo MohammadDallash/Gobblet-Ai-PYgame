@@ -183,7 +183,7 @@ int main()
     }
 
 
-    debug_state(initial_state);
-   
+    //debug_state(initial_state);
+    cout << static_evaluation(initial_state);
     return 0;
 }

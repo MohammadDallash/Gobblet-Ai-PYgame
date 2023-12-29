@@ -6,3 +6,5 @@ __pycache__/
 test.py
 *.txt
 test
+current_state_file.txt
+test.exe

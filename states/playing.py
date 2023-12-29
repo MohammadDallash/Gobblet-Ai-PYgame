@@ -67,7 +67,7 @@ class Playing(State):
             self.board_tiles = self.map.reconstruct_map(self.board)
             self.inventory_tiles=self.map.reconstruct_inventory(self.inventory)
 
-            self.helper.flush_to_file(self.turn, self.board,self.inventory)
+            self.helper.flush_to_file(self.turn,self.board,self.inventory)
             print(self.helper.cpp_code("current_state_file.txt"))
             
         if actions['LEFT_MOUSE_KEY_PRESS']:
