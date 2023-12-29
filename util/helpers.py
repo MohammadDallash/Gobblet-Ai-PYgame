@@ -87,7 +87,10 @@ class Helper:
 
         executable_name = file_name.split('.')[0]
 
-        executing_command = f"./{executable_name} < {input_file_name}" if platform.system() != 'Windows' else f"{executable_name} < {input_file_name}"
+        executable_name = f"./{executable_name}" if platform.system() != 'Windows' else f"{executable_name} "
+
+
+        executing_command = f"{executable_name} < {input_file_name}" 
 
         try:
             subprocess.run(compilation_command, shell=True, check=True)
@@ -104,9 +107,12 @@ class Helper:
             print("Error Output:", e.stderr)
 
 
-    def flush_to_file(self,board=[[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4]],inv = [[1,2,3],[1,2,3]]):
+    def flush_to_file(self, turn = 1, board=[[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4]],inv = [[1,2,3],[1,2,3]]):
         
         with open("current_state_file.txt", "w") as f:
+
+            f.write(str(turn)+"\n")
+
             for row in board:
                 for i in row:
                     f.write(str(i)+" ")

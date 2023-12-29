@@ -22,8 +22,8 @@ ALL_WHITE = 240
 class Playing(State):
     def __init__(self, game):
         State.__init__(self, game)
-        self.spritesheet = Spritesheet('assets\sprites\sprites.png')
-        self.map = TileMap('assets\sprites\map.csv', self.spritesheet)
+        self.spritesheet = Spritesheet('assets/sprites/sprites.png')
+        self.map = TileMap('assets/sprites/map.csv', self.spritesheet)
         self.turn = 1 # player 1 starts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text =  self.players_names[self.turn] + ' Turn'
@@ -54,10 +54,8 @@ class Playing(State):
         if len(pygame.event.get()) > 0 or not self.game_started :
             self.map.reconstruct_map(self.board)
             self.result=self.map.reconstruct_inventory(self.inventory)
-            
-            self.helper.flush_to_file(self.board,self.inventory)
+            self.helper.flush_to_file(self.turn, self.board,self.inventory)
             print(self.helper.cpp_code("current_state_file.txt"))
-            
             self.game_started = True
         if actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click(pygame.mouse.get_pos())
