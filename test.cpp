@@ -116,16 +116,29 @@ vector<State> generate_possible_states(State curState)
 
 
 
-//if curState doesnt have a winner it will return 0
-//if black is the winner in curState it will return +5
-//if white is the winner in curState it will return -5
-//therefore black is the maximizer abd white is the minimizer
+//black is maximizer, white is minimizer
+//the sign of the return value determines which is closer to winning
+//the value determines how close to winning
+
+//if the returned number is +ve then black is closer to winning
+//if the returned number is -ve then white is closer to winning
+//the higher the positive number the closer is black to winning
+//the lower the negative number the closer is white to winning
+
+//if the return value is 4 then black won, if it is -4 then white won
+//if the return value is 0 then no one has an advantage on the other (draw)
+
 int static_evaluation (State curState)
 {
+    //black[0--3] contain the number of black pieces in rows[0--3]
+    //black[4--7] contain the number of black pieces in columns[0--3]
+    //black[8] contain the number of black pieces in main diagonal
+    //black[9] contain the number of black pieces in other diagonal
+
+    //same for white
     vector<int>black(10,0);
     vector<int>white(10,0);
     
-
     
     //rows
     for(int i = 0; i<4; i++){
@@ -165,12 +178,16 @@ int static_evaluation (State curState)
         if(get_largest_piece(curState.board[i][3-i]) < 16 and curState.board[i][3-i] != 0)black[9]++;
     }
 
+    //sort to get max number from each
     sort(white.begin(),white.end());
     sort(black.begin(),black.end());
 
+    //in case white won
     if(white[9] == 4)return white[9]*-1;
+    //in case black won
     else if (black[9] == 4)return black[9];
 
+    //in case neither has won (return the closer to winning)
     else{
         
         if(white[9] != black[9]){
