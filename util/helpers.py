@@ -3,11 +3,26 @@ import subprocess
 import platform
 from math import log2
 
+EMPTY_TILE = 0
+BLACK_SMALL = 1
+BLACK_MEDIUM = 2
+BLACK_LARGE = 4
+BLACK_XLARGE = 8
+ALL_BLACK = 15
+WHITE_SMALL = 16
+WHITE_MEDIUM = 32
+WHITE_LARGE = 64
+WHITE_XLARGE = 128
+ALL_WHITE = 240
+
+
+
 # get the order of the highest bit in the number.
 # Ex. n = 64 + 32 , get_highest_bit(n) = 6
 # returns 0 if n=0
 def get_highest_multiple_of_2(n):
-    if n ==0:
+
+    if n == 0:
         return 0
     bit = 0
     n >>=1
@@ -15,17 +30,24 @@ def get_highest_multiple_of_2(n):
         n >>=1
         bit+=1
     return 1<<bit
-    
+
+
 def get_largest_piece(n):
-    pieces = [BLACK_XLARGE,WHITE_XLARGE,
+
+    pieces = [  BLACK_XLARGE,WHITE_XLARGE,
                 BLACK_LARGE,WHITE_LARGE,
                 BLACK_MEDIUM,WHITE_MEDIUM,
                 BLACK_SMALL,WHITE_SMALL]
-
+    
     for piece in pieces:
         if(piece & n):
             return piece
+        
     return get_highest_multiple_of_2(n)
+
+
+
+
 
 # get the tile order in the spritesheet using the tile id. 
 def get_drawing_idx_on_Tilemap(number):
@@ -42,34 +64,6 @@ def get_drawing_idx_on_Tilemap(number):
         has_white = 1
         
     return largest_bit + has_white*12
-
-
-
-# @param src,dst -> the source, destenation tiles.
-#        board -> board refrence 
-# this function checks if a move is allowed from one tile to another, and makes the move if it's valid.
-
-def make_move(board, src, dst):
-
-    val_src = board[src[0]][src[1]]
-    val_dst = board[dst[0]][dst[1]]
-
-    # check if any of the tiles are white, convert to a unified base.
-    if(val_src > 8):
-        val_src /= 16
-
-    if(val_dst > 8):
-        val_dst /= 16
-
-    val_src_pow2 = get_highest_power_of_2(val_src)
-
-    # if the move is valid, go ahead with it.
-    if val_dst < val_src:
-        board[src[0]][src[1]] = board[src[0]][src[1]] & ~(2 << val_src_pow2)
-        board[dst[0]][dst[1]] = board[dst[0]][dst[1]] |  (2 << val_src_pow2)
-        return True
-    else:
-        return False
 
 
 
@@ -103,7 +97,7 @@ class Helper:
         executing_command = f"{executable_name} < {input_file_name}" 
 
         try:
-            #subprocess.run(compilation_command, shell=True, check=True)
+            # subprocess.run(compilation_command, shell=True, check=True)
             print("Compilation success")
         except subprocess.CalledProcessError as e:
             print(f"Compilation failed with error: {e}")
@@ -182,3 +176,4 @@ class MenuGUI:
 
 ## other stuff
     
+
