@@ -16,7 +16,7 @@ def get_highest_multiple_of_2(n):
         bit+=1
     return 1<<bit
     
-    def get_largest_piece(n):
+def get_largest_piece(n):
     pieces = [BLACK_XLARGE,WHITE_XLARGE,
                 BLACK_LARGE,WHITE_LARGE,
                 BLACK_MEDIUM,WHITE_MEDIUM,
