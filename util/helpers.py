@@ -15,7 +15,17 @@ def get_highest_multiple_of_2(n):
         n >>=1
         bit+=1
     return 1<<bit
+    
+    def get_largest_piece(n):
+    pieces = [BLACK_XLARGE,WHITE_XLARGE,
+                BLACK_LARGE,WHITE_LARGE,
+                BLACK_MEDIUM,WHITE_MEDIUM,
+                BLACK_SMALL,WHITE_SMALL]
 
+    for piece in pieces:
+        if(piece & n):
+            return piece
+    return get_highest_multiple_of_2(n)
 
 # get the tile order in the spritesheet using the tile id. 
 def get_drawing_idx_on_Tilemap(number):
