@@ -50,8 +50,8 @@ class Playing(State):
 
         # Initial board (for testing)                                                             
         self.board = [
-                    [EMPTY_TILE,BLACK_MEDIUM, BLACK_LARGE,BLACK_XLARGE],
-                    [WHITE_SMALL,WHITE_MEDIUM, WHITE_LARGE,WHITE_XLARGE],
+                    [EMPTY_TILE,WHITE_SMALL, BLACK_LARGE,BLACK_XLARGE],
+                    [EMPTY_TILE,WHITE_MEDIUM, WHITE_LARGE,WHITE_XLARGE],
                     [BLACK_SMALL,WHITE_SMALL, BLACK_LARGE,EMPTY_TILE],
                     [WHITE_SMALL,EMPTY_TILE,  WHITE_LARGE,EMPTY_TILE]] 
         self.inventory=[
@@ -74,8 +74,8 @@ class Playing(State):
 
             self.game_started = True
 
-            # self.helper.flush_to_file(self.turn, self.board,self.inventory)
-            # print(self.helper.cpp_code("current_state_file.txt"))
+            self.helper.flush_to_file(self.turn, self.board,self.inventory)
+            print(self.helper.cpp_code("current_state_file.txt"))
             
         if actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click(pygame.mouse.get_pos())
