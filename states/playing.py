@@ -13,6 +13,7 @@ BLACK_MEDIUM = 2
 BLACK_LARGE = 4
 BLACK_XLARGE = 8
 ALL_BLACK = 15
+
 WHITE_SMALL = 16
 WHITE_MEDIUM = 32
 WHITE_LARGE = 64
@@ -37,14 +38,16 @@ class Playing(State):
         self.mouse_pos = (0, 0)
         self.shape_held=False
 
-        self.source_selected = False # stores whether the source piece is selected
-        self.source_values = []
         self.board_tiles = [[],[],[],[]]
 
 
 
         self.highlighted_tile_rect = None
         self.x = 0
+
+        self.source_selected = False # stores whether the source piece is selected
+        self.source_values = []
+
         # Initial board (for testing)                                                             
         self.board = [
                     [EMPTY_TILE,BLACK_MEDIUM, BLACK_LARGE,BLACK_XLARGE],
@@ -52,7 +55,7 @@ class Playing(State):
                     [BLACK_SMALL,WHITE_SMALL, BLACK_LARGE,EMPTY_TILE],
                     [WHITE_SMALL,EMPTY_TILE,  WHITE_LARGE,EMPTY_TILE]] 
         self.inventory=[
-        [ALL_BLACK,ALL_BLACK,ALL_BLACK],   ##inv for black
+        [ALL_BLACK,ALL_BLACK,ALL_BLACK],##inv for black
         [ALL_WHITE,ALL_WHITE,ALL_WHITE] ##inv for white
         ]
 
@@ -63,19 +66,22 @@ class Playing(State):
         #self.check_wins()
         # draw an image only if a new event happens (like mouse movement) or if the game is just launched.
         self.mouse_pos = pygame.mouse.get_pos()
-        if len(pygame.event.get()) > 0:
+        if len(pygame.event.get()) > 0 or not self.game_started:
+
             self.board_tiles = self.map.reconstruct_map(self.board)
             self.inventory_tiles=self.map.reconstruct_inventory(self.inventory)
 
-            self.helper.flush_to_file(self.turn,self.board,self.inventory)
-            print(self.helper.cpp_code("current_state_file.txt"))
+
+            self.game_started = True
+
+            # self.helper.flush_to_file(self.turn, self.board,self.inventory)
+            # print(self.helper.cpp_code("current_state_file.txt"))
             
         if actions['LEFT_MOUSE_KEY_PRESS']:
-                print(self.board)
                 self.handle_mouse_click(pygame.mouse.get_pos())
                 self.map.reconstruct_map(self.board)
                 self.inventory_tiles=self.map.reconstruct_inventory(self.inventory)
-                time.sleep(0.17)
+                time.sleep(0.15)
     
         # if not actions['LEFT_MOUSE_KEY_PRESS'] and self.selected_tile:
         #     self.place_piece(pygame.mouse.get_pos())
@@ -115,42 +121,92 @@ class Playing(State):
 
     def move_piece(self, location , i , j):
         
-        if(not self.source_selected):
+        # if source is not selected, and destenation is not an empty tile.
+        if(not self.source_selected and location!="empty"):
             # save source values.
             self.source_values = [location, i , j]
             self.source_selected = True
+        
+        # if source is selected
         else:
-            # load source values (current values are destenation)
+
+            # load source values into a variable for better readability (Note: current function parameters are destenation).
+            self.source_selected = False
             source_location = self.source_values[0]
             source_i = self.source_values[1]
             source_j = self.source_values[2]
+            val_dst = self.board[i][j] 
+
 
             # if the source is an inventory.
             if(source_location=='black'):
-                # move piece from source to destenation.
-                # TODO() check if the move is valid before doing anything.
-                largest_piece_in_source = get_highest_multiple_of_2(self.inventory[0][source_i])
-                self.inventory[0][source_i] &= ~(largest_piece_in_source)
-               
-                      
+
+                # get the value of the source location (Black Inventory)
+                val_src = self.inventory[BLACK][source_i]
+
+                # get the largest piece in that place
+                largest_piece_in_source = get_largest_piece(val_src)
+
+                # check if any of the tiles are white, convert to a unified base for comparison.
+                if(get_highest_multiple_of_2(val_src) > 8):
+                    val_src = int(val_src/16)
+                if(get_highest_multiple_of_2(val_dst) > 8):
+                    val_dst = int(val_dst/16)
+
+                # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
+                if get_largest_piece(val_dst) < get_largest_piece(val_src):
+                    self.inventory[0][source_i] &= ~(largest_piece_in_source)
+                    self.board[i][j] |= largest_piece_in_source
+
+                else:
+                    return
+
             elif(source_location =='white'): 
 
-                    # move piece from source to destenation.
-                    # TODO() check if the move is valid before doing anything (remember to set self.source_selected to False).
-                    largest_piece_in_source = get_highest_multiple_of_2(self.inventory[1][source_i])
-                    self.inventory[1][source_i] &= ~(largest_piece_in_source)
+                    # get the value of the source location (White Inventory)
+                    val_src = self.inventory[WHITE][source_i]
+
+                    # get the largest piece in that place
+                    largest_piece_in_source = get_largest_piece(val_src)
+
+
+                    # check if any of the tiles are white, convert to a unified base for comparison.
+                    if(get_highest_multiple_of_2(val_src) > 8):
+                        val_src = int(val_src/16)
+                    if(get_highest_multiple_of_2(val_dst) > 8):
+                        val_dst = int(val_dst/16)
+
+                    # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
+                    if get_largest_piece(val_dst) < get_largest_piece(val_src):
+                        self.inventory[1][source_i] &= ~(largest_piece_in_source)
+                        self.board[i][j] |= largest_piece_in_source
+                    else:
+                        return
 
             # if the source is a board.
             elif(source_location=='board'):
 
-                # move piece from source to destenation.
-                # TODO() check if the move is valid before doing anything (remember to set self.source_selected to False).
-                largest_piece_in_source = get_highest_multiple_of_2(self.board[source_i][source_j])
-                self.board[source_i][source_j] &= ~(largest_piece_in_source)
+                # get the value of the source location (board)
+                val_src = self.board[source_i][source_j]
 
-            # apply to destenation.
-            self.board[i][j] |= largest_piece_in_source
-            self.source_selected = False
+                # get the largest piece in that place
+                largest_piece_in_source = get_largest_piece(val_src)
+
+                # check if any of the tiles are white, convert to a unified base for comparison.
+                if(get_highest_multiple_of_2(val_src) > 8):
+                    val_src = int(val_src/16)
+
+                if(get_highest_multiple_of_2(val_dst) > 8):
+                    val_dst = int(val_dst/16)
+               
+                # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
+                if get_largest_piece(val_dst) < get_largest_piece(val_src):
+                    self.board[source_i][source_j]  &= ~(largest_piece_in_source)
+                    self.board[i][j] |= largest_piece_in_source
+                else:
+                        return
+
+            
 
     # # place held piece on board.
     # def place_piece(self,pos):
@@ -192,10 +248,8 @@ class Playing(State):
             self.map.selected_tile(self.selected_tile, self.mouse_pos).draw(display)
         
 
-
         # Step 4: Update the display
         pygame.display.flip()  # or pygame.display.update()
-
 
 
     def enter_state(self):
@@ -203,6 +257,8 @@ class Playing(State):
         
     def exit_state(self):
         super().exit_state()
+
+
 
     # TODO() TBD after fixing piece sizes
     # checks for a winner at the beginning of each round.
@@ -280,7 +336,7 @@ class Playing(State):
 
 
     # check if the mouse click is within a certain tile and returns its position.
-    def get_clicked_tile_id(self, board, inventory):
+    def get_clicked_tile_id(self, board_tiles, inventory_tiles):
 
         mouse_location_x, mouse_location_y = pygame.mouse.get_pos()
         TILE_SIZE = 120
@@ -288,20 +344,24 @@ class Playing(State):
         # check board tiles.
         for i in range(4):
             for j in range(4):
-                rect = board[i][j].get_rect()
+                rect = board_tiles[i][j].get_rect()
                 if rect.collidepoint(mouse_location_x, mouse_location_y):
+                    print(f"board,{i},{j}")
                     return "board", i, j
 
         # check white inventory tiles
         for i in range(3):
-            rect = inventory[1][i].get_rect()
+            rect = inventory_tiles[1][i].get_rect()
             if rect.collidepoint(mouse_location_x, mouse_location_y):
+                print(f"white,{i},{j}")
                 return "white", i, 0
 
         # check black inventory tiles
         for i in range(3):
-            rect = inventory[0][i].get_rect()
+            rect = inventory_tiles[0][i].get_rect()
             if rect.collidepoint(mouse_location_x, mouse_location_y):
+                print(f"black,{i},{0}")
                 return "black", i, 0
-
+        print(f"empty,{-1},{-1}")
         return "empty", -1, -1
+    
