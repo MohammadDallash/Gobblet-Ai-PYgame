@@ -128,6 +128,9 @@ vector<State> generate_possible_states(State curState)
 //if the return value is 4 then black won, if it is -4 then white won
 //if the return value is 0 then no one has an advantage on the other (draw)
 
+//example: if return value is 3 then black is closer to winning and he is one piece away from winning
+//example: if return value is -2 then white is closer to winning and he is two pieces away from winning
+
 int static_evaluation (State curState)
 {
     //black[0--3] contain the number of black pieces in rows[0--3]
