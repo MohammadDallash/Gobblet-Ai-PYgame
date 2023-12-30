@@ -74,8 +74,8 @@ class TileMap():
         for i in range(3):
             # get the pieces on top.
             
-            itr_black = get_highest_multiple_of_2(inventory[0][i])
-            itr_white =  get_highest_multiple_of_2(inventory[1][i])
+            itr_black = get_largest_piece(inventory[0][i])
+            itr_white =  get_largest_piece(inventory[1][i])
 
             # get coordinates for the inventory pieces.
             y = (1+i) * int(self.tile_size*1.5) - int(self.tile_size/2)
@@ -114,7 +114,7 @@ class TileMap():
             for y in range(row):
                 row_tiles = []
                 for x in range(col):
-                    idx = self.piece_to_idx[get_highest_multiple_of_2(board[y][x])]
+                    idx = self.piece_to_idx[get_largest_piece(board[y][x])]
                     tile_x = (x + 3) * self.tile_size
                     tile_y = (y + 1) * self.tile_size    
                     T = Tile(idx, tile_x, tile_y, self.spritesheet)
