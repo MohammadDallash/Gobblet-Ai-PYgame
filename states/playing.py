@@ -27,6 +27,10 @@ BLACK_INVENTORY = "black"
 WHITE_INVENTORY = "white"
 BOARD_TILE = "board"
 BOARDERS = "empty"
+DONT_CARE = "anything invalid"
+
+BLACK_TURN = 1
+WHITE_TURN = 2
 
 
 class Playing(State):
@@ -93,6 +97,7 @@ class Playing(State):
 
     # move piece from source to destination.
     def move_piece(self, location, i, j, state):
+
         print(self.turn)
         # if the source is in the boarders, ignore it.
         if (location == BOARDERS):
@@ -114,12 +119,12 @@ class Playing(State):
             return
 
         # if selected from inventory is black and it's white turn
-        elif location == "black" and self.turn == 2:
+        elif location == BLACK_INVENTORY and self.turn == WHITE_TURN:
             print("it's player one's turn")
             return
 
         # if selected from inventory is white and it's black turn
-        elif location == "white" and self.turn == 1:
+        elif location == WHITE_INVENTORY and self.turn == BLACK_TURN:
             print("it's player two's turn")
             return
 
@@ -137,7 +142,7 @@ class Playing(State):
             self.source_selected = False
 
             # piece selected is black in white's turn
-            if not (source_j == "anything invalid" or source_i == "anything invalid"):
+            if not (source_j == DONT_CARE):
                 print(source_j, source_i)
                 print(self.board[source_i][source_j])
                 if self.board[source_i][source_j] in [BLACK_SMALL, BLACK_MEDIUM, BLACK_LARGE,
@@ -146,7 +151,7 @@ class Playing(State):
                     return
 
             # piece selected is white in black's turn
-            if not (source_j == "anything invalid" or source_i == "anything invalid"):
+            if not (source_j == DONT_CARE):
                 print(source_j, source_i)
                 print(self.board[source_i][source_j])
                 if self.board[source_i][source_j] in [WHITE_SMALL, WHITE_MEDIUM, WHITE_LARGE,
@@ -348,7 +353,7 @@ class Playing(State):
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (self.inventory[WHITE][i] == 0):
                     return BOARDERS, -1, -1, -1
-                return WHITE_INVENTORY, i, "anything invalid", self.inventory[WHITE][i]
+                return WHITE_INVENTORY, i, DONT_CARE , self.inventory[WHITE][i]
 
         # check black inventory tiles
         for i in range(3):
@@ -357,6 +362,6 @@ class Playing(State):
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (not self.inventory[BLACK][i]):
                     return BOARDERS, -1, -1, -1
-                return BLACK_INVENTORY, i, "anything invalid", self.inventory[BLACK][i]
+                return BLACK_INVENTORY, i, DONT_CARE , self.inventory[BLACK][i]
 
         return BOARDERS, -1, -1, -1
