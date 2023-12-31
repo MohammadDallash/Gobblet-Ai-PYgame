@@ -29,8 +29,8 @@ BOARD_TILE = "board"
 BOARDERS = "empty"
 DONT_CARE = "anything invalid"
 
-BLACK_TURN = 1
-WHITE_TURN = 2
+BLACK_TURN = BLACK_PLAYER =  1
+WHITE_TURN = WHITE_PLAYER = 2
 
 
 class Playing(State):
@@ -146,7 +146,7 @@ class Playing(State):
                 print(source_j, source_i)
                 print(self.board[source_i][source_j])
                 if self.board[source_i][source_j] in [BLACK_SMALL, BLACK_MEDIUM, BLACK_LARGE,
-                                                      BLACK_XLARGE] and self.turn == 2:
+                                                      BLACK_XLARGE] and self.turn == WHITE_TURN:
                     print("it's player one's turn")
                     return
 
@@ -155,7 +155,7 @@ class Playing(State):
                 print(source_j, source_i)
                 print(self.board[source_i][source_j])
                 if self.board[source_i][source_j] in [WHITE_SMALL, WHITE_MEDIUM, WHITE_LARGE,
-                                                      WHITE_XLARGE] and self.turn == 1:
+                                                      WHITE_XLARGE] and self.turn == BLACK_TURN:
                     print("it's player two's turn")
                     return
 
@@ -171,15 +171,15 @@ class Playing(State):
                 # if the move is valid, if the move is valid, go ahead with it.
                 if is_move_valid(val_src, val_dst):
 
-                    self.inventory[0][source_i] &= ~(largest_piece_in_source)
+                    self.inventory[BLACK][source_i] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
 
                         self.turn = WHITE_TURN
-                        self.turn_text = self.players_names[self.turn - 1] + ' Turn'
+                        self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
-                        self.turn = 1
-                        self.turn_text = self.players_names[self.turn - 1] + ' Turn'
+                        self.turn = BLACK_TURN
+                        self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
                     return
 
@@ -193,14 +193,15 @@ class Playing(State):
 
                 # if the move is valid, if the move is valid, go ahead with it.
                 if (is_move_valid(val_src, val_dst)):
-                    self.inventory[1][source_i] &= ~(largest_piece_in_source)
+                    self.inventory[WHITE][source_i] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
-                    if self.turn == 1:
-                        self.turn = 2
-                        self.turn_text = self.players_names[self.turn - 1] + ' Turn'
+                    if self.turn == BLACK_TURN:
+
+                        self.turn = WHITE_TURN
+                        self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
-                        self.turn = 1
-                        self.turn_text = self.players_names[self.turn - 1] + ' Turn'
+                        self.turn = BLACK_TURN
+                        self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
                     return
 
@@ -215,12 +216,12 @@ class Playing(State):
                 if (is_move_valid(val_src, val_dst)):
                     self.board[source_i][source_j] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
-                    if self.turn == 1:
-                        self.turn = 2
-                        self.turn_text = self.players_names[self.turn - 1] + ' Turn'
+                    if self.turn == BLACK_TURN:
+                        self.turn = WHITE_TURN
+                        self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
-                        self.turn = 1
-                        self.turn_text = self.players_names[self.turn - 1] + ' Turn'
+                        self.turn = BLACK_TURN
+                        self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
                     return
 
@@ -266,11 +267,11 @@ class Playing(State):
 
             if white == 4:
                 print("white wins")
-                winner_state = WinnerMenu(self.game, 2)
+                winner_state = WinnerMenu(self.game, WHITE_PLAYER)
                 winner_state.enter_state()
             elif black == 4:
                 print("black wins")
-                winner_state = WinnerMenu(self.game, 1)
+                winner_state = WinnerMenu(self.game, BLACK_PLAYER)
                 winner_state.enter_state()
             # reset counters.
             black = 0
@@ -288,11 +289,11 @@ class Playing(State):
 
             if white == 4:
                 print("white wins")
-                winner_state = WinnerMenu(self.game, 1)
+                winner_state = WinnerMenu(self.game, WHITE_PLAYER)
                 winner_state.enter_state()
             elif black == 4:
                 print("black wins")
-                winner_state = WinnerMenu(self.game, 2)
+                winner_state = WinnerMenu(self.game, BLACK_PLAYER)
                 winner_state.enter_state()
 
             # reset counters.
@@ -309,11 +310,11 @@ class Playing(State):
 
         if white == 4:
             print("white wins")
-            winner_state = WinnerMenu(self.game, 1)
+            winner_state = WinnerMenu(self.game, WHITE_PLAYER)
             winner_state.enter_state()
         elif black == 4:
             print("black wins")
-            winner_state = WinnerMenu(self.game, 2)
+            winner_state = WinnerMenu(self.game, BLACK_PLAYER)
             winner_state.enter_state()
 
         black = 0
@@ -321,19 +322,19 @@ class Playing(State):
 
         # other diagonal
         for i in range(4):
-            if get_largest_piece(self.board[i][3-i]) > 15 and not self.board[i][3 - i] == EMPTY_TILE:
+            if get_largest_piece(self.board[i][3-i]) > ALL_BLACK and not self.board[i][3 - i] == EMPTY_TILE:
                 white += 1
 
-            elif get_largest_piece(self.board[i][3-i]) < 16 and not self.board[i][3 - i] == EMPTY_TILE:
+            elif get_largest_piece(self.board[i][3-i]) < WHITE_SMALL and not self.board[i][3 - i] == EMPTY_TILE:
                 black += 1
 
         if white == 4:
             print("white wins")
-            winner_state = WinnerMenu(self.game, 1)
+            winner_state = WinnerMenu(self.game, WHITE_PLAYER)
             winner_state.enter_state()
         elif black == 4:
             print("black wins")
-            winner_state = WinnerMenu(self.game, 2)
+            winner_state = WinnerMenu(self.game, BLACK_PLAYER)
             winner_state.enter_state()
 
     # check if the mouse click is within a certain tile and returns its position.
@@ -359,7 +360,7 @@ class Playing(State):
 
         # check black inventory tiles
         for i in range(3):
-            rect = inventory_tiles[0][i].get_rect()
+            rect = inventory_tiles[BLACK][i].get_rect()
 
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (not self.inventory[BLACK][i]):

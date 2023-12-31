@@ -57,7 +57,7 @@ class WinnerMenu(State):
 
     def render(self, display):
         display.fill(self.game.BLACK)
-        self.helper.draw_text(display, f"Player {self.winner} WON!!", self.game.WHITE, 80, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, f"PLAYER {self.winner} WINS", self.game.WHITE, 80, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
     def enter_state(self):
