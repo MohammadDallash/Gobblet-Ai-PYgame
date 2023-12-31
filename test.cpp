@@ -26,6 +26,10 @@ const int ALL_WHITE = 240;
 #define forj(size) for(int j=0; j < (size); j++)
 
 
+const int INVENTORY_MOVE  = 0;
+const int BORAD_MOVE  = 1;
+
+
 
 
 
@@ -40,38 +44,46 @@ struct State
     // 2D array of size NUMBER_OF_PLAYERS*INVENTORY_SIZE
     int inventory[NUMBER_OF_PLAYERS][INVENTORY_SIZE];
 
-    // Using std::string for lastMove
-    string lastMove;
+    /* lastMove[0] = src, lastMove[1] = dest
+     *
+     * [0,1,1]
+     * [0,2,3]
+    each of src and dest = [t, i, j]  (t is INVENTORY_MOVE OR BORAD_MOVE)*/
+    vector<int> lastMove [2];
 };
 
 
-int get_highest_multiple_of_2(int n){
-    if (n == 0)return 0;
-    int bit = 0;
-    n >>=1;
 
-    while(n!=0){
-        n >>=1;
-        bit+=1;
-    }
-        
-    return 1<<bit;
-}
 
-int get_largest_piece(int n){
 
+int get_largest_piece(int n)
+{
     int pieces[] = {BLACK_XLARGE,WHITE_XLARGE,
-                BLACK_LARGE,WHITE_LARGE,
-                BLACK_MEDIUM,WHITE_MEDIUM,
-                BLACK_SMALL,WHITE_SMALL};
-    
-    for(int i = 0; i<8; i++){
+                    BLACK_LARGE,WHITE_LARGE,
+                    BLACK_MEDIUM,WHITE_MEDIUM,
+                    BLACK_SMALL,WHITE_SMALL};
 
+    for(int i = 0; i<8; i++)
+    {
         if(pieces[i] & n)return pieces[i];
     }
-             
-    return 0;
 
+    return 0;
+}
+
+int get_largest_piece_size(int n)
+{
+    int pieces[] = {BLACK_XLARGE,WHITE_XLARGE,
+                    BLACK_LARGE,WHITE_LARGE,
+                    BLACK_MEDIUM,WHITE_MEDIUM,
+                    BLACK_SMALL,WHITE_SMALL};
+
+    for(int i = 0; i<8; i++)
+    {
+        if(pieces[i] & n) return 4- i/2;
+    }
+
+    return 0;
 }
 
 
@@ -102,18 +114,113 @@ void debug_state(State state)
     }
     cout << '\n';
 
-    cout << "Last Move: " << state.lastMove << "\n\n";
+    cout << "Last Move: \n\n";
+
+    fori(2)
+    {
+        forj(INVENTORY_SIZE)
+        {
+            cout << state.lastMove[i][j] << " ";
+        }
+        cout << '\n';
+    }
 }
+
 
 
 
 
 vector<State> generate_possible_states(State curState)
 {
-    vector<State> possibleStates(5, curState); // Initialize vector with 5 copies of curState
-    return possibleStates;
-}
 
+    vector<State> possible_outcome_states; // Initialize vector with 5 copies of curState
+
+
+
+    vector< vector<vector<int>> > possible_destination(5);
+
+
+    fori(BOARD_SIZE)
+    {
+        forj(BOARD_SIZE)
+        {
+            int size = get_largest_piece_size(curState.board[i][j]);
+
+
+            possible_destination[size].push_back({BORAD_MOVE, i, j});
+        }
+    }
+
+
+
+    fori(BOARD_SIZE)
+    {
+        forj(BOARD_SIZE)
+        {
+            int curPiece = curState.board[i][j];
+
+            int size = get_largest_piece_size(curPiece);
+            int largest_piece = get_largest_piece(curPiece);
+
+            if ( ((largest_piece > ALL_BLACK) )^ (curState.turn )) continue;
+
+
+            for(int s = 0; s < size; s++)
+            {
+                for (auto dest: possible_destination[s])
+                {
+                    State newState = curState;
+
+
+                    newState.board[dest[1]][dest[2]] |= largest_piece;
+
+                    newState.board[i][j] &= ~ (largest_piece);
+
+                    newState.lastMove[0] = {BORAD_MOVE, i , j};
+                    newState.lastMove[1] = dest;
+
+                    newState.turn = curState.turn^1;
+
+                    possible_outcome_states.push_back(newState);
+                }
+            }
+        }
+    }
+
+
+
+
+
+    fori(INVENTORY_SIZE)
+    {
+        int curPiece = curState.inventory[curState.turn][i];
+
+        int size = get_largest_piece_size(curPiece);
+        int largest_piece = get_largest_piece(curPiece);
+        
+
+        for(int s = 0; s < size; s++)
+        {
+            for (auto dest: possible_destination[s])
+            {
+                State newState = curState;
+
+
+                newState.board[dest[1]][dest[2]] |= largest_piece;
+
+                newState.inventory[curState.turn][i] &= ~ (largest_piece);
+
+                newState.lastMove[0] = {INVENTORY_MOVE, curState.turn , i};
+                newState.lastMove[1] = dest;
+
+                newState.turn = curState.turn^1;
+                possible_outcome_states.push_back(newState);
+            }
+        }
+    }
+
+    return possible_outcome_states;
+}
 
 
 //black is maximizer, white is minimizer
