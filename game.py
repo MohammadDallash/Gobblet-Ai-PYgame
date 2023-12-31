@@ -33,7 +33,6 @@ class Game():
 
         self.font_name = "assets/font/f.TTF"
 
-
     def game_loop(self):
 
         while self.running:
