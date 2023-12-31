@@ -45,7 +45,7 @@ def get_largest_piece(n):
         
     return 0
 
-def is_move_valid(self, val_src, val_dst):
+def is_move_valid(val_src, val_dst):
                     
     if(val_src==0):
         return False
