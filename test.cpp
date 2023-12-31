@@ -159,8 +159,8 @@ int static_evaluation (State curState)
         
         for(int j = 0; j<4; j++){
 
-            if(get_largest_piece(curState.board[j][i]) > 15 and curState.board[i][j] != 0)white[i+4]++;
-            if(get_largest_piece(curState.board[j][i]) < 16 and curState.board[i][j] != 0)black[i+4]++;
+            if(get_largest_piece(curState.board[j][i]) > 15 and curState.board[j][i] != 0)white[i+4]++;
+            if(get_largest_piece(curState.board[j][i]) < 16 and curState.board[j][i] != 0)black[i+4]++;
 
         }
 
