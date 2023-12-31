@@ -60,8 +60,7 @@ class Playing(State):
         self.map.reconstruct_map(self.board)
 
     def update(self, delta_time, actions):
-        # self.check_wins()
-
+        self.check_wins()
         self.board_tiles = self.map.reconstruct_map(self.board)
         self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
 
@@ -96,6 +95,7 @@ class Playing(State):
     #     self.highlighted_tile_rect = None  # Reset if no tile is highlighted   
 
     # move piece from source to destination.
+        
     def move_piece(self, location, i, j, state):
 
         print(self.turn)
@@ -174,7 +174,7 @@ class Playing(State):
                     self.inventory[0][source_i] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
-                        
+
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[self.turn - 1] + ' Turn'
                     else:
@@ -249,6 +249,7 @@ class Playing(State):
         super().exit_state()
 
     # checks for a winner at the beginning of each round.
+    # TODO() Fix checking for largest piece
     def check_wins(self):
         # create 3 loops that checks for a winner in each row, column, diagonal.
         black = 0
