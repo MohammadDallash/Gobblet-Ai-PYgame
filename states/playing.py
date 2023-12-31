@@ -30,7 +30,7 @@ BOARDERS = "empty"
 DONT_CARE = "anything invalid"
 
 BLACK_TURN = BLACK_PLAYER =  1
-WHITE_TURN = WHITE_PLAYER = 2
+WHITE_TURN = WHITE_PLAYER =  2
 
 
 class Playing(State):
@@ -38,22 +38,22 @@ class Playing(State):
         State.__init__(self, game)
         self.spritesheet = Spritesheet('assets/sprites/sprites.png')
         self.map = TileMap('assets/sprites/map.csv', self.spritesheet)
-        self.turn = 1  # player 1 starts the game
+        self.turn = BLACK_PLAYER  # BLACK starts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text = self.players_names[self.turn - 1] + ' Turn'
         self.inventory_tiles = None
         self.board_tiles = [[], [], [], []]
         self.source_selected = False  # stores whether the source piece is selected
-        self.source_values = []
+        self.source_values = [] # stores source values
 
-        # Initial board (for testing)                                                             
+        # Initial board                                                          
         self.board = [
             [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
             [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
             [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
             [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE]]
         self.inventory = [
-            [ALL_BLACK, ALL_BLACK, ALL_BLACK],  # inv for black
+            [ALL_BLACK, ALL_BLACK, ALL_BLACK], # inv for black
             [ALL_WHITE, ALL_WHITE, ALL_WHITE]  # inv for white
         ]
 
@@ -98,34 +98,28 @@ class Playing(State):
         
     def move_piece(self, location, i, j, state):
 
-        print(self.turn)
         # if the source is in the boarders, ignore it.
         if (location == BOARDERS):
             return
 
         # if the source is an empty tile
         if (not self.source_selected and location == BOARD_TILE and state == EMPTY_TILE):
-            print("cannot move an empty tile ")
             return
 
         # if the source is the same as the destination.
         elif (self.source_selected and [location, i, j] == self.source_values):
-            print("cannot make move from a place to the same place ")
             return
 
         # if the destination is the inventory.
         elif (self.source_selected and (location == BLACK_INVENTORY or location == WHITE_INVENTORY)):
-            print("cannot make move to inventory")
             return
 
         # if selected from inventory is black and it's white turn
         elif location == BLACK_INVENTORY and self.turn == WHITE_TURN:
-            print("it's player one's turn")
             return
 
         # if selected from inventory is white and it's black turn
         elif location == WHITE_INVENTORY and self.turn == BLACK_TURN:
-            print("it's player two's turn")
             return
 
         # if source is not selected.
@@ -143,20 +137,15 @@ class Playing(State):
 
             # piece selected is black in white's turn
             if not (source_j == DONT_CARE):
-                print(source_j, source_i)
-                print(self.board[source_i][source_j])
+
                 if self.board[source_i][source_j] in [BLACK_SMALL, BLACK_MEDIUM, BLACK_LARGE,
                                                       BLACK_XLARGE] and self.turn == WHITE_TURN:
-                    print("it's player one's turn")
                     return
 
             # piece selected is white in black's turn
             if not (source_j == DONT_CARE):
-                print(source_j, source_i)
-                print(self.board[source_i][source_j])
                 if self.board[source_i][source_j] in [WHITE_SMALL, WHITE_MEDIUM, WHITE_LARGE,
                                                       WHITE_XLARGE] and self.turn == BLACK_TURN:
-                    print("it's player two's turn")
                     return
 
             # if the source is an inventory.
@@ -195,8 +184,8 @@ class Playing(State):
                 if (is_move_valid(val_src, val_dst)):
                     self.inventory[WHITE][source_i] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
-                    if self.turn == BLACK_TURN:
 
+                    if self.turn == BLACK_TURN:
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
@@ -259,18 +248,16 @@ class Playing(State):
             # check if the row has 4 pieces of the same color.
             for j in range(4):
                 # if the current piece is white then increment white by 1.
-                if get_largest_piece(self.board[i][j]) > 15 and not self.board[i][j] == EMPTY_TILE:
+                if get_largest_piece(self.board[i][j]) > ALL_BLACK and not self.board[i][j] == EMPTY_TILE:
                     white += 1
                 # if the current piece is black then increment black by 1.
-                elif get_largest_piece(self.board[i][j]) < 16 and not self.board[i][j] == EMPTY_TILE:
+                elif get_largest_piece(self.board[i][j]) < WHITE_SMALL and not self.board[i][j] == EMPTY_TILE:
                     black += 1
 
             if white == 4:
-                print("white wins")
                 winner_state = WinnerMenu(self.game, WHITE_PLAYER)
                 winner_state.enter_state()
             elif black == 4:
-                print("black wins")
                 winner_state = WinnerMenu(self.game, BLACK_PLAYER)
                 winner_state.enter_state()
             # reset counters.
@@ -281,18 +268,16 @@ class Playing(State):
             # check if the column has 4 pieces of the same color.
             for j in range(4):
                 # if the current piece is white then increment white by 1.
-                if get_largest_piece(self.board[j][i]) > 15 and not self.board[j][i] == EMPTY_TILE:
+                if get_largest_piece(self.board[j][i]) > ALL_BLACK and not self.board[j][i] == EMPTY_TILE:
                     white += 1
                 # if the current piece is black then increment black by 1.
-                elif get_largest_piece(self.board[j][i]) < 16 and not self.board[j][i] == EMPTY_TILE:
+                elif get_largest_piece(self.board[j][i]) < WHITE_SMALL and not self.board[j][i] == EMPTY_TILE:
                     black += 1
 
             if white == 4:
-                print("white wins")
                 winner_state = WinnerMenu(self.game, WHITE_PLAYER)
                 winner_state.enter_state()
             elif black == 4:
-                print("black wins")
                 winner_state = WinnerMenu(self.game, BLACK_PLAYER)
                 winner_state.enter_state()
 
@@ -302,18 +287,16 @@ class Playing(State):
 
         # main diagonal
         for i in range(4):
-            if get_largest_piece(self.board[i][i]) > 15 and not self.board[i][i] == EMPTY_TILE:
+            if get_largest_piece(self.board[i][i]) > ALL_BLACK and not self.board[i][i] == EMPTY_TILE:
                 white += 1
 
-            elif get_largest_piece(self.board[i][i]) < 16 and not self.board[i][i] == EMPTY_TILE:
+            elif get_largest_piece(self.board[i][i]) < WHITE_SMALL and not self.board[i][i] == EMPTY_TILE:
                 black += 1
 
         if white == 4:
-            print("white wins")
             winner_state = WinnerMenu(self.game, WHITE_PLAYER)
             winner_state.enter_state()
         elif black == 4:
-            print("black wins")
             winner_state = WinnerMenu(self.game, BLACK_PLAYER)
             winner_state.enter_state()
 
@@ -329,11 +312,9 @@ class Playing(State):
                 black += 1
 
         if white == 4:
-            print("white wins")
             winner_state = WinnerMenu(self.game, WHITE_PLAYER)
             winner_state.enter_state()
         elif black == 4:
-            print("black wins")
             winner_state = WinnerMenu(self.game, BLACK_PLAYER)
             winner_state.enter_state()
 
@@ -351,11 +332,11 @@ class Playing(State):
 
         # check white inventory tiles
         for i in range(3):
-            rect = inventory_tiles[1][i].get_rect()
+            rect = inventory_tiles[WHITE][i].get_rect()
 
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (self.inventory[WHITE][i] == 0):
-                    return BOARDERS, -1, -1, -1
+                    return BOARDERS, DONT_CARE, DONT_CARE, DONT_CARE
                 return WHITE_INVENTORY, i, DONT_CARE , self.inventory[WHITE][i]
 
         # check black inventory tiles
@@ -364,7 +345,7 @@ class Playing(State):
 
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (not self.inventory[BLACK][i]):
-                    return BOARDERS, -1, -1, -1
+                    return BOARDERS, DONT_CARE, DONT_CARE, DONT_CARE
                 return BLACK_INVENTORY, i, DONT_CARE , self.inventory[BLACK][i]
 
-        return BOARDERS, -1, -1, -1
+        return BOARDERS, DONT_CARE, DONT_CARE, DONT_CARE

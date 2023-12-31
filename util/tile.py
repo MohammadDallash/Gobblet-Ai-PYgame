@@ -71,29 +71,29 @@ class TileMap():
     # draw inventory on the screen.
     def reconstruct_inventory(self, inventory=[[1, 1, 1], [16, 16, 16]]):
         self.inventory_surface.fill((0, 0, 0))
-        inv_black, inv_white = [], []
+        inv_p1, inv_p2 = [], []
         for i in range(3):
             # get the pieces on top.
 
-            itr_black = get_largest_piece(inventory[0][i])
-            itr_white = get_largest_piece(inventory[1][i])
+            itr_p1 = get_largest_piece(inventory[0][i])
+            itr_p2 = get_largest_piece(inventory[1][i])
 
             # get coordinates for the inventory pieces.
             y = (1 + i) * int(self.tile_size * 1.5) - int(self.tile_size / 2)
-            x_black = 1 * self.tile_size
-            x_white = 8 * self.tile_size
+            x_p1 = 1 * self.tile_size
+            x_p2 = 8 * self.tile_size
 
             # append tiles in a list for future processing.
-            inv_white.append(Tile(self.piece_to_idx[itr_white], x_white, y, self.spritesheet))
-            inv_black.append(Tile(self.piece_to_idx[itr_black], x_black, y, self.spritesheet))
+            inv_p2.append(Tile(self.piece_to_idx[itr_p2], x_p2, y, self.spritesheet))
+            inv_p1.append(Tile(self.piece_to_idx[itr_p1], x_p1, y, self.spritesheet))
 
         # draw tiles on the screen.
         for i in range(3):
-            inv_black[i].draw(self.board_surface)
-            inv_white[i].draw(self.board_surface)
+            inv_p1[i].draw(self.board_surface)
+            inv_p2[i].draw(self.board_surface)
 
         # return the resulting tile list.
-        return [inv_black, inv_white]
+        return [inv_p1, inv_p2]
 
     def selected_tile(self, selected_tile_value, position):
         # Get the sprite for the selected tile
