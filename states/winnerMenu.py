@@ -1,14 +1,14 @@
-from states.pauseOptions import PauseOptions
 from states.state import State
 
 from util.helpers import MenuGUI
 import pygame
 
 
-class PauseMenu(State):
-    def __init__(self, game):
+class WinnerMenu(State):
+    def __init__(self, game, winner):
         State.__init__(self, game)
-        self.options_str = ['resume', 'options', 'main menu', 'quit']
+        self.options_str = ['New Game', 'Main Menu', 'Quit']
+        self.winner = winner
 
         self.cur_option = 0
 
@@ -25,13 +25,11 @@ class PauseMenu(State):
 
         if actions['enter']:
             if self.cur_option == 0:
-                self.exit_state()
+                from states.playing import Playing
+                playing_state = Playing(self.game)
+                playing_state.enter_state()
                 pass
             elif self.cur_option == 1:
-                p_options_state = PauseOptions(self.game)
-                p_options_state.enter_state()
-                pass
-            elif self.cur_option == 2:
                 self.exit_state()
                 self.exit_state()
                 pass
@@ -40,26 +38,26 @@ class PauseMenu(State):
 
         if actions['Esc']:
             self.exit_state()
+            self.exit_state()
             pass
+
         if actions['LEFT_MOUSE_KEY_PRESS']:
             x, y = pygame.mouse.get_pos()
             if self.menuGUI.mouse_collidepoint(x, y, 0):
-                # return to play state
-                self.exit_state()
+                from states.playing import Playing
+                playing_state = Playing(self.game)
+                playing_state.enter_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 1):
-                p_options_state = PauseOptions(self.game)
-                p_options_state.enter_state()
+                self.exit_state()
+                self.exit_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 2):
-                self.exit_state()
-                self.exit_state()
-            if self.menuGUI.mouse_collidepoint(x, y, 3):
                 self.game.running = False
 
     def render(self, display):
         display.fill(self.game.BLACK)
-        self.helper.draw_text(display, 'Pause Menu', self.game.WHITE, 80, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, f"Player {self.winner} WON!!", self.game.WHITE, 80, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
     def enter_state(self):

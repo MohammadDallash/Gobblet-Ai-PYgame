@@ -1,5 +1,6 @@
 from states.pauseMenu import PauseMenu
 from states.state import State
+from states.winnerMenu import WinnerMenu
 from util.sprite import Spritesheet
 from util.tile import TileMap
 import pygame
@@ -258,8 +259,12 @@ class Playing(State):
 
             if white == 4:
                 print("white wins")
+                winner_state = WinnerMenu(self.game, 1)
+                winner_state.enter_state()
             elif black == 4:
                 print("black wins")
+                winner_state = WinnerMenu(self.game, 2)
+                winner_state.enter_state()
             # reset counters.
             black = 0
             white = 0
@@ -276,8 +281,12 @@ class Playing(State):
 
             if white == 4:
                 print("white wins")
+                winner_state = WinnerMenu(self.game, 1)
+                winner_state.enter_state()
             elif black == 4:
                 print("black wins")
+                winner_state = WinnerMenu(self.game, 2)
+                winner_state.enter_state()
 
             # reset counters.
             black = 0
@@ -293,8 +302,12 @@ class Playing(State):
 
         if white == 4:
             print("white wins")
+            winner_state = WinnerMenu(self.game, 1)
+            winner_state.enter_state()
         elif black == 4:
             print("black wins")
+            winner_state = WinnerMenu(self.game, 2)
+            winner_state.enter_state()
 
         black = 0
         white = 0
@@ -309,8 +322,12 @@ class Playing(State):
 
         if white == 4:
             print("white wins")
+            winner_state = WinnerMenu(self.game, 1)
+            winner_state.enter_state()
         elif black == 4:
             print("black wins")
+            winner_state = WinnerMenu(self.game, 2)
+            winner_state.enter_state()
 
     # check if the mouse click is within a certain tile and returns its position.
     def get_clicked_tile_id(self, board_tiles, inventory_tiles):
