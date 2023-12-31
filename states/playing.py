@@ -173,8 +173,9 @@ class Playing(State):
 
                     self.inventory[0][source_i] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
-                    if self.turn == 1:
-                        self.turn = 2
+                    if self.turn == BLACK_TURN:
+                        
+                        self.turn = WHITE_TURN
                         self.turn_text = self.players_names[self.turn - 1] + ' Turn'
                     else:
                         self.turn = 1
