@@ -70,7 +70,7 @@ int get_largest_piece(int n){
         if(pieces[i] & n)return pieces[i];
     }
              
-    return get_highest_multiple_of_2(n);
+    return 0;
 
 }
 
