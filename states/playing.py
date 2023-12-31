@@ -180,20 +180,24 @@ class Playing(State):
 
                 else:
                     return
+                
+
             elif(source_location == WHITE_INVENTORY): 
 
-                    # get the value of the source location (White Inventory)
-                    val_src = self.inventory[WHITE][source_i]
+                # get the value of the source location (White Inventory)
+                val_src = self.inventory[WHITE][source_i]
 
-                    # get the largest piece in that place
-                    largest_piece_in_source = get_largest_piece(val_src)
+                # get the largest piece in that place
+                largest_piece_in_source = get_largest_piece(val_src)
 
-                    # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
-                    if(is_move_valid(val_src,val_dst)):
-                        self.inventory[1][source_i] &= ~(largest_piece_in_source)
-                        self.board[i][j] |= largest_piece_in_source
-                    else:
-                        return
+                # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
+                if(is_move_valid(val_src,val_dst)):
+                    self.inventory[1][source_i] &= ~(largest_piece_in_source)
+                    self.board[i][j] |= largest_piece_in_source
+                else:
+                    return
+                    
+
             # if the source is a board.
             elif(source_location == BOARD_TILE):
 
@@ -233,11 +237,6 @@ class Playing(State):
     #                     self.highlighted_tile_rect = None
     #                     return
     
-
-
-
-
-
 
 
     def render(self, display):
