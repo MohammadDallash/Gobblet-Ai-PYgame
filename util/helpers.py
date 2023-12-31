@@ -43,7 +43,29 @@ def get_largest_piece(n):
         if(piece & n):
             return piece
         
-    return get_highest_multiple_of_2(n)
+    return 0
+
+def is_move_valid(self, val_src, val_dst):
+                    
+    if(val_src==0):
+        return False
+    
+    largest_piece_src = get_largest_piece(val_src)
+    largest_piece_dst = get_largest_piece(val_dst)
+
+    # check if any of the tiles are white, convert to a unified base for comparison.
+    if(largest_piece_src > 15):
+        largest_piece_src = largest_piece_src >> 4
+
+    if(largest_piece_dst > 15):
+        largest_piece_dst = largest_piece_dst >> 4
+    
+    # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
+    if largest_piece_dst < largest_piece_src:
+        return True
+    else:
+        return False
+
 
 
 

@@ -22,6 +22,14 @@ ALL_WHITE = 240
 
 BLACK, WHITE= 0 , 1
 
+
+BLACK_INVENTORY = "black"
+WHITE_INVENTORY = "white"
+BOARD_TILE = "board"
+BOARDERS = "empty"
+
+
+
 class Playing(State):
     def __init__(self, game):
         State.__init__(self, game)
@@ -79,7 +87,7 @@ class Playing(State):
             
         if actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click()
-                time.sleep(0.19)
+                time.sleep(0.15)
     
         # if not actions['LEFT_MOUSE_KEY_PRESS'] and self.selected_tile:
         #     self.place_piece(pygame.mouse.get_pos())
@@ -91,8 +99,9 @@ class Playing(State):
             pause_menu.enter_state()
 
     def handle_mouse_click(self):
-        location,i,j = self.get_clicked_tile_id(self.board_tiles,self.inventory_tiles)
-        self.move_piece(location, i , j)
+        location,i,j, state = self.get_clicked_tile_id(self.board_tiles,self.inventory_tiles)
+        self.move_piece(location, i , j, state)
+
 
         # if location !='empty':
         #     self.shape_held = True
@@ -118,105 +127,82 @@ class Playing(State):
 
 
 
-    def move_piece(self, location , i , j):
-
-        # if the source is an empty tile
-        if(not self.source_selected and location=="board" and not self.board[i][j]):
+    def move_piece(self, location , i , j , state):
+        
+        # if the source is in the boarders, ignore it.
+        if(location==BOARDERS):
             return
         
+        # if the source is an empty tile
+        if(not self.source_selected and location == BOARD_TILE and state == EMPTY_TILE):
+            print("cannot move an empty tile ")
+            return
+        
+        # if the source is the same as the destenation.
+        elif(self.source_selected and [location,i,j] == self.source_values):
+            print("cannot make move from a place to the same place ")
+            return
+        
+        # if the destenation is the inventory.
+        elif(self.source_selected and (location==BLACK_INVENTORY or location==WHITE_INVENTORY)):
+            print("cannot make move to inventory")
+            return
+        
+
         # if source is not selected.
         elif(not self.source_selected):
             # save source values.
             self.source_values = [location, i , j]
             self.source_selected = True
 
-        # if the source is the same as destenation
-        elif(i==self.source_values[1] and j == self.source_values[2] and location==self.source_values[0]):
-            return
-        
-        # if the destenation is the inventory.
-        elif(self.source_selected and (location=='black' or location=='white')):
-            return
-
 
         else:
             # load source values into a variable for better readability (Note: current function parameters are destenation).
-            source_location = self.source_values[0]
-            source_i = self.source_values[1]
-            source_j = self.source_values[2]
+            source_location, source_i , source_j = self.source_values
             val_dst = self.board[i][j]
             self.source_selected = False
 
 
             # if the source is an inventory.
-            if(source_location=='black'):
+            if(source_location==BLACK_INVENTORY):
 
                 # get the value of the source location (Black Inventory)
                 val_src = self.inventory[BLACK][source_i]
 
-                if(val_src==0):
-                    return
-
                 # get the largest piece in that place
                 largest_piece_in_source = get_largest_piece(val_src)
 
-                # check if any of the tiles are white, convert to a unified base for comparison.
-                if(val_dst > 15):
-                    val_dst = val_dst >> 4
-
                 # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
-                if get_highest_multiple_of_2(val_dst) < get_highest_multiple_of_2(val_src):
+                if(is_move_valid(val_src,val_dst)):
 
                     self.inventory[0][source_i] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
 
                 else:
                     return
-
-            elif(source_location =='white'): 
+            elif(source_location == WHITE_INVENTORY): 
 
                     # get the value of the source location (White Inventory)
                     val_src = self.inventory[WHITE][source_i]
-                    if(val_src==0):
-                        return
 
                     # get the largest piece in that place
                     largest_piece_in_source = get_largest_piece(val_src)
 
-
-                    # check if any of the tiles are white, convert to a unified base for comparison.
-                    val_src = val_src >> 4
-                    if(val_dst > 15):
-                        val_dst = val_dst >> 4
-
                     # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
-                    if get_highest_multiple_of_2(val_dst) < get_highest_multiple_of_2(val_src):
+                    if(is_move_valid(val_src,val_dst)):
                         self.inventory[1][source_i] &= ~(largest_piece_in_source)
                         self.board[i][j] |= largest_piece_in_source
                     else:
                         return
-
             # if the source is a board.
-            elif(source_location=='board'):
+            elif(source_location == BOARD_TILE):
 
                 # get the value of the source location (board)
                 val_src = self.board[source_i][source_j]
-
-                if(val_src==0):
-                    return
-
                 # get the largest piece in that place
                 largest_piece_in_source = get_largest_piece(val_src)
 
-                # check if any of the tiles are white, convert to a unified base for comparison.
-                if(val_src > 15):
-                    val_src = val_src >> 4
-
-                if(val_dst > 15):
-                    val_dst = val_dst >> 4
-               
-                # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
-                if get_highest_multiple_of_2(val_dst) < get_highest_multiple_of_2(val_src):
+                if(is_move_valid(val_src,val_dst)):
                     self.board[source_i][source_j]  &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
                 else:
@@ -246,7 +232,12 @@ class Playing(State):
     #                     self.selected_tile = None
     #                     self.highlighted_tile_rect = None
     #                     return
-                        
+    
+
+
+
+
+
 
 
     def render(self, display):
@@ -355,25 +346,31 @@ class Playing(State):
     def get_clicked_tile_id(self, board_tiles, inventory_tiles):
 
         mouse_location_x, mouse_location_y = pygame.mouse.get_pos()
-        TILE_SIZE = 120
 
         # check board tiles.
         for i in range(4):
             for j in range(4):
                 rect = board_tiles[i][j].get_rect()
                 if rect.collidepoint(mouse_location_x, mouse_location_y):
-                    return "board", i, j
+                    return BOARD_TILE, i, j ,self.board[i][j]
 
         # check white inventory tiles
         for i in range(3):
             rect = inventory_tiles[1][i].get_rect()
+
             if rect.collidepoint(mouse_location_x, mouse_location_y):
-                return "white", i, "x"
+                if(self.inventory[WHITE][i]==0):
+                    return BOARDERS, -1, -1 , -1
+                return WHITE_INVENTORY, i , "anything invalid" , self.inventory[WHITE][i]
 
         # check black inventory tiles
         for i in range(3):
             rect = inventory_tiles[0][i].get_rect()
+
             if rect.collidepoint(mouse_location_x, mouse_location_y):
-                return "black", i, "x"
-        return "empty", -1, -1
+                if(not self.inventory[BLACK][i]):
+                    return BOARDERS, -1, -1 , -1
+                return BLACK_INVENTORY, i , "anything invalid" , self.inventory[BLACK][i]
+            
+        return BOARDERS, -1, -1 , -1
     
