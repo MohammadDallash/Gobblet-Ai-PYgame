@@ -230,8 +230,8 @@ State minMax (State postion ,int depth, int Max)
         for(int i=0;i<childs_States.size();i++)
         {
             State eval =minMax (childs_States[i], depth-1, Max);
-            int maxEval =min(static_evaluation(eval), maxEval);
-            if(static_evaluation(eval)<maxEval) temp=eval;
+            int minEval =min(static_evaluation(eval), minEval);
+            if(static_evaluation(eval)<minEval) temp=eval;
         }
     }
     return temp;
