@@ -114,12 +114,12 @@ class Playing(State):
             return
 
         # if selected from inventory is black and it's white turn
-        elif location == "black" and self.turn == 1:
+        elif location == "black" and self.turn == 2:
             print("it's player one's turn")
             return
 
         # if selected from inventory is white and it's black turn
-        elif location == "white" and self.turn == 2:
+        elif location == "white" and self.turn == 1:
             print("it's player two's turn")
             return
 
@@ -141,7 +141,7 @@ class Playing(State):
                 print(source_j, source_i)
                 print(self.board[source_i][source_j])
                 if self.board[source_i][source_j] in [BLACK_SMALL, BLACK_MEDIUM, BLACK_LARGE,
-                                                      BLACK_XLARGE] and self.turn == 1:
+                                                      BLACK_XLARGE] and self.turn == 2:
                     print("it's player one's turn")
                     return
 
@@ -150,7 +150,7 @@ class Playing(State):
                 print(source_j, source_i)
                 print(self.board[source_i][source_j])
                 if self.board[source_i][source_j] in [WHITE_SMALL, WHITE_MEDIUM, WHITE_LARGE,
-                                                      WHITE_XLARGE] and self.turn == 2:
+                                                      WHITE_XLARGE] and self.turn == 1:
                     print("it's player two's turn")
                     return
 
@@ -259,11 +259,11 @@ class Playing(State):
 
             if white == 4:
                 print("white wins")
-                winner_state = WinnerMenu(self.game, 1)
+                winner_state = WinnerMenu(self.game, 2)
                 winner_state.enter_state()
             elif black == 4:
                 print("black wins")
-                winner_state = WinnerMenu(self.game, 2)
+                winner_state = WinnerMenu(self.game, 1)
                 winner_state.enter_state()
             # reset counters.
             black = 0
