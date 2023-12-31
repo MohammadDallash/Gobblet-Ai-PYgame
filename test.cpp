@@ -208,7 +208,35 @@ int static_evaluation (State curState)
 
 //TODO ___ minMax (State curState)
 
+State minMax (State postion ,int depth, int Max)
+{
+    State temp;
+    vector<State> childs_States =generate_possible_states(postion);
 
+    if(depth==0) return postion;
+    if(Max) 
+    {
+        int maxEval=INT32_MIN;
+        for(int i=0;i<childs_States.size();i++)
+        {
+            State eval =minMax (childs_States[i], depth-1, Max);
+            int maxEval =max(static_evaluation(eval), maxEval);
+            if(static_evaluation(eval)>maxEval) temp=eval;
+        }
+    } 
+    else
+    {
+        int Eval=INT32_MAX;
+        for(int i=0;i<childs_States.size();i++)
+        {
+            State eval =minMax (childs_States[i], depth-1, Max);
+            int minEval =min(static_evaluation(eval), minEval);
+            if(static_evaluation(eval)<minEval) temp=eval;
+        }
+    }
+    return temp;
+
+}
 
 int main()
 {
