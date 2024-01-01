@@ -98,23 +98,20 @@ class Helper:
         return text_rect
 
     def cpp_code(self, file_namee):
-        file_name = 'AI/AI_Solver.cpp'
+        file_name = 'test.cpp'
         input_file_name = file_namee
 
-        compilation_command = f"g++ {file_name} -o {file_name.split('.')[0]}"
+        compilation_command = f"g++ -o {file_name.split('.')[0]} {file_name}"
 
-        windows_executable_name = file_name.split('/')[0] + "\\" + file_name.split('/')[1].split('.')[0]
+        executable_name = file_name.split('.')[0]
 
-        linux_executable_name = file_name.split('/')[0] + "/" + file_name.split('/')[1].split('.')[0]
-
-        executable_name = f"./{linux_executable_name}" if platform.system() != 'Windows' else f"{windows_executable_name}"
+        executable_name = f"./{executable_name}" if platform.system() != 'Windows' else f"{executable_name} "
 
         executing_command = f"{executable_name} < {input_file_name}"
 
         # try:
         #     subprocess.run(compilation_command, shell=True, check=True)
         #     print("Compilation success")
-
         # except subprocess.CalledProcessError as e:
         #     print(f"Compilation failed with error: {e}")
 
@@ -129,7 +126,7 @@ class Helper:
     def flush_to_file(self, turn=1, board=[[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],
                       inv=[[1, 2, 3], [1, 2, 3]]):
 
-        with open("AI/current_state_file.txt", "w") as f:
+        with open("current_state_file.txt", "w") as f:
 
             f.write(str(turn) + "\n")
 
