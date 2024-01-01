@@ -66,8 +66,8 @@ class Playing(State):
 
         self.game_started = True
 
-        # self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
-        # print(self.helper.cpp_code("current_state_file.txt"))
+        self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
+        print(self.helper.cpp_code("AI/current_state_file.txt"))
 
         if actions['LEFT_MOUSE_KEY_PRESS']:
             self.handle_mouse_click()
