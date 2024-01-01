@@ -50,6 +50,92 @@ struct State
     vector<int> lastMove[2];
 };
 
+bool checkWins(State s) {
+    int black = 0;
+    int white = 0;
+
+    // Check rows
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            if (get_largest_piece(s.board[i][j]) > ALL_BLACK && s.board[i][j] != EMPTY_TILE) {
+                white++;
+            } else if (get_largest_piece(s.board[i][j]) < WHITE_SMALL && s.board[i][j] != EMPTY_TILE) {
+                black++;
+            }
+        }
+
+        if (white == 4) {
+            WinnerMenu winnerState(game, WHITE_PLAYER);
+            winnerState.enterState();
+        } else if (black == 4) {
+            WinnerMenu winnerState(game, BLACK_PLAYER);
+            winnerState.enterState();
+        }
+
+        // Reset counters
+        black = 0;
+        white = 0;
+    }
+
+    // Check columns
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            if (get_largest_piece(s.board[j][i]) > ALL_BLACK && s.board[j][i] != EMPTY_TILE) {
+                white++;
+            } else if (get_largest_piece(s.board[j][i]) < WHITE_SMALL && s.board[j][i] != EMPTY_TILE) {
+                black++;
+            }
+        }
+
+        if (white == 4) {
+            return true;
+        } else if (black == 4) {
+            return true;
+        }
+
+        // Reset counters
+        black = 0;
+        white = 0;
+    }
+
+    // Main diagonal
+    for (int i = 0; i < 4; ++i) {
+        if (get_largest_piece(s.board[i][i]) > ALL_BLACK && s.board[i][i] != EMPTY_TILE) {
+            white++;
+        } else if (get_largest_piece(s.board[i][i]) < WHITE_SMALL && s.board[i][i] != EMPTY_TILE) {
+            black++;
+        }
+    }
+
+    if (white == 4) {
+        return true;
+    } else if (black == 4) {
+        return true;
+    }
+
+    // Reset counters
+    black = 0;
+    white = 0;
+
+    // Other diagonal
+    for (int i = 0; i < 4; ++i) {
+        if (get_largest_piece(s.board[i][3 - i]) > ALL_BLACK && s.board[i][3 - i] != EMPTY_TILE) {
+            white++;
+        } else if (get_largest_piece(s.board[i][3 - i]) < WHITE_SMALL && s.board[i][3 - i] != EMPTY_TILE) {
+            black++;
+        }
+    }
+
+    if (white == 4) {
+        return true;
+    } else if (black == 4) {
+        return true;
+    }
+
+    return false;
+}
+
+
 int get_largest_piece(int n)
 {
     int pieces[] = {BLACK_XLARGE, WHITE_XLARGE,
