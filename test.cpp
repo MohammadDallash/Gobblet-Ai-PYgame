@@ -65,11 +65,11 @@ bool checkWins(State s) {
         }
 
         if (white == 4) {
-            WinnerMenu winnerState(game, WHITE_PLAYER);
-            winnerState.enterState();
+                   return true;
+
         } else if (black == 4) {
-            WinnerMenu winnerState(game, BLACK_PLAYER);
-            winnerState.enterState();
+                    return true;
+
         }
 
         // Reset counters
@@ -210,6 +210,7 @@ void debug_state(State state)
 vector<State> generate_possible_states(State curState)
 {
 
+    if (checkWins(curState)) return { curState};
     vector<State> possible_outcome_states; // Initialize vector with 5 copies of curState
 
     //  locations where each size exists (in the board and the inventory)
