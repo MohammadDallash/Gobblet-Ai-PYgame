@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <unordered_set>
+#include <climits>
 
 using namespace std;
 
@@ -50,6 +51,23 @@ struct State
     vector<int> lastMove[2];
 };
 
+
+
+int get_largest_piece(int n)
+{
+    int pieces[] = {BLACK_XLARGE, WHITE_XLARGE,
+                    BLACK_LARGE, WHITE_LARGE,
+                    BLACK_MEDIUM, WHITE_MEDIUM,
+                    BLACK_SMALL, WHITE_SMALL};
+
+    for (int i = 0; i < 8; i++)
+    {
+        if (pieces[i] & n)
+            return pieces[i];
+    }
+
+    return 0;
+}
 bool checkWins(State s) {
     int black = 0;
     int white = 0;
@@ -135,22 +153,6 @@ bool checkWins(State s) {
     return false;
 }
 
-
-int get_largest_piece(int n)
-{
-    int pieces[] = {BLACK_XLARGE, WHITE_XLARGE,
-                    BLACK_LARGE, WHITE_LARGE,
-                    BLACK_MEDIUM, WHITE_MEDIUM,
-                    BLACK_SMALL, WHITE_SMALL};
-
-    for (int i = 0; i < 8; i++)
-    {
-        if (pieces[i] & n)
-            return pieces[i];
-    }
-
-    return 0;
-}
 
 int get_largest_piece_size(int n)
 {
@@ -315,8 +317,8 @@ vector<State> generate_possible_states(State curState)
 int static_evaluation(State curState)
 {
     // scores for each row, column, diagonal.
-    vector<int> row(4, 0); 
-    vector<int> column(4, 0); 
+    vector<int> row(4, 0);
+    vector<int> column(4, 0);
     int main_diagonal = 0;
     int other_diagonal = 0;
 
@@ -337,11 +339,11 @@ int static_evaluation(State curState)
                 white-=get_largest_piece_size(curState.board[i][j]);
             }
 
-            // if the piece is white black and not an empty tile. 
+            // if the piece is white black and not an empty tile.
             if (get_largest_piece(curState.board[i][j]) < WHITE_SMALL and curState.board[i][j] != EMPTY_TILE){
                 black++;
                 black+=get_largest_piece_size(curState.board[i][j]);
-            }    
+            }
         }
 
         row[i] = black + white;
@@ -360,7 +362,7 @@ int static_evaluation(State curState)
                 white--; // its a white piece
                 white-=get_largest_piece_size(curState.board[j][i]); // also add its size
             }
-                
+
             if (get_largest_piece(curState.board[j][i]) < WHITE_SMALL and curState.board[j][i] != EMPTY_TILE){
                 black++; // its a black piece
                 black+=get_largest_piece_size(curState.board[j][i]); // also add its size
@@ -382,12 +384,12 @@ int static_evaluation(State curState)
             white-=get_largest_piece_size(curState.board[i][i]); // also add its size
 
         }
-            
+
         if (get_largest_piece(curState.board[i][i]) < 16 and curState.board[i][i] != 0){
             black++; // its a black piece
             black+=get_largest_piece_size(curState.board[i][i]); // also add its size
         }
-            
+
     }
 
     main_diagonal = black + white;
@@ -402,12 +404,12 @@ int static_evaluation(State curState)
             white--; // its a white piece
             white -= get_largest_piece_size(curState.board[i][3 - i]); // also add its size
         }
-            
+
         if (get_largest_piece(curState.board[i][3 - i]) < WHITE_SMALL and curState.board[i][3 - i] != EMPTY_TILE){
             black++; // its a black piece
             black += get_largest_piece_size(curState.board[i][3 - i]); // also add its size
         }
-            
+
     }
     other_diagonal = black + white;
 
@@ -427,7 +429,7 @@ int static_evaluation(State curState)
     minn = min(min(other_diagonal,main_diagonal),minn);
 
 
-    return maxx + minn;
+    return maxx + minn + rand()%2;
 
     // sort to get max number from each
     // sort(white.begin(), white.end());
@@ -522,7 +524,7 @@ int main()
     }
 
     // debug_state(initial_state);
-    auto state =  minMax(initial_state,2);
+    auto state =  minMax(initial_state,3);
 
     cout << state.turn << " ";
 
