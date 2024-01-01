@@ -103,9 +103,11 @@ class Helper:
 
         compilation_command = f"g++ {file_name} -o {file_name.split('.')[0]}"
 
-        executable_name = file_name.split('/')[0] + "\\" + file_name.split('/')[1].split('.')[0]
+        executable_name_windows = file_name.split('/')[0] + "\\" + file_name.split('/')[1].split('.')[0]
 
-        executable_name = f"./{executable_name}" if platform.system() != 'Windows' else f"{executable_name}"
+        executable_name_linux = file_name.split('.')[0]
+
+        executable_name = f"./{executable_name_windows}" if platform.system() != 'Windows' else f"{executable_name_linux}"
 
         executing_command = f"{executable_name} < {input_file_name}"
 
