@@ -228,89 +228,120 @@ vector<State> generate_possible_states(State curState)
 
 int static_evaluation(State curState)
 {
-    // black[0--3] contain the number of black pieces in rows[0--3]
-    // black[4--7] contain the number of black pieces in columns[0--3]
-    // black[8] contain the number of black pieces in main diagonal
-    // black[9] contain the number of black pieces in other diagonal
+    vector<int> row(4, 0);
+    vector<int> column(4, 0);
+    int main_diagonal = 0;
+    int other_diagonal = 0;
 
-    // same for white
-    vector<int> black(10, 0);
-    vector<int> white(10, 0);
+    // vector<int> black(10, 0);
+    // vector<int> white(10, 0);
 
     // rows
     for (int i = 0; i < 4; i++)
     {
-
+        int blue = 0;
+        int red = 0;
         for (int j = 0; j < 4; j++)
         {
-
-            if (get_largest_piece(curState.board[i][j]) > 15 and curState.board[i][j] != 0)
-                white[i]++;
-            if (get_largest_piece(curState.board[i][j]) < 16 and curState.board[i][j] != 0)
-                black[i]++;
+            
+            if (get_largest_piece(curState.board[i][j]) > 15 and curState.board[i][j] != 0){
+                red--;
+            }
+                
+            if (get_largest_piece(curState.board[i][j]) < 16 and curState.board[i][j] != 0){
+                blue++;
+            }
+                
         }
+        row[i] = blue + red;
     }
 
     // columns
     for (int i = 0; i < 4; i++)
     {
+        int blue = 0;
+        int red = 0;
 
         for (int j = 0; j < 4; j++)
         {
 
-            if (get_largest_piece(curState.board[j][i]) > 15 and curState.board[j][i] != 0)
-                white[i + 4]++;
-            if (get_largest_piece(curState.board[j][i]) < 16 and curState.board[j][i] != 0)
-                black[i + 4]++;
+            if (get_largest_piece(curState.board[j][i]) > 15 and curState.board[j][i] != 0){
+                red--;
+            }
+                
+            if (get_largest_piece(curState.board[j][i]) < 16 and curState.board[j][i] != 0){
+                blue++;
+            }
+                
         }
+
+        column[i] = blue + red;
     }
+
+
+    int blue = 0;
+    int red = 0;
 
     // main diagonal
     for (int i = 0; i < 4; i++)
     {
-        if (get_largest_piece(curState.board[i][i]) > 15 and curState.board[i][i] != 0)
-            white[8]++;
-        if (get_largest_piece(curState.board[i][i]) < 16 and curState.board[i][i] != 0)
-            black[8]++;
+        if (get_largest_piece(curState.board[i][i]) > 15 and curState.board[i][i] != 0){
+            red--;
+        }
+            
+        if (get_largest_piece(curState.board[i][i]) < 16 and curState.board[i][i] != 0){
+            blue++;
+        }
+            
     }
+
+    main_diagonal = blue + red;
+
+    blue = 0;
+    red = 0;
 
     // other diagonal
     for (int i = 0; i < 4; i++)
     {
-        if (get_largest_piece(curState.board[i][3 - i]) > 15 and curState.board[i][3 - i] != 0)
-            white[9]++;
-        if (get_largest_piece(curState.board[i][3 - i]) < 16 and curState.board[i][3 - i] != 0)
-            black[9]++;
+        if (get_largest_piece(curState.board[i][3 - i]) > 15 and curState.board[i][3 - i] != 0){
+            red--;
+        }
+            
+        if (get_largest_piece(curState.board[i][3 - i]) < 16 and curState.board[i][3 - i] != 0){
+            blue++;
+        }
+            
     }
+    other_diagonal = blue + red;
 
     // sort to get max number from each
-    sort(white.begin(), white.end());
-    sort(black.begin(), black.end());
+    // sort(white.begin(), white.end());
+    // sort(black.begin(), black.end());
 
-    // in case white won
-    if (white[9] == 4)
-        return white[9] * -1;
-    // in case black won
-    else if (black[9] == 4)
-        return black[9];
+    // // in case white won
+    // if (white[9] == 4)
+    //     return white[9] * -1;
+    // // in case black won
+    // else if (black[9] == 4)
+    //     return black[9];
 
-    // in case neither has won (return the closer to winning)
-    else
-    {
+    // // in case neither has won (return the closer to winning)
+    // else
+    // {
 
-        if (white[9] != black[9])
-        {
+    //     if (white[9] != black[9])
+    //     {
 
-            if (white[9] > black[9])
-                return white[9] * -1;
+    //         if (white[9] > black[9])
+    //             return white[9] * -1;
 
-            else
-                return black[9];
-        }
+    //         else
+    //             return black[9];
+    //     }
 
-        else
-            return 0;
-    }
+    //     else
+    //         return 0;
+    // }
 }
 
 // TODO ___ minMax (State curState)
