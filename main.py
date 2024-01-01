@@ -1,4 +1,4 @@
-from game import Game
+from util.game import Game
 
 g = Game()
 
