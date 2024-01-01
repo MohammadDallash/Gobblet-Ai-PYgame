@@ -59,6 +59,21 @@ class Playing(State):
 
         self.map.reconstruct_map(self.board)
 
+
+    def parse_input_string(self,input_string):
+    # Convert the input string to a numeric array
+        numeric_array = [int(num) for num in input_string.split()]
+
+        # Extract 'turn', 'board', and 'inventory'
+        turn = numeric_array[0]
+        flat_board = numeric_array[1:17]
+        inventory = [numeric_array[-6:-3], numeric_array[-3:]]
+
+        # Convert the flat board to a 2D array (4x4)
+        board = [flat_board[i:i+4] for i in range(0, len(flat_board), 4)]
+
+        return turn, board, inventory
+    
     def update(self, delta_time, actions):
         self.check_wins()
         self.board_tiles = self.map.reconstruct_map(self.board)
@@ -67,11 +82,14 @@ class Playing(State):
         self.game_started = True
 
         self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
-        print(self.helper.cpp_code("AI/current_state_file.txt"))
+        s = (self.helper.cpp_code("current_state_file.txt"))
+        self.turn, self.board,self.inventory = self.parse_input_string (s)
 
-        if actions['LEFT_MOUSE_KEY_PRESS']:
-            self.handle_mouse_click()
-            time.sleep(0.15)
+        self.turn+=1
+
+        # if actions['LEFT_MOUSE_KEY_PRESS']:
+        #     self.handle_mouse_click()
+        #     time.sleep(0.15)
 
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)
