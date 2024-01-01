@@ -335,6 +335,24 @@ int static_evaluation(State curState)
     }
     other_diagonal = black + white;
 
+
+    // calculate the maximum - minimum
+    int maxx = INT_MIN, minn = INT_MAX;
+
+    fori(4)
+    {
+        maxx = max(row[i],maxx);
+        minn = min(row[i],minn);
+
+        maxx = max(column[i],maxx);
+        minn = min(column[i],minn);
+    }
+    maxx = max(max(other_diagonal,main_diagonal),maxx);
+    minn = min(min(other_diagonal,main_diagonal),minn);
+
+
+    return maxx + minn;
+
     // sort to get max number from each
     // sort(white.begin(), white.end());
     // sort(black.begin(), black.end());
@@ -363,6 +381,7 @@ int static_evaluation(State curState)
     //     else
     //         return 0;
     // }
+
 }
 
 // TODO ___ minMax (State curState)
