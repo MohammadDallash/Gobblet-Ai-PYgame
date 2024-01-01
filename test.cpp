@@ -313,35 +313,37 @@ int static_evaluation(State curState)
     }
 }
 
-// TODO ___ minMax (State curState)
-
-State minMax(State postion, int depth, int Max)
+State minMax (State postion ,int depth)
 {
     State temp;
-    vector<State> childs_States = generate_possible_states(postion);
+    vector<State> childs_States =generate_possible_states(postion);
 
-    if (depth == 0)
-        return postion;
-    if (Max)
+    if(depth==0) return postion;
+    if(postion.turn == 0)
     {
-        int maxEval = INT32_MIN;
-        for (int i = 0; i < childs_States.size(); i++)
+        int largest_Eval=INT32_MIN;
+        for(int i=0;i<childs_States.size();i++)
         {
-            State eval = minMax(childs_States[i], depth - 1, Max);
-            int maxEval = max(static_evaluation(eval), maxEval);
-            if (static_evaluation(eval) > maxEval)
-                temp = eval;
+            State largest_state =minMax (childs_States[i], depth-1);
+
+            if(static_evaluation(largest_state)>largest_Eval)
+            {
+                temp = childs_States[i];
+                largest_Eval = static_evaluation(largest_state);
+            }
         }
     }
     else
     {
-        int Eval = INT32_MAX;
-        for (int i = 0; i < childs_States.size(); i++)
+        int minest_Eval=INT32_MAX;
+        for(int i=0;i<childs_States.size();i++)
         {
-            State eval = minMax(childs_States[i], depth - 1, Max);
-            int minEval = min(static_evaluation(eval), minEval);
-            if (static_evaluation(eval) < minEval)
-                temp = eval;
+            State minest_state =minMax(childs_States[i], depth-1);
+            if(static_evaluation(minest_state)<minest_Eval)
+            {
+                temp = childs_States[i];
+                minest_Eval = static_evaluation(minest_state);
+            }
         }
     }
     return temp;
@@ -373,6 +375,28 @@ int main()
     }
 
     // debug_state(initial_state);
-    cout << static_evaluation(initial_state);
+    auto state =  minMax(initial_state,2);
+
+    cout << state.turn << " ";
+
+
+
+    fori(BOARD_SIZE)
+    {
+        forj(BOARD_SIZE)
+        {
+            cout << state.board[i][j] << " ";
+        }
+    }
+
+
+    fori(NUMBER_OF_PLAYERS)
+    {
+        forj(INVENTORY_SIZE)
+        {
+            cout << state.inventory[i][j] << " ";
+        }
+ 
+    }
     return 0;
 }
