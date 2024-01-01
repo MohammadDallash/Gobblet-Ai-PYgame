@@ -309,11 +309,9 @@ vector<State> generate_possible_states(State curState)
 // the higher the positive number the closer is black to winning
 // the lower the negative number the closer is white to winning
 
-// if the return value is 4 then black won, if it is -4 then white won
-// if the return value is 0 then no one has an advantage on the other (draw)
-
-// example: if return value is 3 then black is closer to winning and he is one piece away from winning
-// example: if return value is -2 then white is closer to winning and he is two pieces away from winning
+//hueristics:
+//1- number of white/black pieces in each row/column/diagonal
+//2- size of each piece in each row/column/diagonal
 int static_evaluation(State curState)
 {
     // scores for each row, column, diagonal.
@@ -322,8 +320,6 @@ int static_evaluation(State curState)
     int main_diagonal = 0;
     int other_diagonal = 0;
 
-    // vector<int> black(10, 0);
-    // vector<int> white(10, 0);
 
     // calculate the score of each row.
     for (int i = 0; i < 4; i++)
@@ -335,14 +331,14 @@ int static_evaluation(State curState)
         {
             // if the piece is white and not an empty tile.
             if (get_largest_piece(curState.board[i][j]) > ALL_BLACK and curState.board[i][j] != EMPTY_TILE){
-                white--;
-                white-=get_largest_piece_size(curState.board[i][j]);
+                white--; // its a white piece
+                white-=get_largest_piece_size(curState.board[i][j]); // also add its size
             }
 
             // if the piece is white black and not an empty tile.
             if (get_largest_piece(curState.board[i][j]) < WHITE_SMALL and curState.board[i][j] != EMPTY_TILE){
-                black++;
-                black+=get_largest_piece_size(curState.board[i][j]);
+                black++; // its a black piece
+                black+=get_largest_piece_size(curState.board[i][j]); // also add its size
             }
         }
 
@@ -431,34 +427,6 @@ int static_evaluation(State curState)
 
     return maxx + minn + rand()%2;
 
-    // sort to get max number from each
-    // sort(white.begin(), white.end());
-    // sort(black.begin(), black.end());
-
-    // // in case white won
-    // if (white[9] == 4)
-    //     return white[9] * -1;
-    // // in case black won
-    // else if (black[9] == 4)
-    //     return black[9];
-
-    // // in case neither has won (return the closer to winning)
-    // else
-    // {
-
-    //     if (white[9] != black[9])
-    //     {
-
-    //         if (white[9] > black[9])
-    //             return white[9] * -1;
-
-    //         else
-    //             return black[9];
-    //     }
-
-    //     else
-    //         return 0;
-    // }
 
 }
 
