@@ -466,6 +466,54 @@ State minMax (State postion ,int depth)
     return temp;
 }
 
+
+
+State minMax_alph_beta (State postion ,int depth,int alph , int beta)
+{ 
+
+    State temp;
+    vector<State> childs_States =generate_possible_states(postion);
+
+    if(depth==0) return postion;
+    if(postion.turn == 0)//max
+    {
+        int largest_Eval=INT32_MIN;
+        for(int i=0;i<childs_States.size();i++)
+        {
+            State largest_state =minMax (childs_States[i], depth-1);
+            alph=max(static_evaluation(largest_state),alph);
+            if(static_evaluation(largest_state)>largest_Eval)
+            {
+                temp = childs_States[i];
+                largest_Eval = static_evaluation(largest_state);
+            }
+            if(alph>= beta){
+                break;
+            }
+
+        }
+    }
+    else // min
+    {
+        int minest_Eval=INT32_MAX;
+        for(int i=0;i<childs_States.size();i++)
+        {
+            State minest_state =minMax(childs_States[i], depth-1);
+            beta=min(beta,static_evaluation(minest_state));
+            if(static_evaluation(minest_state)<minest_Eval)
+            {
+                temp = childs_States[i];
+                minest_Eval = static_evaluation(minest_state);
+            }
+            if(alph>= beta){
+                break;
+            }
+
+        }
+    }
+    return temp;
+}
+
 int main()
 {
     State initial_state;
@@ -492,7 +540,7 @@ int main()
     }
 
     // debug_state(initial_state);
-    auto state =  minMax(initial_state,3);
+    auto state =  minMax_alph_beta(initial_state,3,INT32_MIN,INT32_MAX);
 
     cout << state.turn << " ";
 
