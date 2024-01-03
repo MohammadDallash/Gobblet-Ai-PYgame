@@ -31,6 +31,7 @@ const int ALL_WHITE = 240;
 const int INVENTORY_MOVE = 0;
 const int BOARD_MOVE = 1;
 
+
 struct State
 {
     // Integer called turn
@@ -208,98 +209,6 @@ void debug_state(State state)
     }
 }
 
-//
-vector<State> generate_possible_states(State curState)
-{
-
-    if (checkWins(curState)) return { curState};
-    vector<State> possible_outcome_states; // Initialize vector with 5 copies of curState
-
-    //  locations where each size exists (in the board and the inventory)
-    vector<vector<vector<int>>> possible_destination(5);
-
-    // add each location to its corresponding size
-
-    fori(BOARD_SIZE)
-    {
-        forj(BOARD_SIZE)
-        {
-            int size = get_largest_piece_size(curState.board[i][j]);
-
-            possible_destination[size].push_back({BOARD_MOVE, i, j});
-        }
-    }
-
-    fori(BOARD_SIZE)
-    {
-        forj(BOARD_SIZE)
-        {
-            int curPiece = curState.board[i][j];
-
-            int size = get_largest_piece_size(curPiece);
-            int largest_piece = get_largest_piece(curPiece);
-
-            if (((largest_piece > ALL_BLACK)) ^ (curState.turn))
-                continue; // if its not your turn
-
-            for (int s = 0; s < size; s++)
-            {
-                for (auto dest : possible_destination[s])
-                {
-
-                    State newState = curState;
-
-                    newState.board[dest[1]][dest[2]] |= largest_piece;
-                    newState.board[i][j] &= ~(largest_piece);
-
-                    newState.lastMove[0] = {BOARD_MOVE, i, j};
-                    newState.lastMove[1] = dest;
-
-                    newState.turn = curState.turn ^ 1;
-
-                    possible_outcome_states.push_back(newState);
-                }
-            }
-        }
-    }
-
-    unordered_set<int> is_calculated_inventory;
-
-    fori(INVENTORY_SIZE)
-    {
-        int curPiece = curState.inventory[curState.turn][i];
-
-        int size = get_largest_piece_size(curPiece);
-        int largest_piece = get_largest_piece(curPiece);
-
-        if (is_calculated_inventory.find(largest_piece) == is_calculated_inventory.end())
-            is_calculated_inventory.insert(largest_piece);
-
-        else
-            continue;
-
-        for (int s = 0; s < size; s++)
-        {
-            for (auto dest : possible_destination[s])
-            {
-                State newState = curState;
-
-                newState.board[dest[1]][dest[2]] |= largest_piece;
-
-                newState.inventory[curState.turn][i] &= ~(largest_piece);
-
-                newState.lastMove[0] = {INVENTORY_MOVE, curState.turn, i};
-                newState.lastMove[1] = dest;
-
-                newState.turn = curState.turn ^ 1;
-                possible_outcome_states.push_back(newState);
-            }
-        }
-    }
-
-    return possible_outcome_states;
-}
-
 // black is maximizer, white is minimizer
 // the sign of the return value determines which is closer to winning
 // the value determines how close to winning
@@ -425,10 +334,125 @@ int static_evaluation(State curState)
     minn = min(min(other_diagonal,main_diagonal),minn);
 
 
-    return maxx + minn + rand()%2;
+    return maxx + minn +rand()%2;
 
 
 }
+
+bool customSort(const pair<int, State>& a, pair<int, State>& b) {
+            
+            return a.first < b.first;
+        
+        }
+
+//
+vector<State> generate_possible_states(State curState)
+{
+    std::vector<std::pair<int, State>> evaluated_states;
+
+    if (checkWins(curState)) return { curState};
+    vector<State> possible_outcome_states; // Initialize vector with 5 copies of curState
+
+    //  locations where each size exists (in the board and the inventory)
+    vector<vector<vector<int>>> possible_destination(5);
+
+    // add each location to its corresponding size
+
+    fori(BOARD_SIZE)
+    {
+        forj(BOARD_SIZE)
+        {
+            int size = get_largest_piece_size(curState.board[i][j]);
+
+            possible_destination[size].push_back({BOARD_MOVE, i, j});
+        }
+    }
+
+    fori(BOARD_SIZE)
+    {
+        forj(BOARD_SIZE)
+        {
+            int curPiece = curState.board[i][j];
+
+            int size = get_largest_piece_size(curPiece);
+            int largest_piece = get_largest_piece(curPiece);
+
+            if (((largest_piece > ALL_BLACK)) ^ (curState.turn))
+                continue; // if its not your turn
+
+            for (int s = 0; s < size; s++)
+            {
+                for (auto dest : possible_destination[s])
+                {
+
+                    State newState = curState;
+
+                    newState.board[dest[1]][dest[2]] |= largest_piece;
+                    newState.board[i][j] &= ~(largest_piece);
+
+                    newState.lastMove[0] = {BOARD_MOVE, i, j};
+                    newState.lastMove[1] = dest;
+
+                    newState.turn = curState.turn ^ 1;
+
+                    possible_outcome_states.push_back(newState);
+                }
+            }
+        }
+    }
+
+    unordered_set<int> is_calculated_inventory;
+
+    fori(INVENTORY_SIZE)
+    {
+        int curPiece = curState.inventory[curState.turn][i];
+
+        int size = get_largest_piece_size(curPiece);
+        int largest_piece = get_largest_piece(curPiece);
+
+        if (is_calculated_inventory.find(largest_piece) == is_calculated_inventory.end())
+            is_calculated_inventory.insert(largest_piece);
+
+        else
+            continue;
+
+        for (int s = 0; s < size; s++)
+        {
+            for (auto dest : possible_destination[s])
+            {
+                State newState = curState;
+
+                newState.board[dest[1]][dest[2]] |= largest_piece;
+
+                newState.inventory[curState.turn][i] &= ~(largest_piece);
+
+                newState.lastMove[0] = {INVENTORY_MOVE, curState.turn, i};
+                newState.lastMove[1] = dest;
+
+                newState.turn = curState.turn ^ 1;
+                possible_outcome_states.push_back(newState);
+            }
+        }
+    }
+
+    // Precompute evaluations
+    for (const auto& state : possible_outcome_states) {
+        int eval = static_evaluation(state);
+        evaluated_states.emplace_back(eval, state);
+    }
+
+    // Sort based on precomputed evaluations
+    sort(evaluated_states.begin(), evaluated_states.end(),customSort);
+
+    // Extract the sorted states (if needed)
+    for (size_t i = 0; i < evaluated_states.size(); ++i) {
+        possible_outcome_states[i] = evaluated_states[i].second;
+    }
+
+    return possible_outcome_states;
+}
+
+
 
 State minMax (State postion ,int depth)
 {
@@ -443,7 +467,7 @@ State minMax (State postion ,int depth)
         {
             State largest_state =minMax (childs_States[i], depth-1);
 
-            if(static_evaluation(largest_state)>largest_Eval)
+            if((static_evaluation(largest_state))>largest_Eval)
             {
                 temp = childs_States[i];
                 largest_Eval = static_evaluation(largest_state);
@@ -475,9 +499,10 @@ State minMax_alph_beta (State postion ,int depth,int alph , int beta)
     vector<State> childs_States =generate_possible_states(postion);
 
     if(depth==0) return postion;
-    if(postion.turn == 0)//max
+    if(postion.turn == 0)//maximizer
     {
         int largest_Eval=INT32_MIN;
+        reverse(childs_States.begin(), childs_States.end());
         for(int i=0;i<childs_States.size();i++)
         {
             State largest_state =minMax (childs_States[i], depth-1);
@@ -493,7 +518,7 @@ State minMax_alph_beta (State postion ,int depth,int alph , int beta)
 
         }
     }
-    else // min
+    else // minimizer
     {
         int minest_Eval=INT32_MAX;
         for(int i=0;i<childs_States.size();i++)
