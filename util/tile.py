@@ -31,6 +31,14 @@ class Tile(pygame.sprite.Sprite):
 
     def get_rect(self):
         return self.rect
+    
+    def get_coor(self):
+        return self.rect.x , self.rect.y
+    
+    def fill(self,r,g,b):
+        pass
+
+
 
 
 class TileMap():
@@ -65,6 +73,7 @@ class TileMap():
 
     def draw_map_on_canvas(self, surface):
         surface.blit(self.map_surface, (0, 0))
+
         surface.blit(self.board_surface, (0, 0))
         surface.blit(self.inventory_surface, (0, 0))
 
@@ -97,7 +106,7 @@ class TileMap():
 
     def selected_tile(self, selected_tile_value, position):
         # Get the sprite for the selected tile
-        tile = Tile(self.piece_to_idx[selected_tile_value[1]], 0, 0, self.spritesheet)
+        tile = Tile(self.piece_to_idx[selected_tile_value], 0, 0, self.spritesheet)
         # Calculate the offset so the mouse is in the center of the tile
         offset_x = tile.rect.width // 2
         offset_y = tile.rect.height // 2
