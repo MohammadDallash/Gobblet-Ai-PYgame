@@ -60,6 +60,11 @@ class Playing(State):
         self.map.reconstruct_map(self.board)
 
 
+        self.game_started = False
+
+
+
+
     def parse_input_string(self,input_string):
     # Convert the input string to a numeric array
         numeric_array = [int(num) for num in input_string.split()]
@@ -72,20 +77,26 @@ class Playing(State):
         # Convert the flat board to a 2D array (4x4)
         board = [flat_board[i:i+4] for i in range(0, len(flat_board), 4)]
 
-        return turn, board, inventory
+        return turn+1, board, inventory
     
-    def update(self, delta_time, actions):
+    def update(self, delta_time, actions): 
+        if(self.game_started == False):
+            self.game_started = True
+            self.board_tiles = self.map.reconstruct_map(self.board)
+            self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
+            return  
         self.check_wins()
-        self.board_tiles = self.map.reconstruct_map(self.board)
-        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
-
-        self.game_started = True
 
         self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
         s = (self.helper.cpp_code("current_state_file.txt"))
         self.turn, self.board,self.inventory = self.parse_input_string (s)
+     
 
-        self.turn+=1
+        self.board_tiles = self.map.reconstruct_map(self.board)
+        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
+
+
+        
 
         # if actions['LEFT_MOUSE_KEY_PRESS']:
         #     self.handle_mouse_click()
@@ -274,9 +285,11 @@ class Playing(State):
 
             if white == 4:
                 winner_state = WinnerMenu(self.game, WHITE_PLAYER)
+                time.sleep(3)
                 winner_state.enter_state()
             elif black == 4:
                 winner_state = WinnerMenu(self.game, BLACK_PLAYER)
+                time.sleep(3)
                 winner_state.enter_state()
             # reset counters.
             black = 0
@@ -294,9 +307,11 @@ class Playing(State):
 
             if white == 4:
                 winner_state = WinnerMenu(self.game, WHITE_PLAYER)
+                time.sleep(3)
                 winner_state.enter_state()
             elif black == 4:
                 winner_state = WinnerMenu(self.game, BLACK_PLAYER)
+                time.sleep(3)
                 winner_state.enter_state()
 
             # reset counters.
@@ -313,9 +328,11 @@ class Playing(State):
 
         if white == 4:
             winner_state = WinnerMenu(self.game, WHITE_PLAYER)
+            time.sleep(3)
             winner_state.enter_state()
         elif black == 4:
             winner_state = WinnerMenu(self.game, BLACK_PLAYER)
+            time.sleep(3)
             winner_state.enter_state()
 
         black = 0
@@ -331,9 +348,11 @@ class Playing(State):
 
         if white == 4:
             winner_state = WinnerMenu(self.game, WHITE_PLAYER)
+            time.sleep(3)
             winner_state.enter_state()
         elif black == 4:
             winner_state = WinnerMenu(self.game, BLACK_PLAYER)
+            time.sleep(3)
             winner_state.enter_state()
 
     # check if the mouse click is within a certain tile and returns its position.
