@@ -15,11 +15,7 @@ class MainMenu(State):
 
         self.cur_option = 0
         
-        # background music
-        self.music_player = MusicPlayer()
-        self.music_track = 'assets/sound/8-bit Menu.mp3'
-        self.music_player.load_track(self.music_track)
-        self.music_player.play()
+
 
         self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=30,
                                x_pos=self.game.DISPLAY_W / 2)

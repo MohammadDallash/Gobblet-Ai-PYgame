@@ -173,10 +173,6 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">tiles/tilesblack0.png</key>
-            <key type="filename">tiles/tilesblack1.png</key>
-            <key type="filename">tiles/tilesblack2.png</key>
-            <key type="filename">tiles/tilesblack3.png</key>
             <key type="filename">tiles/tilesblackdown0.png</key>
             <key type="filename">tiles/tilesblackdown1.png</key>
             <key type="filename">tiles/tilesblackdown2.png</key>
@@ -185,10 +181,6 @@
             <key type="filename">tiles/tilesblackup1.png</key>
             <key type="filename">tiles/tilesblackup2.png</key>
             <key type="filename">tiles/tilesblackup3.png</key>
-            <key type="filename">tiles/tileswhite0.png</key>
-            <key type="filename">tiles/tileswhite1.png</key>
-            <key type="filename">tiles/tileswhite2.png</key>
-            <key type="filename">tiles/tileswhite3.png</key>
             <key type="filename">tiles/tileswhitedown0.png</key>
             <key type="filename">tiles/tileswhitedown1.png</key>
             <key type="filename">tiles/tileswhitedown2.png</key>
@@ -198,6 +190,14 @@
             <key type="filename">tiles/tileswhiteup2.png</key>
             <key type="filename">tiles/tileswhiteup3.png</key>
             <key type="filename">tiles/zvoid.png</key>
+            <key type="filename">../../../project assets/sprites/tilesblack0.png</key>
+            <key type="filename">../../../project assets/sprites/tilesblack1.png</key>
+            <key type="filename">../../../project assets/sprites/tilesblack2.png</key>
+            <key type="filename">../../../project assets/sprites/tilesblack3.png</key>
+            <key type="filename">../../../project assets/sprites/tileswhite0.png</key>
+            <key type="filename">../../../project assets/sprites/tileswhite1.png</key>
+            <key type="filename">../../../project assets/sprites/tileswhite2.png</key>
+            <key type="filename">../../../project assets/sprites/tileswhite3.png</key>
             <key type="filename">../../../project assets/sprites/zboard_rec.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -220,10 +220,6 @@
             <struct type="SpriteSheet">
                 <key>files</key>
                 <array>
-                    <filename>tiles/tilesblack0.png</filename>
-                    <filename>tiles/tilesblack1.png</filename>
-                    <filename>tiles/tilesblack2.png</filename>
-                    <filename>tiles/tilesblack3.png</filename>
                     <filename>tiles/tilesblackdown0.png</filename>
                     <filename>tiles/tilesblackdown1.png</filename>
                     <filename>tiles/tilesblackdown2.png</filename>
@@ -232,10 +228,6 @@
                     <filename>tiles/tilesblackup1.png</filename>
                     <filename>tiles/tilesblackup2.png</filename>
                     <filename>tiles/tilesblackup3.png</filename>
-                    <filename>tiles/tileswhite0.png</filename>
-                    <filename>tiles/tileswhite1.png</filename>
-                    <filename>tiles/tileswhite2.png</filename>
-                    <filename>tiles/tileswhite3.png</filename>
                     <filename>tiles/tileswhitedown0.png</filename>
                     <filename>tiles/tileswhitedown1.png</filename>
                     <filename>tiles/tileswhitedown2.png</filename>
@@ -246,6 +238,14 @@
                     <filename>tiles/tileswhiteup3.png</filename>
                     <filename>tiles/zvoid.png</filename>
                     <filename>../../../project assets/sprites/zboard_rec.png</filename>
+                    <filename>../../../project assets/sprites/tilesblack0.png</filename>
+                    <filename>../../../project assets/sprites/tilesblack1.png</filename>
+                    <filename>../../../project assets/sprites/tilesblack2.png</filename>
+                    <filename>../../../project assets/sprites/tilesblack3.png</filename>
+                    <filename>../../../project assets/sprites/tileswhite0.png</filename>
+                    <filename>../../../project assets/sprites/tileswhite1.png</filename>
+                    <filename>../../../project assets/sprites/tileswhite2.png</filename>
+                    <filename>../../../project assets/sprites/tileswhite3.png</filename>
                 </array>
             </struct>
         </map>
