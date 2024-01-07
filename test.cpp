@@ -50,6 +50,7 @@ struct State
      *
     each of src and dest = [t, i, j]  (t is INVENTORY_MOVE OR BORAD_MOVE)*/
     vector<int> lastMove[2];
+    int static_evl;
 };
 
 
@@ -334,24 +335,22 @@ int static_evaluation(State curState)
     minn = min(min(other_diagonal,main_diagonal),minn);
 
 
-    return maxx + minn +rand()%2;
-
-
+    return  maxx + minn ;
 }
 
-bool customSort(const pair<int, State>& a, pair<int, State>& b) {
+bool customSort( State a,  State b) {
             
-            return a.first < b.first;
+            return a.static_evl< b.static_evl;
         
         }
 
- vector<pair<int, State>> generate_possible_states(State curState)
+//
+vector<State> generate_possible_states(State curState)
 {
     vector<pair<int, State>> evaluated_states;
 
-    if (checkWins(curState)) {
-        return {{static_evaluation(curState), curState}};
-    }
+    if (checkWins(curState)) return { curState};
+    vector<State> possible_outcome_states; // Initialize vector with 5 copies of curState
 
     //  locations where each size exists (in the board and the inventory)
     vector<vector<vector<int>>> possible_destination(5);
@@ -392,10 +391,10 @@ bool customSort(const pair<int, State>& a, pair<int, State>& b) {
 
                     newState.lastMove[0] = {BOARD_MOVE, i, j};
                     newState.lastMove[1] = dest;
-
                     newState.turn = curState.turn ^ 1;
+                    newState.static_evl=static_evaluation(newState);
 
-                   evaluated_states.emplace_back(static_evaluation(newState),newState);
+                    possible_outcome_states.push_back(newState);
                 }
             }
         }
@@ -430,16 +429,16 @@ bool customSort(const pair<int, State>& a, pair<int, State>& b) {
                 newState.lastMove[1] = dest;
 
                 newState.turn = curState.turn ^ 1;
-                 evaluated_states.emplace_back(static_evaluation(newState),newState);
+                newState.static_evl=static_evaluation(newState);
+
+                possible_outcome_states.push_back(newState);
             }
         }
     }
 
-  
-    sort(evaluated_states.begin(), evaluated_states.end(),customSort);
+    sort(possible_outcome_states.begin(), possible_outcome_states.end(),customSort);
 
-
-    return evaluated_states;
+    return possible_outcome_states;
 }
 
 
@@ -448,7 +447,7 @@ State minMax (State postion ,int depth)
 {
     State temp;
     int eval;
-    vector<pair<int, State>> childs_States =generate_possible_states(postion);
+    vector<State> childs_States =generate_possible_states(postion);
 
     if(depth==0) return postion;
     if(postion.turn == 0)
@@ -456,12 +455,12 @@ State minMax (State postion ,int depth)
         int largest_Eval=INT32_MIN;
         for(int i=0;i<childs_States.size();i++)
         {
-            State largest_state =minMax (childs_States[i].second, depth-1);
-             eval=childs_States[childs_States.size()-1].first;
+            State largest_state =minMax (childs_States[i], depth-1);
+             eval=static_evaluation(largest_state);
 
             if(eval>largest_Eval)
             {
-                temp = childs_States[i].second;
+                temp = childs_States[i];
                 largest_Eval = eval;
             }
         }
@@ -471,73 +470,77 @@ State minMax (State postion ,int depth)
         int minest_Eval=INT32_MAX;
         for(int i=0;i<childs_States.size();i++)
         {
-            State minest_state =minMax(childs_States[i].second, depth-1);
-             eval=childs_States[0].first;
+            State minest_state =minMax(childs_States[i], depth-1);
+             eval=static_evaluation(minest_state);
 
             if(eval<minest_Eval)
             {
-                temp = childs_States[i].second;
+                temp = childs_States[i];
                 minest_Eval = eval;
             }
         }
     }
     return temp;
 }
-
 
 
 
 
 State minMax_alph_beta (State postion ,int depth,int alph , int beta)
-{
+{ 
+    int evl;
     State temp;
-    int eval;
-    vector<pair<int, State>> childs_States =generate_possible_states(postion);
+    vector<State> childs_States =generate_possible_states(postion);
 
     if(depth==0) return postion;
-    if(postion.turn == 0)
+    if(postion.turn == 0)//maximizer
     {
         int largest_Eval=INT32_MIN;
         reverse(childs_States.begin(), childs_States.end());
         for(int i=0;i<childs_States.size();i++)
-        {
-
-
-            State largest_state =minMax_alph_beta (childs_States[i].second, depth-1,alph,beta);
-             eval=childs_States[0].first;
-              alph=max(eval,alph);
-
-            if(eval>largest_Eval)
+        {  
+            State largest_state =minMax_alph_beta (childs_States[i], depth-1,alph,beta);
+            evl=largest_state.static_evl;
+            alph=max(evl,alph);
+            if(evl>largest_Eval)
             {
-                temp = childs_States[i].second;
-                largest_Eval = eval;
+                temp = childs_States[i];
+                largest_Eval = evl;
             }
+
             if(alph>= beta){
                 break;
             }
+            
+
+
         }
     }
-    else
+    else // minimizer
     {
+        
         int minest_Eval=INT32_MAX;
         for(int i=0;i<childs_States.size();i++)
         {
-            State minest_state =minMax_alph_beta(childs_States[i].second, depth-1,alph,beta);
-             eval=childs_States[0].first;
-             beta=min(beta,eval);
-            if(eval<minest_Eval)
+  
+            State minest_state =minMax_alph_beta(childs_States[i], depth-1,alph,beta);
+            evl=minest_state.static_evl;
+            beta=min(beta,evl);
+
+            if(evl<minest_Eval)
             {
-                temp = childs_States[i].second;
-                minest_Eval = eval;
+                temp = childs_States[i];
+                minest_Eval = evl;
             }
+
             if(alph>= beta){
                 break;
             }
+            
         }
     }
     return temp;
 }
-
 
 int main()
 {
