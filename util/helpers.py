@@ -81,6 +81,19 @@ def get_drawing_idx_on_Tilemap(number):
     return largest_bit + has_white * 12
 
 
+
+def compare_2d_lists(list1, list2):
+
+    # Iterate through each element and compare them
+    for i in range(len(list1)):
+        for j in range(len(list1[i])):
+            if list1[i][j] != list2[i][j]:
+                return False  # Elements are not equal
+
+    return True  # All elements are equal
+
+
+
 class Helper:
     def __init__(self, game):
         self.game = game
