@@ -1,3 +1,4 @@
+from collections import deque
 from states.pauseMenu import PauseMenu
 from states.state import State
 from states.winnerMenu import WinnerMenu
@@ -50,7 +51,20 @@ class Playing(State):
         self.inventory_tiles = None
         self.board_tiles = [[], [], [], []]
         self.source_selected = False  # stores whether the source piece is selected
+
+
         self.source_values = [] # stores source values
+        self.destination_values = [] # stores dest values
+
+
+        self.last_white_moves = []
+        self.last_white_moves = deque(self.last_white_moves)
+
+
+        self.last_black_moves = []
+        self.last_black_moves = deque(self.last_black_moves)
+
+        self.is_draw = False
 
 
         ################################
@@ -90,7 +104,21 @@ class Playing(State):
         return turn+1, board, inventory
     
     def update(self, delta_time, actions): 
+        print(self.is_draw)
 
+        if(len(self.last_black_moves) > 6):
+            self.last_black_moves.popleft()
+
+
+        if(len(self.last_white_moves) > 6):
+            self.last_white_moves.popleft()
+
+
+
+
+
+
+        self.check_for_draw()
         if(self.game_started == False):
             self.game_started = True
             self.board_tiles = self.map.reconstruct_map(self.board)
@@ -174,6 +202,7 @@ class Playing(State):
         # if source is not selected.
         elif (not self.source_selected):
             # save source values.
+            self.destination_values = []
             self.source_values = [location, i, j]
             self.source_selected = True
 
@@ -181,6 +210,7 @@ class Playing(State):
             # load source values into a variable for better readability (Note: current function parameters are
             # destination).
             source_location, source_i, source_j = self.source_values
+            self.destination_values = [location,i,j] # save destenation values.
             val_dst = self.board[i][j]
             self.source_selected = False
 
@@ -212,11 +242,12 @@ class Playing(State):
                     self.inventory[BLACK][source_i] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
-
+                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
+                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
                     return
@@ -236,9 +267,11 @@ class Playing(State):
 
                     if self.turn == BLACK_TURN:
                         self.turn = WHITE_TURN
+                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
+                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
                     return
@@ -255,10 +288,12 @@ class Playing(State):
                     self.board[source_i][source_j] &= ~(largest_piece_in_source)
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
+                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
+                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
                     return
@@ -406,3 +441,21 @@ class Playing(State):
                 return BLACK_INVENTORY, i, DONT_CARE , self.inventory[BLACK][i]
 
         return BOARDERS, DONT_CARE, DONT_CARE, DONT_CARE
+    
+
+    def check_for_draw(self):
+
+        if(len(self.last_white_moves) == 6 and compare_2d_lists(self.last_white_moves[0],self.last_white_moves[2]) and compare_2d_lists(self.last_white_moves[2],self.last_white_moves[4])):
+            self.is_draw = True
+
+        if(len(self.last_black_moves) == 6 and compare_2d_lists(self.last_black_moves[0],self.last_black_moves[2]) and compare_2d_lists(self.last_black_moves[2],self.last_black_moves[4])):
+            self.is_draw = True
+
+
+
+
+
+
+            
+
+            
