@@ -443,50 +443,11 @@ vector<State> generate_possible_states(State curState)
 
 
 
-State minMax (State postion ,int depth)
-{
-    State temp;
-    int eval;
-    vector<State> childs_States =generate_possible_states(postion);
-
-    if(depth==0) return postion;
-    if(postion.turn == 0)
-    {
-        int largest_Eval=INT32_MIN;
-        for(int i=0;i<childs_States.size();i++)
-        {
-            State largest_state =minMax (childs_States[i], depth-1);
-             eval=static_evaluation(largest_state);
-
-            if(eval>largest_Eval)
-            {
-                temp = childs_States[i];
-                largest_Eval = eval;
-            }
-        }
-    }
-    else
-    {
-        int minest_Eval=INT32_MAX;
-        for(int i=0;i<childs_States.size();i++)
-        {
-            State minest_state =minMax(childs_States[i], depth-1);
-             eval=static_evaluation(minest_state);
-
-            if(eval<minest_Eval)
-            {
-                temp = childs_States[i];
-                minest_Eval = eval;
-            }
-        }
-    }
-    return temp;
-}
 
 
 
 
-State minMax_alph_beta (State postion ,int depth,int alph , int beta)
+State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool buring)
 { 
     int evl;
     State temp;
@@ -499,21 +460,18 @@ State minMax_alph_beta (State postion ,int depth,int alph , int beta)
         reverse(childs_States.begin(), childs_States.end());
         for(int i=0;i<childs_States.size();i++)
         {  
-            State largest_state =minMax_alph_beta (childs_States[i], depth-1,alph,beta);
+            State largest_state =minMax_alpha_beta (childs_States[i], depth-1,alpha,beta, buring);
             evl=largest_state.static_evl;
-            alph=max(evl,alph);
+            alpha=max(evl,alpha);
             if(evl>largest_Eval)
             {
                 temp = childs_States[i];
                 largest_Eval = evl;
             }
 
-            if(alph>= beta){
+            if(alpha>= beta and buring){
                 break;
             }
-            
-
-
         }
     }
     else // minimizer
@@ -523,7 +481,7 @@ State minMax_alph_beta (State postion ,int depth,int alph , int beta)
         for(int i=0;i<childs_States.size();i++)
         {
   
-            State minest_state =minMax_alph_beta(childs_States[i], depth-1,alph,beta);
+            State minest_state =minMax_alpha_beta(childs_States[i], depth-1,alpha,beta, buring);
             evl=minest_state.static_evl;
             beta=min(beta,evl);
 
@@ -533,7 +491,7 @@ State minMax_alph_beta (State postion ,int depth,int alph , int beta)
                 minest_Eval = evl;
             }
 
-            if(alph>= beta){
+            if(alpha>= beta and buring){
                 break;
             }
             
@@ -568,7 +526,7 @@ int main()
     }
 
     // debug_state(initial_state);
-    auto state =  minMax_alph_beta(initial_state,3,INT32_MIN,INT32_MAX);
+    auto state =  minMax_alpha_beta(initial_state,3,INT32_MIN,INT32_MAX, true);
 
     cout << state.turn << " ";
 
