@@ -27,7 +27,7 @@ class MainMenu(State):
 
         if (actions['enter']):
             if (self.cur_option == 0):
-                playing_state = Playing(self.game)
+                playing_state = Playing(self.game,0)
                 ##self.exit_state()## if we want to exit the tile state we woul un comment this but we want to keep them as we want to retrun back to them
                 playing_state.enter_state()  ## enter play state
             elif (self.cur_option == 1):
@@ -48,7 +48,7 @@ class MainMenu(State):
         if (actions['LEFT_MOUSE_KEY_PRESS']):
             x, y = pygame.mouse.get_pos()
             if self.menuGUI.mouse_collidepoint(x, y, 0):
-                playing_state = Playing(self.game)
+                playing_state = Playing(self.game,0)
                 ##self.exit_state()## if we want to exit the tile state we woul un comment this but we want to keep them as we want to retrun back to them
                 playing_state.enter_state()  ## enter play state
             if self.menuGUI.mouse_collidepoint(x, y, 1):

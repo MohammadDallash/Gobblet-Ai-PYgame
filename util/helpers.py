@@ -42,6 +42,16 @@ def get_largest_piece(n):
 
     return 0
 
+def compare_2d_lists(list1, list2):
+
+    # Iterate through each element and compare them
+    for i in range(len(list1)):
+        for j in range(len(list1[i])):
+            if list1[i][j] != list2[i][j]:
+                return False  # Elements are not equal
+
+    return True  # All elements are equal
+
 
 def is_move_valid(val_src, val_dst):
     if (val_src == 0):
