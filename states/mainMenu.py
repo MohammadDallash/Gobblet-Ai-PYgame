@@ -4,6 +4,7 @@ from states.playing import Playing
 from util.helpers import MenuGUI
 import pygame
 from states.option import Option
+from util.music import MusicPlayer
 
 
 class MainMenu(State):
@@ -13,6 +14,8 @@ class MainMenu(State):
         self.options_str = ['Play', 'options', 'credit', 'quit']
 
         self.cur_option = 0
+        
+
 
         self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=30,
                                x_pos=self.game.DISPLAY_W / 2)

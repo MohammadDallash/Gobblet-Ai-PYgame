@@ -7,8 +7,11 @@ from util.tile import TileMap
 import pygame
 from util.helpers import *
 import time
+import multiplayer.sockets
 
-# Constants used within the code.
+
+
+# pieces for each color.
 EMPTY_TILE = 0
 
 BLACK_SMALL,BLACK_MEDIUM,BLACK_LARGE,BLACK_XLARGE, ALL_BLACK  = 1,2,4,8,15
@@ -49,6 +52,8 @@ class Playing(State):
         self.board_tiles = [[], [], [], []]
         self.highlighted_tile_rect = None 
         self.source_selected = False  # stores whether the source piece is selected
+
+
         self.source_values = [] # stores source values
 
 
@@ -86,6 +91,8 @@ class Playing(State):
 
         self.map.reconstruct_map(self.board)
 
+        self.game_started = False
+
 
     def parse_input_string(self,input_string):
     # Convert the input string to a numeric array
@@ -99,7 +106,7 @@ class Playing(State):
         # Convert the flat board to a 2D array (4x4)
         board = [flat_board[i:i+4] for i in range(0, len(flat_board), 4)]
 
-        return turn, board, inventory
+        return turn+1, board, inventory
     
     def update(self, delta_time, actions):
         
@@ -199,6 +206,7 @@ class Playing(State):
         elif (not self.source_selected):
             # save source values.
             self.destination_values = []
+            self.destination_values = []
             self.source_values = [location, i, j]
             self.source_selected = True
 
@@ -206,6 +214,7 @@ class Playing(State):
             # load source values into a variable for better readability (Note: current function parameters are
             # destination).
             source_location, source_i, source_j = self.source_values
+            self.destination_values = [location,i,j] # save destenation values.
             self.destination_values = [location,i,j] # save destenation values.
             val_dst = self.board[i][j]
             self.source_selected = False
@@ -239,10 +248,12 @@ class Playing(State):
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
                         self.last_black_moves.append([self.source_values,self.destination_values])
+                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
+                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
@@ -264,9 +275,11 @@ class Playing(State):
                     if self.turn == BLACK_TURN:
                         self.turn = WHITE_TURN
                         self.last_black_moves.append([self.source_values,self.destination_values])
+                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
+                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
@@ -285,10 +298,12 @@ class Playing(State):
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
                         self.last_black_moves.append([self.source_values,self.destination_values])
+                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
+                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
@@ -370,9 +385,11 @@ class Playing(State):
 
             if white == 4:
                 winner_state = WinnerMenu(self.game, WHITE_PLAYER)
+                time.sleep(3)
                 winner_state.enter_state()
             elif black == 4:
                 winner_state = WinnerMenu(self.game, BLACK_PLAYER)
+                time.sleep(3)
                 winner_state.enter_state()
             # reset counters.
             black = 0
@@ -390,10 +407,12 @@ class Playing(State):
 
             if white == 4:
                 winner_state = WinnerMenu(self.game, WHITE_PLAYER)
+                time.sleep(3)
                 winner_state.enter_state()
 
             elif black == 4:
                 winner_state = WinnerMenu(self.game, BLACK_PLAYER)
+                time.sleep(3)
                 winner_state.enter_state()
 
             # reset counters.
@@ -410,9 +429,11 @@ class Playing(State):
 
         if white == 4:
             winner_state = WinnerMenu(self.game, WHITE_PLAYER)
+            time.sleep(3)
             winner_state.enter_state()
         elif black == 4:
             winner_state = WinnerMenu(self.game, BLACK_PLAYER)
+            time.sleep(3)
             winner_state.enter_state()
 
         black = 0
@@ -428,10 +449,12 @@ class Playing(State):
 
         if white == 4:
             winner_state = WinnerMenu(self.game, WHITE_PLAYER)
+            time.sleep(3)
             winner_state.enter_state()
 
         elif black == 4:
             winner_state = WinnerMenu(self.game, BLACK_PLAYER)
+            time.sleep(3)
             winner_state.enter_state()
 
     # check if the mouse click is within a certain tile and returns its position.
