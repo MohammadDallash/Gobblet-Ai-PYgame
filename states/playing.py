@@ -6,35 +6,33 @@ from util.tile import TileMap
 import pygame
 from util.helpers import *
 import time
+import multiplayer.sockets
 
-# pieces for each color.
+
+
+# Constants used within the code.
 EMPTY_TILE = 0
-BLACK_SMALL = 1
-BLACK_MEDIUM = 2
-BLACK_LARGE = 4
-BLACK_XLARGE = 8
-ALL_BLACK = 15
 
-WHITE_SMALL = 16
-WHITE_MEDIUM = 32
-WHITE_LARGE = 64
-WHITE_XLARGE = 128
-ALL_WHITE = 240
-
+BLACK_SMALL,BLACK_MEDIUM,BLACK_LARGE,BLACK_XLARGE,ALL_BLACK = 1,2,4,8,15
+WHITE_SMALL,WHITE_MEDIUM,WHITE_LARGE,WHITE_XLARGE,ALL_WHITE  = 16,32,64,128,240
 BLACK, WHITE = 0, 1
-
-BLACK_INVENTORY = "black"
-WHITE_INVENTORY = "white"
+BLACK_INVENTORY,WHITE_INVENTORY = "black","white"
 BOARD_TILE = "board"
 BOARDERS = "empty"
 DONT_CARE = "anything invalid"
-
 BLACK_TURN = BLACK_PLAYER =  1
 WHITE_TURN = WHITE_PLAYER =  2
 
+# different playing modes
+PLAYER_VS_PLAYER = 0
+PLAYER_VS_AI = 1
+AI_VS_AI = 2
+MULTIPLAYER_SERVER = 3
+MULTIPLAYER_CLIENT = 4
+
 
 class Playing(State):
-    def __init__(self, game):
+    def __init__(self, game, game_type):
         State.__init__(self, game)
         self.spritesheet = Spritesheet('assets/sprites/sprites.png')
         self.map = TileMap('assets/sprites/map.csv', self.spritesheet)
@@ -45,6 +43,10 @@ class Playing(State):
         self.board_tiles = [[], [], [], []]
         self.source_selected = False  # stores whether the source piece is selected
         self.source_values = [] # stores source values
+
+        ################################
+        self.mode = AI_VS_AI
+        ################################
 
         # Initial board                                                          
         self.board = [
@@ -63,8 +65,6 @@ class Playing(State):
         self.game_started = False
 
 
-
-
     def parse_input_string(self,input_string):
     # Convert the input string to a numeric array
         numeric_array = [int(num) for num in input_string.split()]
@@ -80,27 +80,37 @@ class Playing(State):
         return turn+1, board, inventory
     
     def update(self, delta_time, actions): 
+
         if(self.game_started == False):
             self.game_started = True
             self.board_tiles = self.map.reconstruct_map(self.board)
             self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
-            return  
+            return
+        
         self.check_wins()
 
-        self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
-        s = (self.helper.cpp_code("current_state_file.txt"))
-        self.turn, self.board,self.inventory = self.parse_input_string (s)
+        if(self.mode == AI_VS_AI):
+            self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
+            s = (self.helper.cpp_code("current_state_file.txt"))
+            self.turn, self.board,self.inventory = self.parse_input_string (s)
+
+        elif(self.mode == PLAYER_VS_PLAYER):
+            if actions['LEFT_MOUSE_KEY_PRESS']:
+                self.handle_mouse_click()
+                time.sleep(0.15)
+
+        elif(self.mode == MULTIPLAYER_CLIENT):
+
+            pass
+
+        elif(self.mode==MULTIPLAYER_SERVER):
+            pass
+
      
 
         self.board_tiles = self.map.reconstruct_map(self.board)
         self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
 
-
-        
-
-        # if actions['LEFT_MOUSE_KEY_PRESS']:
-        #     self.handle_mouse_click()
-        #     time.sleep(0.15)
 
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)

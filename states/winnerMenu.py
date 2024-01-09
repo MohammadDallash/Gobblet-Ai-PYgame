@@ -26,7 +26,7 @@ class WinnerMenu(State):
         if actions['enter']:
             if self.cur_option == 0:
                 from states.playing import Playing
-                playing_state = Playing(self.game)
+                playing_state = Playing(self.game,0)
                 playing_state.enter_state()
                 pass
             elif self.cur_option == 1:
@@ -45,7 +45,7 @@ class WinnerMenu(State):
             x, y = pygame.mouse.get_pos()
             if self.menuGUI.mouse_collidepoint(x, y, 0):
                 from states.playing import Playing
-                playing_state = Playing(self.game)
+                playing_state = Playing(self.game,0)
                 playing_state.enter_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 1):
