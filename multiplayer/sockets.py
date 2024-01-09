@@ -34,13 +34,10 @@ def connect_to_game(host='localhost',port=9999):
         
 
 
-
-
-
-if(sys.argv[1]=='c'):
-    connect_to_game()
-elif(sys.argv[1]=='s'):
-    host_game()
+# if(sys.argv[1]=='c'):
+#     connect_to_game()
+# elif(sys.argv[1]=='s'):
+#     host_game()
 
 
 

@@ -13,11 +13,19 @@ import multiplayer.sockets
 # Constants used within the code.
 EMPTY_TILE = 0
 
-BLACK_SMALL,BLACK_MEDIUM,BLACK_LARGE,BLACK_XLARGE,ALL_BLACK = 1,2,4,8,15
-WHITE_SMALL,WHITE_MEDIUM,WHITE_LARGE,WHITE_XLARGE,ALL_WHITE  = 16,32,64,128,240
+BLACK_SMALL,BLACK_MEDIUM,BLACK_LARGE,BLACK_XLARGE, ALL_BLACK  = 1,2,4,8,15
+WHITE_SMALL,WHITE_MEDIUM,WHITE_LARGE,WHITE_XLARGE, ALL_WHITE  = 16,32,64,128,240
+
 BLACK, WHITE = 0, 1
-BLACK_INVENTORY,WHITE_INVENTORY = "black","white"
+
+
+# SRC OR DEST (CLICK_LOCATION , i , j)
+
+
+BLACK_INVENTORY,WHITE_INVENTORY = "black" ,"white"
+
 BOARD_TILE = "board"
+
 BOARDERS = "empty"
 DONT_CARE = "anything invalid"
 BLACK_TURN = BLACK_PLAYER =  1
@@ -44,8 +52,9 @@ class Playing(State):
         self.source_selected = False  # stores whether the source piece is selected
         self.source_values = [] # stores source values
 
+
         ################################
-        self.mode = AI_VS_AI
+        self.mode = PLAYER_VS_PLAYER
         ################################
 
         # Initial board                                                          
@@ -54,13 +63,14 @@ class Playing(State):
             [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
             [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE],
             [EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE]]
+        
+
         self.inventory = [
             [ALL_BLACK, ALL_BLACK, ALL_BLACK], # inv for black
             [ALL_WHITE, ALL_WHITE, ALL_WHITE]  # inv for white
         ]
 
         self.map.reconstruct_map(self.board)
-
 
         self.game_started = False
 
