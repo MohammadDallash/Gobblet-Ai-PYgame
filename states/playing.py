@@ -7,7 +7,7 @@ from util.tile import TileMap
 import pygame
 from util.helpers import *
 import time
-import multiplayer.sockets
+
 
 
 
