@@ -230,38 +230,39 @@ int static_evaluation(State curState)
     int main_diagonal = 0;
     int other_diagonal = 0;
 
-    // int black_won = 0;
-    // int white_won = 0;
-    // int black_close = 0;
-    // int white_close = 0;
+    int black_won = 0;
+    int white_won = 0;
+    int black_close = 0;
+    int white_close = 0;
 
-    // int x=0,y=0;
+    
 
     // calculate the score of each row.
     for (int i = 0; i < 4; i++)
     {
         int black = 0;
         int white = 0;
-
+        int x=0,y=0;
         for (int j = 0; j < 4; j++)
         {
             // if the piece is white and not an empty tile.
             if (get_largest_piece(curState.board[i][j]) > ALL_BLACK and curState.board[i][j] != EMPTY_TILE){
                 white--; // its a white piece
-                
+                y--;
                 white-=get_largest_piece_size(curState.board[i][j]); // also add its size
             }
 
             // if the piece is white black and not an empty tile.
             if (get_largest_piece(curState.board[i][j]) < WHITE_SMALL and curState.board[i][j] != EMPTY_TILE){
                 black++; // its a black piece
-                
+                x++;
                 black+=get_largest_piece_size(curState.board[i][j]); // also add its size
             }
         }
 
         row[i] = black + white;
-        
+        if(y == -3 && x == 1)white_close = 35;
+        if(x == 3 && y == -1)black_close = -35;
 
     }
 
@@ -270,44 +271,45 @@ int static_evaluation(State curState)
     {
         int black = 0;
         int white = 0;
-
+        int x=0,y=0;
         for (int j = 0; j < 4; j++)
         {
 
             if (get_largest_piece(curState.board[j][i]) > ALL_BLACK and curState.board[j][i] != EMPTY_TILE){
                 white--; // its a white piece
-                
+                y--;
                 white-=get_largest_piece_size(curState.board[j][i]); // also add its size
             }
 
             if (get_largest_piece(curState.board[j][i]) < WHITE_SMALL and curState.board[j][i] != EMPTY_TILE){
                 black++; // its a black piece
-                
+                x++;
                 black+=get_largest_piece_size(curState.board[j][i]); // also add its size
             }
         }
 
         column[i] = black + white;
-        
+        if(y == -3 && x == 1)white_close = 35;
+        if(x == 3 && y == -1)black_close = -35;
     }
 
 
     int black = 0;
     int white = 0;
-
+    int x=0,y=0;
     // main diagonal
     for (int i = 0; i < 4; i++)
     {
         if (get_largest_piece(curState.board[i][i]) > 15 and curState.board[i][i] != 0){
             white--; // its a white piece
-            
+            y--;
             white-=get_largest_piece_size(curState.board[i][i]); // also add its size
 
         }
 
         if (get_largest_piece(curState.board[i][i]) < 16 and curState.board[i][i] != 0){
             black++; // its a black piece
-            
+            x++;
             black+=get_largest_piece_size(curState.board[i][i]); // also add its size
         }
 
@@ -315,22 +317,26 @@ int static_evaluation(State curState)
 
 
     main_diagonal = black + white;
-   
+    if(y == -3 && x == 1)white_close = 35;
+    if(x == 3 && y == -1)black_close = -35;
 
     black = 0;
     white = 0;
-
+    x = 0;
+    y = 0;
+    
     // other diagonal
     for (int i = 0; i < 4; i++)
     {
         if (get_largest_piece(curState.board[i][3 - i]) > ALL_BLACK and curState.board[i][3 - i] != EMPTY_TILE){
             white--; // its a white piece
-            
+            y--;
             white -= get_largest_piece_size(curState.board[i][3 - i]); // also add its size
         }
 
         if (get_largest_piece(curState.board[i][3 - i]) < WHITE_SMALL and curState.board[i][3 - i] != EMPTY_TILE){
             black++; // its a black piece
+            x++;
             black += get_largest_piece_size(curState.board[i][3 - i]); // also add its size
         }
 
@@ -353,7 +359,7 @@ int static_evaluation(State curState)
     minn = min(min(other_diagonal,main_diagonal),minn);
 
 
-    return  maxx + minn;
+    return  maxx + minn + white_close + black_close;
 }
 
 bool customSort( State a,  State b) {
