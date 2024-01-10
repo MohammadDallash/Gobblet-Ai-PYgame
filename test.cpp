@@ -261,8 +261,8 @@ int static_evaluation(State curState)
         }
 
         row[i] = black + white;
-        if(y == -3 && x == 1)white_close = 35;
-        if(x == 3 && y == -1)black_close = -35;
+        if(y == -3 && x == 1)white_close = 20;
+        if(x == 3 && y == -1)black_close = -20;
 
     }
 
@@ -289,8 +289,8 @@ int static_evaluation(State curState)
         }
 
         column[i] = black + white;
-        if(y == -3 && x == 1)white_close = 35;
-        if(x == 3 && y == -1)black_close = -35;
+        if(y == -3 && x == 1)white_close = 20;
+        if(x == 3 && y == -1)black_close = -20;
     }
 
 
@@ -317,14 +317,14 @@ int static_evaluation(State curState)
 
 
     main_diagonal = black + white;
-    if(y == -3 && x == 1)white_close = 35;
-    if(x == 3 && y == -1)black_close = -35;
+    if(y == -3 && x == 1)white_close = 20;
+    if(x == 3 && y == -1)black_close = -20;
 
     black = 0;
     white = 0;
     x = 0;
     y = 0;
-    
+
     // other diagonal
     for (int i = 0; i < 4; i++)
     {
@@ -342,7 +342,8 @@ int static_evaluation(State curState)
 
     }
     other_diagonal = black + white;
-    
+    if(y == -3 && x == 1)white_close = 20;
+    if(x == 3 && y == -1)black_close = -20;
 
     // calculate the maximum - minimum
     int maxx = INT_MIN, minn = INT_MAX;
