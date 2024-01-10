@@ -2,6 +2,7 @@ from collections import deque
 from states.pauseMenu import PauseMenu
 from states.state import State
 from states.winnerMenu import WinnerMenu
+from states.drawMenu import DrawMenu
 from util.sprite import Spritesheet
 from util.tile import TileMap
 import pygame
@@ -492,6 +493,10 @@ class Playing(State):
 
         if(len(self.last_white_moves) == 6 and compare_2d_lists(self.last_white_moves[0],self.last_white_moves[2]) and compare_2d_lists(self.last_white_moves[2],self.last_white_moves[4])):
             self.is_draw = True
+            draw_state = DrawMenu(self.game, self.game.music_player.check_music())
+            draw_state.enter_state()
 
         if(len(self.last_black_moves) == 6 and compare_2d_lists(self.last_black_moves[0],self.last_black_moves[2]) and compare_2d_lists(self.last_black_moves[2],self.last_black_moves[4])):
             self.is_draw = True
+            draw_state = DrawMenu(self.game, self.game.music_player.check_music())
+            draw_state.enter_state()
