@@ -11,11 +11,11 @@ class Option(State):
         self.Music = 'On'
         self.options_str = ['Volume', 'Player_Mode', 'Music', 'Difficulty']
         self.Volume = ['Higher', 'Lower', 'Mute']
-        self.Player_Mode = ['Player vs Player', 'Player vs Computer', 'Computer to Computer']
+        self.Player_Mode = ['Player vs Player', 'Player vs Computer', 'Computer vs Computer']
         self.Music_on_options = ['On', 'Off']
         self.Difficulty_options = ['Easy', 'Hard']
         self.volume = 'Higher'
-        self.PlayerMode = 'Player to Player'
+        self.PlayerMode = 'Player vs Player'
         
         self.Difficulty = 'Easy'
 
