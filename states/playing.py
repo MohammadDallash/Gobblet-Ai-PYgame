@@ -53,12 +53,6 @@ class Playing(State):
         self.board_tiles = [[], [], [], []]
         self.highlighted_tile_rect = None 
         self.source_selected = False  # stores whether the source piece is selected
-
-
-        self.source_values = [] # stores source values
-
-
-        
         self.source_values = [] # stores source values
         self.destination_values = [] # stores dest values
 
