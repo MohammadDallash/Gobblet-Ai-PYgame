@@ -384,12 +384,12 @@ class Playing(State):
                     black += 1
 
             if white == 4:
-                winner_state = WinnerMenu(self.game, WHITE_PLAYER)
-                time.sleep(3)
+                winner_state = WinnerMenu(self.game, WHITE_PLAYER, self.game.music_player.check_music())
+                # time.sleep(3)
                 winner_state.enter_state()
             elif black == 4:
-                winner_state = WinnerMenu(self.game, BLACK_PLAYER)
-                time.sleep(3)
+                winner_state = WinnerMenu(self.game, BLACK_PLAYER, self.game.music_player.check_music())
+                # time.sleep(3)
                 winner_state.enter_state()
             # reset counters.
             black = 0
@@ -406,13 +406,13 @@ class Playing(State):
                     black += 1
 
             if white == 4:
-                winner_state = WinnerMenu(self.game, WHITE_PLAYER)
-                time.sleep(3)
+                winner_state = WinnerMenu(self.game, WHITE_PLAYER, self.game.music_player.check_music())
+                # time.sleep(3)
                 winner_state.enter_state()
 
             elif black == 4:
-                winner_state = WinnerMenu(self.game, BLACK_PLAYER)
-                time.sleep(3)
+                winner_state = WinnerMenu(self.game, BLACK_PLAYER, self.game.music_player.check_music())
+                # time.sleep(3)
                 winner_state.enter_state()
 
             # reset counters.
@@ -428,12 +428,12 @@ class Playing(State):
                 black += 1
 
         if white == 4:
-            winner_state = WinnerMenu(self.game, WHITE_PLAYER)
-            time.sleep(3)
+            winner_state = WinnerMenu(self.game, WHITE_PLAYER, self.game.music_player.check_music())
+            # time.sleep(3)
             winner_state.enter_state()
         elif black == 4:
-            winner_state = WinnerMenu(self.game, BLACK_PLAYER)
-            time.sleep(3)
+            winner_state = WinnerMenu(self.game, BLACK_PLAYER, self.game.music_player.check_music())
+            # time.sleep(3)
             winner_state.enter_state()
 
         black = 0
@@ -448,13 +448,13 @@ class Playing(State):
                 black += 1
 
         if white == 4:
-            winner_state = WinnerMenu(self.game, WHITE_PLAYER)
-            time.sleep(3)
+            winner_state = WinnerMenu(self.game, WHITE_PLAYER, self.game.music_player.check_music())
+            # time.sleep(3)
             winner_state.enter_state()
 
         elif black == 4:
-            winner_state = WinnerMenu(self.game, BLACK_PLAYER)
-            time.sleep(3)
+            winner_state = WinnerMenu(self.game, BLACK_PLAYER, self.game.music_player.check_music())
+            # time.sleep(3)
             winner_state.enter_state()
 
     # check if the mouse click is within a certain tile and returns its position.

@@ -25,3 +25,6 @@ class MusicPlayer:
     def set_volume(self, volume):
         # Set the volume of the music (0.0 to 1.0)
         pygame.mixer.music.set_volume(volume)
+        
+    def check_music(self):
+        return pygame.mixer.music.get_busy()

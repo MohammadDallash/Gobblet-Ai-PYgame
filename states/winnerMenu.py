@@ -1,14 +1,21 @@
 from states.state import State
-
+import time
 from util.helpers import MenuGUI
 import pygame
 
 
 class WinnerMenu(State):
-    def __init__(self, game, winner):
+    def __init__(self, game, winner, music_mode):
         State.__init__(self, game)
         self.options_str = ['New Game', 'Main Menu', 'Quit']
         self.winner = winner
+        
+        # win sound effect
+        self.win_sound = pygame.mixer.Sound('assets/sound/win sound.mp3')
+        
+        # if music was on before entering state it will be = 1
+        self.music_mode = music_mode
+        
 
         self.cur_option = 0
 
@@ -62,6 +69,11 @@ class WinnerMenu(State):
 
     def enter_state(self):
         super().enter_state()
+        self.game.music_player.pause()
+        self.win_sound.play()
+        time.sleep(3)
+        if self.music_mode:
+            self.game.music_player.unpause()
 
     def exit_state(self):
         super().exit_state()
