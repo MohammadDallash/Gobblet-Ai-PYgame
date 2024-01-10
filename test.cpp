@@ -243,9 +243,10 @@ int static_evaluation(State curState)
     {
         int black = 0;
         int white = 0;
+
         //counters for black and white without considering size
-        
         int bl_count=0,wh_count=0;
+
         for (int j = 0; j < 4; j++)
         {
             // if the piece is white and not an empty tile.
