@@ -120,11 +120,10 @@ class Playing(State):
 
         self.highlight_nearest_tile(pygame.mouse.get_pos())
 
-        print(self.is_draw)
+        print(self.last_black_moves)
 
         if(len(self.last_black_moves) > 6):
             self.last_black_moves.popleft()
-
 
         if(len(self.last_white_moves) > 6):
             self.last_white_moves.popleft()
@@ -207,7 +206,6 @@ class Playing(State):
         elif (not self.source_selected):
             # save source values.
             self.destination_values = []
-            self.destination_values = []
             self.source_values = [location, i, j]
             self.source_selected = True
 
@@ -215,7 +213,6 @@ class Playing(State):
             # load source values into a variable for better readability (Note: current function parameters are
             # destination).
             source_location, source_i, source_j = self.source_values
-            self.destination_values = [location,i,j] # save destenation values.
             self.destination_values = [location,i,j] # save destenation values.
             val_dst = self.board[i][j]
             self.source_selected = False
@@ -249,12 +246,10 @@ class Playing(State):
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
                         self.last_black_moves.append([self.source_values,self.destination_values])
-                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
-                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
@@ -276,11 +271,9 @@ class Playing(State):
                     if self.turn == BLACK_TURN:
                         self.turn = WHITE_TURN
                         self.last_black_moves.append([self.source_values,self.destination_values])
-                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
-                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
@@ -299,12 +292,10 @@ class Playing(State):
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
                         self.last_black_moves.append([self.source_values,self.destination_values])
-                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
-                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
