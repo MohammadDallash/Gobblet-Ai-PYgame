@@ -50,6 +50,10 @@ class PauseOptions(State):
 
     def set_music(self, val):
         self.Music = val
+        if val == 'Off':
+            self.game.music_player.pause()
+        elif val == "On":
+            self.game.music_player.unpause()
 
     def set_volume(self, val):
         self.volume = val

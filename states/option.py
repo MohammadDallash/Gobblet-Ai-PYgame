@@ -1,20 +1,22 @@
 from states.state import State
 
 from util.helpers import MenuGUI
+from util.game import MusicPlayer
 import pygame
 
 
 class Option(State):
     def __init__(self, game):
         State.__init__(self, game)
-        self.options_str = ['Volume', 'Player_Mode', 'Music_On', 'Difficulty']
+        self.Music = 'On'
+        self.options_str = ['Volume', 'Player_Mode', 'Music', 'Difficulty']
         self.Volume = ['Higher', 'Lower', 'Mute']
-        self.Player_Mode = ['Player to Player', 'Player to Computer', 'Computer to Computer']
+        self.Player_Mode = ['Player vs Player', 'Player vs Computer', 'Computer to Computer']
         self.Music_on_options = ['On', 'Off']
         self.Difficulty_options = ['Easy', 'Hard']
         self.volume = 'Higher'
         self.PlayerMode = 'Player to Player'
-        self.Music = 'On'
+        
         self.Difficulty = 'Easy'
 
         self.cur_option = 0
@@ -55,6 +57,11 @@ class Option(State):
 
     def set_music(self, val):
         self.Music = val
+        if val == 'Off':
+            self.game.music_player.pause()
+        elif val == "On":
+            self.game.music_player.unpause()
+            
 
     def set_volume(self, val):
         self.volume = val
@@ -84,7 +91,7 @@ class Option_select(State):
             return self.options_str.index(self.option_object.volume)
         elif self.type == 'Player_Mode':
             return self.options_str.index(self.option_object.PlayerMode)
-        elif self.type == 'Music_On':
+        elif self.type == 'Music':
             return self.options_str.index(self.option_object.Music)
         elif self.type == 'Difficulty':
             return self.options_str.index(self.option_object.Difficulty)
@@ -94,7 +101,7 @@ class Option_select(State):
             self.option_object.set_volume(self.options_str[self.cur_option])
         elif self.type == 'Player_Mode':
             self.option_object.set_PlayerMode(self.options_str[self.cur_option])
-        elif self.type == 'Music_On':
+        elif self.type == 'Music':
             self.option_object.set_music(self.options_str[self.cur_option])
         elif self.type == 'Difficulty':
             self.option_object.set_Difficulty(self.options_str[self.cur_option])
@@ -104,7 +111,7 @@ class Option_select(State):
             self.option_object.set_volume(value)
         elif self.type == 'Player_Mode':
             self.option_object.set_PlayerMode(value)
-        elif self.type == 'Music_On':
+        elif self.type == 'Music':
             self.option_object.set_music(value)
         elif self.type == 'Difficulty':
             self.option_object.set_Difficulty(value)
