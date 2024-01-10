@@ -68,7 +68,7 @@ class Playing(State):
 
 
         ################################
-        self.mode = PLAYER_VS_PLAYER
+        self.mode = AI_VS_AI
         ################################
 
         # Initial board                                                          
