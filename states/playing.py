@@ -46,6 +46,7 @@ class Playing(State):
         State.__init__(self, game)
         self.spritesheet = Spritesheet('assets/sprites/sprites.png')
         self.map = TileMap('assets/sprites/map.csv', self.spritesheet)
+        self.bg = pygame.image.load("assets\\background\\background.png")
         self.turn = BLACK_PLAYER  # BLACK starts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text = self.players_names[self.turn - 1] + ' Turn'
@@ -298,7 +299,8 @@ class Playing(State):
 
     def render(self, display):
         # Step 1: Clear the screen
-        display.fill(self.game.BROWN)
+        # display.fill(self.game.BROWN)
+        display.blit(self.bg, (0, 0))
 
         # Step 2: Draw game elements
         # Display the current turn text at the top of the screen
