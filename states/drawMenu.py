@@ -38,11 +38,13 @@ class DrawMenu(State):
             elif self.cur_option == 1:
                 self.exit_state()
                 self.exit_state()
+                self.exit_state()
                 pass
             else:
                 self.game.running = False
 
         if actions['Esc']:
+            self.exit_state()
             self.exit_state()
             self.exit_state()
             pass
@@ -55,6 +57,7 @@ class DrawMenu(State):
                 playing_state.enter_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 1):
+                self.exit_state()
                 self.exit_state()
                 self.exit_state()
                 pass

@@ -67,7 +67,7 @@ class Playing(State):
         self.is_draw = False
 
         ################################
-        self.mode = PLAYER_VS_PLAYER
+        self.mode = game_type
         ################################
         self.game_started = False
 
