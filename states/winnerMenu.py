@@ -9,9 +9,7 @@ class WinnerMenu(State):
         State.__init__(self, game)
         self.options_str = ['New Game', 'Main Menu', 'Quit']
         self.winner = winner
-
         self.cur_option = 0
-
         self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=30,
                                x_pos=self.game.DISPLAY_W / 2)
 

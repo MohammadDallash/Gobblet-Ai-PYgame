@@ -38,7 +38,8 @@ MULTIPLAYER_SERVER = 3
 MULTIPLAYER_CLIENT = 4
 
 TILE_SIZE = TILE_HEIGHT = TILE_WIDTH = 120
-
+INVENTORY_MOVE = 0
+BOARD_MOVE = 1
 
 class Playing(State):
     def __init__(self, game, game_type):
@@ -72,7 +73,7 @@ class Playing(State):
         self.is_draw = False
 
         ################################
-        self.mode = PLAYER_VS_PLAYER
+        self.mode = AI_VS_AI
         ################################
         self.game_started = False
 
@@ -95,18 +96,23 @@ class Playing(State):
 
 
     def parse_input_string(self,input_string):
-    # Convert the input string to a numeric array
-        numeric_array = [int(num) for num in input_string.split()]
+        # Convert the input string to a numeric array
+        if input_string :
+            numeric_array = [int(num) for num in input_string.split()]
+            src = numeric_array[0:3]
+            dst = numeric_array[3:6]
 
-        # Extract 'turn', 'board', and 'inventory'
-        turn = numeric_array[0]
-        flat_board = numeric_array[1:17]
-        inventory = [numeric_array[-6:-3], numeric_array[-3:]]
+            if(src[0]==INVENTORY_MOVE):
+                largest_piece_src = get_largest_piece(self.inventory[src[1]][src[2]])
+                self.board[dst[1]][dst[2]] |= largest_piece_src
+                self.inventory[src[1]][src[2]] &= ~largest_piece_src
 
-        # Convert the flat board to a 2D array (4x4)
-        board = [flat_board[i:i+4] for i in range(0, len(flat_board), 4)]
-
-        return turn+1, board, inventory
+            elif(src[0]==BOARD_MOVE):
+                largest_piece_src = get_largest_piece(self.board[src[1]][src[2]])
+                self.board[dst[1]][dst[2]] |=  largest_piece_src
+                self.board[src[1]][src[2]] &= ~largest_piece_src
+                
+            self.turn = WHITE_PLAYER if(self.turn==BLACK_PLAYER)  else BLACK_PLAYER
     
     def update(self, delta_time, actions):
         
@@ -118,8 +124,6 @@ class Playing(State):
         
 
         self.highlight_nearest_tile(pygame.mouse.get_pos())
-
-        print(self.is_draw)
 
         if(len(self.last_black_moves) > 6):
             self.last_black_moves.popleft()
@@ -134,7 +138,7 @@ class Playing(State):
         if(self.mode == AI_VS_AI):
             self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
             s = (self.helper.cpp_code("current_state_file.txt"))
-            self.turn, self.board,self.inventory = self.parse_input_string (s)
+            self.parse_input_string(s)
 
         elif(self.mode == PLAYER_VS_PLAYER):
             if actions['LEFT_MOUSE_KEY_PRESS']:
@@ -206,7 +210,6 @@ class Playing(State):
         elif (not self.source_selected):
             # save source values.
             self.destination_values = []
-            self.destination_values = []
             self.source_values = [location, i, j]
             self.source_selected = True
 
@@ -215,21 +218,17 @@ class Playing(State):
             # destination).
             source_location, source_i, source_j = self.source_values
             self.destination_values = [location,i,j] # save destenation values.
-            self.destination_values = [location,i,j] # save destenation values.
             val_dst = self.board[i][j]
             self.source_selected = False
 
             # piece selected is black in white's turn
             if not (source_j == DONT_CARE):
-
-                if self.board[source_i][source_j] in [BLACK_SMALL, BLACK_MEDIUM, BLACK_LARGE,
-                                                      BLACK_XLARGE] and self.turn == WHITE_TURN:
+                if self.board[source_i][source_j] in [BLACK_SMALL, BLACK_MEDIUM, BLACK_LARGE,BLACK_XLARGE] and self.turn == WHITE_TURN:
                     return
 
             # piece selected is white in black's turn
             if not (source_j == DONT_CARE):
-                if self.board[source_i][source_j] in [WHITE_SMALL, WHITE_MEDIUM, WHITE_LARGE,
-                                                      WHITE_XLARGE] and self.turn == BLACK_TURN:
+                if self.board[source_i][source_j] in [WHITE_SMALL, WHITE_MEDIUM, WHITE_LARGE,WHITE_XLARGE] and self.turn == BLACK_TURN:
                     return
 
             # if the source is an inventory.
@@ -248,12 +247,10 @@ class Playing(State):
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
                         self.last_black_moves.append([self.source_values,self.destination_values])
-                        self.last_black_moves.append([self.source_values,self.destination_values])
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
-                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
@@ -275,12 +272,12 @@ class Playing(State):
                     if self.turn == BLACK_TURN:
                         self.turn = WHITE_TURN
                         self.last_black_moves.append([self.source_values,self.destination_values])
-                        self.last_black_moves.append([self.source_values,self.destination_values])
+
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
                         self.last_white_moves.append([self.source_values,self.destination_values])
-                        self.last_white_moves.append([self.source_values,self.destination_values])
+
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
                     return
@@ -298,12 +295,11 @@ class Playing(State):
                     self.board[i][j] |= largest_piece_in_source
                     if self.turn == BLACK_TURN:
                         self.last_black_moves.append([self.source_values,self.destination_values])
-                        self.last_black_moves.append([self.source_values,self.destination_values])
+
                         self.turn = WHITE_TURN
                         self.turn_text = self.players_names[WHITE] + ' Turn'
                     else:
                         self.turn = BLACK_TURN
-                        self.last_white_moves.append([self.source_values,self.destination_values])
                         self.last_white_moves.append([self.source_values,self.destination_values])
                         self.turn_text = self.players_names[BLACK] + ' Turn'
                 else:
@@ -384,11 +380,11 @@ class Playing(State):
                     black += 1
 
             if white == 4:
-                winner_state = WinnerMenu(self.game, WHITE_PLAYER, self.game.music_player.check_music())
+                winner_state = WinnerMenu(self.game, WHITE_PLAYER)
                 # time.sleep(3)
                 winner_state.enter_state()
             elif black == 4:
-                winner_state = WinnerMenu(self.game, BLACK_PLAYER, self.game.music_player.check_music())
+                winner_state = WinnerMenu(self.game, BLACK_PLAYER)
                 # time.sleep(3)
                 winner_state.enter_state()
             # reset counters.
@@ -406,12 +402,12 @@ class Playing(State):
                     black += 1
 
             if white == 4:
-                winner_state = WinnerMenu(self.game, WHITE_PLAYER, self.game.music_player.check_music())
+                winner_state = WinnerMenu(self.game, WHITE_PLAYER)
                 # time.sleep(3)
                 winner_state.enter_state()
 
             elif black == 4:
-                winner_state = WinnerMenu(self.game, BLACK_PLAYER, self.game.music_player.check_music())
+                winner_state = WinnerMenu(self.game, BLACK_PLAYER)
                 # time.sleep(3)
                 winner_state.enter_state()
 
@@ -428,11 +424,11 @@ class Playing(State):
                 black += 1
 
         if white == 4:
-            winner_state = WinnerMenu(self.game, WHITE_PLAYER, self.game.music_player.check_music())
+            winner_state = WinnerMenu(self.game, WHITE_PLAYER)
             # time.sleep(3)
             winner_state.enter_state()
         elif black == 4:
-            winner_state = WinnerMenu(self.game, BLACK_PLAYER, self.game.music_player.check_music())
+            winner_state = WinnerMenu(self.game, BLACK_PLAYER)
             # time.sleep(3)
             winner_state.enter_state()
 
@@ -448,12 +444,12 @@ class Playing(State):
                 black += 1
 
         if white == 4:
-            winner_state = WinnerMenu(self.game, WHITE_PLAYER, self.game.music_player.check_music())
+            winner_state = WinnerMenu(self.game, WHITE_PLAYER)
             # time.sleep(3)
             winner_state.enter_state()
 
         elif black == 4:
-            winner_state = WinnerMenu(self.game, BLACK_PLAYER, self.game.music_player.check_music())
+            winner_state = WinnerMenu(self.game, BLACK_PLAYER)
             # time.sleep(3)
             winner_state.enter_state()
 

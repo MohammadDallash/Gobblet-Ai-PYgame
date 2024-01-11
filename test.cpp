@@ -533,50 +533,29 @@ int main()
 {
     State initial_state;
 
-    // Input the turn
+    // Input the turn.
     cin >> initial_state.turn;
 
-    // Input the board
-    for (int i = 0; i < BOARD_SIZE; i++)
-    {
-        for (int j = 0; j < BOARD_SIZE; j++)
-        {
-            cin >> initial_state.board[i][j];
-        }
-    }
-
-    // Input the inventory
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-    {
-        for (int j = 0; j < INVENTORY_SIZE; j++)
-        {
-            cin >> initial_state.inventory[i][j];
-        }
-    }
+    // Input the board.
+    fori(BOARD_SIZE) forj(BOARD_SIZE) cin >> initial_state.board[i][j];
+        
+    // Input the inventory.
+    fori(NUMBER_OF_PLAYERS) forj(INVENTORY_SIZE) cin >> initial_state.inventory[i][j];
+        
+    
 
     // debug_state(initial_state);
     auto state =  minMax_alpha_beta(initial_state,3,INT32_MIN,INT32_MAX, true);
 
-    cout << state.turn << " ";
+    // print source values.
+    fori(3) cout << state.lastMove[0][i] << " ";
+
+    cout << endl;
+
+    // print destenation values.
+    fori(3) cout << state.lastMove[1][i] << " ";
 
 
-
-    fori(BOARD_SIZE)
-    {
-        forj(BOARD_SIZE)
-        {
-            cout << state.board[i][j] << " ";
-        }
-    }
-
-
-    fori(NUMBER_OF_PLAYERS)
-    {
-        forj(INVENTORY_SIZE)
-        {
-            cout << state.inventory[i][j] << " ";
-        }
- 
-    }
     return 0;
 }
+
