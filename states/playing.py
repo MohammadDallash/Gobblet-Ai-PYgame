@@ -108,7 +108,6 @@ class Playing(State):
                 self.board[dst[1]][dst[2]] |=  largest_piece_src
                 self.board[src[1]][src[2]] &= ~largest_piece_src
                 
-            self.turn = RED_PLAYER if(self.turn==BLUE_PLAYER)  else BLUE_PLAYER
     
     def update(self, delta_time, actions):
         if(self.game_started == False):
@@ -146,6 +145,8 @@ class Playing(State):
             self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
             s = (self.helper.cpp_code("current_state_file.txt"))
             self.parse_input_string(s)
+            self.switch_turns()
+
 
 
 
