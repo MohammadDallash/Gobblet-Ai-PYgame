@@ -14,6 +14,9 @@ WHITE_MEDIUM = 32
 WHITE_LARGE = 64
 WHITE_XLARGE = 128
 
+BLACK_INVENTORY,WHITE_INVENTORY = "black" ,"white"
+
+BOARD_TILE = "board"
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, imageIdx, x, y, spritesheet):
@@ -78,14 +81,19 @@ class TileMap():
         surface.blit(self.inventory_surface, (0, 0))
 
     # draw inventory on the screen.
-    def reconstruct_inventory(self, inventory=[[1, 1, 1], [16, 16, 16]]):
+    def reconstruct_inventory(self, inventory=[[1, 1, 1], [16, 16, 16]], src_is_selected = False, srcNotToDraw = [-1,-1,-1]):
+        if src_is_selected and srcNotToDraw[0] != BLACK_INVENTORY and srcNotToDraw[0] != WHITE_INVENTORY:
+            src_is_selected = False
+
+
         self.inventory_surface.fill((0, 0, 0))
         inv_p1, inv_p2 = [], []
         for i in range(3):
             # get the pieces on top.
 
-            itr_p1 = get_largest_piece(inventory[0][i])
-            itr_p2 = get_largest_piece(inventory[1][i])
+
+            itr_p1 = get_largest_piece(inventory[0][i], secLargest=src_is_selected and srcNotToDraw[1] == i and srcNotToDraw[0] == BLACK_INVENTORY)
+            itr_p2 = get_largest_piece(inventory[1][i], secLargest=src_is_selected and srcNotToDraw[1] == i and srcNotToDraw[0] == WHITE_INVENTORY)
 
             # get coordinates for the inventory pieces.
             y = (1 + i) * int(self.tile_size * 1.5) - int(self.tile_size / 2)
@@ -115,7 +123,10 @@ class TileMap():
         tile.rect.y = position[1] - offset_y
         return tile
 
-    def reconstruct_map(self, board=None):
+    def reconstruct_map(self, board=None, src_is_selected = False, srcNotToDraw = [-1,-1,-1]):
+        if src_is_selected and srcNotToDraw[0] != BOARD_TILE:
+            src_is_selected = False
+        
         self.board_surface.fill((0, 0, 0))
         board_tiles = []
         if board is not None:
@@ -123,7 +134,9 @@ class TileMap():
             for y in range(row):
                 row_tiles = []
                 for x in range(col):
-                    idx = self.piece_to_idx[get_largest_piece(board[y][x])]
+                    largest_peace = get_largest_piece(board[y][x], secLargest=src_is_selected and y == srcNotToDraw[1] and x == srcNotToDraw[2])
+                 
+                    idx = self.piece_to_idx[largest_peace]
                     tile_x = (x + 3) * self.tile_size
                     tile_y = (y + 1) * self.tile_size
                     T = Tile(idx, tile_x, tile_y, self.spritesheet)

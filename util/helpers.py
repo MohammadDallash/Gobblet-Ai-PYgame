@@ -31,15 +31,20 @@ def get_highest_multiple_of_2(n):
     return 1 << bit
 
 
-def get_largest_piece(n):
+def get_largest_piece(n, secLargest = False):
     pieces = [BLACK_XLARGE, WHITE_XLARGE,
               BLACK_LARGE, WHITE_LARGE,
               BLACK_MEDIUM, WHITE_MEDIUM,
               BLACK_SMALL, WHITE_SMALL]
 
+    first_time = False
+
     for piece in pieces:
-        if (piece & n):
-            return piece
+        if piece & n:
+            if not first_time and secLargest:
+                first_time = True
+            else:
+                return piece
 
     return 0
 

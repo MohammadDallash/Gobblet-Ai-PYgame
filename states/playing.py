@@ -47,7 +47,7 @@ class Playing(State):
         State.__init__(self, game)
         self.spritesheet = Spritesheet('assets/sprites/sprites.png')
         self.map = TileMap('assets/sprites/map.csv', self.spritesheet)
-        self.bg = pygame.image.load("assets\\background\\background.png")
+        self.bg = pygame.image.load("assets/background/background.png")
         self.turn = BLACK_PLAYER  # BLACK starts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text = self.players_names[self.turn - 1] + ' Turn'
@@ -55,8 +55,8 @@ class Playing(State):
         self.board_tiles = [[], [], [], []]
         self.highlighted_tile_rect = None 
         self.source_selected = False  # stores whether the source piece is selected
-        self.source_values = [] # stores source values
-        self.destination_values = [] # stores dest values
+        self.source_values =  [-1,-1,-1] # stores source values
+        self.destination_values =  [-1,-1,-1] # stores dest values
 
 
         self.last_white_moves = []
@@ -111,25 +111,33 @@ class Playing(State):
             self.turn = WHITE_PLAYER if(self.turn==BLACK_PLAYER)  else BLACK_PLAYER
     
     def update(self, delta_time, actions):
+        if(self.game_started == False):
+            self.game_started = True
+            self.board_tiles = self.map.reconstruct_map(self.board)
+            self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
+            return  
 
-        self.board_tiles = self.map.reconstruct_map(self.board)
-        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
-
-        self.highlight_nearest_tile(pygame.mouse.get_pos())
         
         self.handle_mode_operations()
         self.check_for_draw()
         self.check_wins()
 
+        
+        self.highlight_nearest_tile(pygame.mouse.get_pos())
 
         if(self.mode != AI_VS_AI):
             if actions['LEFT_MOUSE_KEY_PRESS']:
                 time.sleep(0.1)
                 self.handle_mouse_click()
 
+        self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
+        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
+
+
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)
             pause_menu.enter_state()
+
 
 
     def handle_mode_operations(self):
