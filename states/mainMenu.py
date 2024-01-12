@@ -70,7 +70,7 @@ class MainMenu(State):
                 self.game.running = False
 
     def render(self, display):
-        display.fill(self.game.BLACK)
+        display.fill(self.game.BLUE)
         self.menuGUI.render(display)
 
     def enter_state(self):

@@ -5,16 +5,16 @@ from util.tile import *
 
 # pieces for each color.
 EMPTY_TILE = 0
-BLACK_SMALL = 1
-BLACK_MEDIUM = 2
-BLACK_LARGE = 4
-BLACK_XLARGE = 8
-WHITE_SMALL = 16
-WHITE_MEDIUM = 32
-WHITE_LARGE = 64
-WHITE_XLARGE = 128
+BLUE_SMALL = 1
+BLUE_MEDIUM = 2
+BLUE_LARGE = 4
+BLUE_XLARGE = 8
+RED_SMALL = 16
+RED_MEDIUM = 32
+RED_LARGE = 64
+RED_XLARGE = 128
 
-BLACK_INVENTORY,WHITE_INVENTORY = "black" ,"white"
+BLUE_INVENTORY,RED_INVENTORY = "blue" ,"red"
 
 BOARD_TILE = "board"
 
@@ -59,14 +59,14 @@ class TileMap():
         self.inventory_surface.set_colorkey((0, 0, 0))
         self.piece_to_idx = {
             EMPTY_TILE: get_drawing_idx_on_Tilemap(EMPTY_TILE),
-            BLACK_SMALL: get_drawing_idx_on_Tilemap(BLACK_SMALL),
-            BLACK_MEDIUM: get_drawing_idx_on_Tilemap(BLACK_MEDIUM),
-            BLACK_LARGE: get_drawing_idx_on_Tilemap(BLACK_LARGE),
-            BLACK_XLARGE: get_drawing_idx_on_Tilemap(BLACK_XLARGE),
-            WHITE_SMALL: get_drawing_idx_on_Tilemap(WHITE_SMALL),
-            WHITE_MEDIUM: get_drawing_idx_on_Tilemap(WHITE_MEDIUM),
-            WHITE_LARGE: get_drawing_idx_on_Tilemap(WHITE_LARGE),
-            WHITE_XLARGE: get_drawing_idx_on_Tilemap(WHITE_XLARGE)}
+            BLUE_SMALL: get_drawing_idx_on_Tilemap(BLUE_SMALL),
+            BLUE_MEDIUM: get_drawing_idx_on_Tilemap(BLUE_MEDIUM),
+            BLUE_LARGE: get_drawing_idx_on_Tilemap(BLUE_LARGE),
+            BLUE_XLARGE: get_drawing_idx_on_Tilemap(BLUE_XLARGE),
+            RED_SMALL: get_drawing_idx_on_Tilemap(RED_SMALL),
+            RED_MEDIUM: get_drawing_idx_on_Tilemap(RED_MEDIUM),
+            RED_LARGE: get_drawing_idx_on_Tilemap(RED_LARGE),
+            RED_XLARGE: get_drawing_idx_on_Tilemap(RED_XLARGE)}
         self.reconstruct_map()
         self.reconstruct_inventory()
 
@@ -82,7 +82,7 @@ class TileMap():
 
     # draw inventory on the screen.
     def reconstruct_inventory(self, inventory=[[1, 1, 1], [16, 16, 16]], src_is_selected = False, srcNotToDraw = [-1,-1,-1]):
-        if src_is_selected and srcNotToDraw[0] != BLACK_INVENTORY and srcNotToDraw[0] != WHITE_INVENTORY:
+        if src_is_selected and srcNotToDraw[0] != BLUE_INVENTORY and srcNotToDraw[0] != RED_INVENTORY:
             src_is_selected = False
 
 
@@ -92,8 +92,8 @@ class TileMap():
             # get the pieces on top.
 
 
-            itr_p1 = get_largest_piece(inventory[0][i], secLargest=src_is_selected and srcNotToDraw[1] == i and srcNotToDraw[0] == BLACK_INVENTORY)
-            itr_p2 = get_largest_piece(inventory[1][i], secLargest=src_is_selected and srcNotToDraw[1] == i and srcNotToDraw[0] == WHITE_INVENTORY)
+            itr_p1 = get_largest_piece(inventory[0][i], secLargest=src_is_selected and srcNotToDraw[1] == i and srcNotToDraw[0] == BLUE_INVENTORY)
+            itr_p2 = get_largest_piece(inventory[1][i], secLargest=src_is_selected and srcNotToDraw[1] == i and srcNotToDraw[0] == RED_INVENTORY)
 
             # get coordinates for the inventory pieces.
             y = (1 + i) * int(self.tile_size * 1.5) - int(self.tile_size / 2)

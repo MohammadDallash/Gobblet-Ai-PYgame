@@ -21,7 +21,7 @@ class Game():
         self.game_canvas = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
 
-        self.BLACK, self.WHITE, self.YELLOW, self.BROWN = (0, 0, 0), (255, 255, 255), (255, 255, 0), (130, 77, 47)
+        self.BLUE, self.RED, self.YELLOW, self.BROWN = (0, 0, 0), (255, 255, 255), (255, 255, 0), (130, 77, 47)
 
         self.helper = Helper(self)
 

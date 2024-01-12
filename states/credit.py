@@ -19,8 +19,8 @@ class Credit(State):
             self.exit_state()
 
     def render(self, display):
-        display.fill(self.game.BLACK)
-        self.helper.draw_text(display, 'Credits', self.game.WHITE, 80, self.game.DISPLAY_W / 2, 50)
+        display.fill(self.game.BLUE)
+        self.helper.draw_text(display, 'Credits', self.game.RED, 80, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
     def enter_state(self):
