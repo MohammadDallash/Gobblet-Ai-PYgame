@@ -7,6 +7,7 @@ from util.tile import TileMap
 import pygame
 from util.helpers import *
 import time
+import socket
 
 
 
@@ -53,7 +54,8 @@ class Playing(State):
         self.board_tiles = [[], [], [], []]
         self.highlighted_tile_rect = None 
         self.source_selected = False  # stores whether the source piece is selected
-
+        self.server = None
+        self.client = None
 
         self.source_values = [] # stores source values
 
@@ -73,7 +75,7 @@ class Playing(State):
         self.is_draw = False
 
         ################################
-        self.mode = AI_VS_AI
+        self.mode = PLAYER_VS_PLAYER
         ################################
         self.game_started = False
 
@@ -93,6 +95,12 @@ class Playing(State):
         self.map.reconstruct_map(self.board)
 
         self.game_started = False
+
+        if(self.mode==MULTIPLAYER_SERVER):
+            self.host_game()
+
+        elif(self.mode==MULTIPLAYER_CLIENT):
+            self.connect_to_game()
 
 
     def parse_input_string(self,input_string):
@@ -115,72 +123,60 @@ class Playing(State):
             self.turn = WHITE_PLAYER if(self.turn==BLACK_PLAYER)  else BLACK_PLAYER
     
     def update(self, delta_time, actions):
-        
-        if(self.game_started == False):
-            self.game_started = True
-            self.board_tiles = self.map.reconstruct_map(self.board)
-            self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
-            return
-        
-
-        self.highlight_nearest_tile(pygame.mouse.get_pos())
-
-        if(len(self.last_black_moves) > 6):
-            self.last_black_moves.popleft()
-
-
-        if(len(self.last_white_moves) > 6):
-            self.last_white_moves.popleft()
-        
-        self.check_for_draw()
-        self.check_wins()
-
-        if(self.mode == AI_VS_AI):
-            self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
-            s = (self.helper.cpp_code("current_state_file.txt"))
-            self.parse_input_string(s)
-
-        elif(self.mode == PLAYER_VS_PLAYER):
-            if actions['LEFT_MOUSE_KEY_PRESS']:
-                self.handle_mouse_click()
-
-        elif(self.mode == MULTIPLAYER_CLIENT):
-
-            pass
-
-        elif(self.mode==MULTIPLAYER_SERVER):
-            pass
 
         self.board_tiles = self.map.reconstruct_map(self.board)
         self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
+
+        self.highlight_nearest_tile(pygame.mouse.get_pos())
+        
+        self.handle_mode_operations()
+        self.check_for_draw()
+        self.check_wins()
+
+
+        if(self.mode != AI_VS_AI):
+            if actions['LEFT_MOUSE_KEY_PRESS']:
+                time.sleep(0.1)
+                self.handle_mouse_click()
 
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)
             pause_menu.enter_state()
 
 
+    def handle_mode_operations(self):
+        
+        if(self.mode == AI_VS_AI):
+            self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
+            s = (self.helper.cpp_code("current_state_file.txt"))
+            self.parse_input_string(s)
+
+
+
+        elif(self.mode == MULTIPLAYER_CLIENT):
+            if(self.destination_values):
+                move = [self.source_values,self.destination_values]
+                self.client.send(convert_move_to_str(move).encode('utf-8'))
+                data = self.client.recv(1024)
+
+
+        elif(self.mode==MULTIPLAYER_SERVER):
+            if(self.destination_values):
+                client, addr = self.server.accept()
+                data = client.recv(1024)
+                data_str = data.decode('utf-8')
+                move = convert_stream_to_list(data_str)
+                client.send(move)
+                # self.server.close()
+
+
+
+
+
 
 
     def handle_mouse_click(self):
         location, i, j, state = self.get_clicked_tile_id(self.board_tiles, self.inventory_tiles)
-        self.move_piece(location, i, j, state)
-
-    # # checks if the held piece is near a board tile and highlight that tile.
-        
-    def highlight_nearest_tile(self, pos):
-        for row in self.board_tiles:
-            for tile in row:
-                tile_rect = tile.get_rect()
-                if tile_rect.collidepoint(pos):
-                    # Store the rectangle information instead of drawing
-                    self.highlighted_tile_rect = tile_rect
-                    tile_rect
-                    return
-        self.highlighted_tile_rect = None  # Reset if no tile is highlighted   
-
-    # move piece from source to destination.
-        
-    def move_piece(self, location, i, j, state):
 
         # if the source is in the boarders, ignore it.
         if (location == BOARDERS):
@@ -205,108 +201,115 @@ class Playing(State):
         # if selected from inventory is white and it's black turn
         elif location == WHITE_INVENTORY and self.turn == BLACK_TURN:
             return
-
+        
+        
         # if source is not selected.
-        elif (not self.source_selected):
+        if (not self.source_selected):
             # save source values.
-            self.destination_values = []
             self.source_values = [location, i, j]
             self.source_selected = True
-
+            return
         else:
-            # load source values into a variable for better readability (Note: current function parameters are
-            # destination).
-            source_location, source_i, source_j = self.source_values
-            self.destination_values = [location,i,j] # save destenation values.
-            val_dst = self.board[i][j]
-            self.source_selected = False
+            self.destination_values = [location,i,j]
 
-            # piece selected is black in white's turn
-            if not (source_j == DONT_CARE):
-                if self.board[source_i][source_j] in [BLACK_SMALL, BLACK_MEDIUM, BLACK_LARGE,BLACK_XLARGE] and self.turn == WHITE_TURN:
+        if(self.mode == PLAYER_VS_PLAYER):
+            move = [self.source_values,self.destination_values]
+            self.move_piece(move)
+            self.source_values = []
+            self.destination_values = []
+        elif(self.mode == MULTIPLAYER_CLIENT):
+            pass
+        elif(self.mode == MULTIPLAYER_SERVER):
+            pass
+
+
+    # # checks if the held piece is near a board tile and highlight that tile.
+        
+    def highlight_nearest_tile(self,pos):
+        for row in self.board_tiles:
+            for tile in row:
+                tile_rect = tile.get_rect()
+                if tile_rect.collidepoint(pos):
+                    # Store the rectangle information instead of drawing
+                    self.highlighted_tile_rect = tile_rect
+                    tile_rect
                     return
+        self.highlighted_tile_rect = None  # Reset if no tile is highlighted   
 
-            # piece selected is white in black's turn
-            if not (source_j == DONT_CARE):
-                if self.board[source_i][source_j] in [WHITE_SMALL, WHITE_MEDIUM, WHITE_LARGE,WHITE_XLARGE] and self.turn == BLACK_TURN:
-                    return
 
-            # if the source is an inventory.
-            if source_location == BLACK_INVENTORY:
+    # move piece from source to destination.
+    def move_piece(self,move):
 
-                # get the value of the source location (Black Inventory)
-                val_src = self.inventory[BLACK][source_i]
+        # load source and destenation values into a variable for better readability.
+        source_location, source_i, source_j = move[0]
+        dst_location,dst_i,dst_j = move[1] # save destenation values.
 
-                # get the largest piece in that place
-                largest_piece_in_source = get_largest_piece(val_src)
+        self.source_selected = False
 
-                # if the move is valid, if the move is valid, go ahead with it.
-                if is_move_valid(val_src, val_dst):
+        val_dst = self.board[dst_i][dst_j]
 
-                    self.inventory[BLACK][source_i] &= ~(largest_piece_in_source)
-                    self.board[i][j] |= largest_piece_in_source
-                    if self.turn == BLACK_TURN:
-                        self.last_black_moves.append([self.source_values,self.destination_values])
-                        self.turn = WHITE_TURN
-                        self.turn_text = self.players_names[WHITE] + ' Turn'
-                    else:
-                        self.turn = BLACK_TURN
-                        self.last_white_moves.append([self.source_values,self.destination_values])
-                        self.turn_text = self.players_names[BLACK] + ' Turn'
-                else:
-                    return
+        # piece selected is black in white's turn or white in black's turn.
+        if (source_location == BOARD_TILE):
+            if get_largest_piece(self.board[source_i][source_j]) in [BLACK_SMALL, BLACK_MEDIUM, BLACK_LARGE,BLACK_XLARGE] and self.turn == WHITE_TURN:
+                return
 
-            elif (source_location == WHITE_INVENTORY):
+            if get_largest_piece(self.board[source_i][source_j]) in [WHITE_SMALL, WHITE_MEDIUM, WHITE_LARGE,WHITE_XLARGE] and self.turn == BLACK_TURN:
+                return
 
-                # get the value of the source location (White Inventory).
-                val_src = self.inventory[WHITE][source_i]
+        # if the source is an inventory.
+        if source_location == BLACK_INVENTORY:
 
-                # get the largest piece in that place.
-                largest_piece_in_source = get_largest_piece(val_src)
+            # get the value of the source location (Black Inventory)
+            val_src = self.inventory[BLACK][source_i]
 
-                # if the move is valid, if the move is valid, go ahead with it.
-                if (is_move_valid(val_src, val_dst)):
-                    self.inventory[WHITE][source_i] &= ~(largest_piece_in_source)
-                    self.board[i][j] |= largest_piece_in_source
+            # get the largest piece in that place
+            largest_piece_in_source = get_largest_piece(val_src)
 
-                    if self.turn == BLACK_TURN:
-                        self.turn = WHITE_TURN
-                        self.last_black_moves.append([self.source_values,self.destination_values])
+            # if the move is valid, if the move is valid, go ahead with it.
+            if is_move_valid(val_src, val_dst):
 
-                        self.turn_text = self.players_names[WHITE] + ' Turn'
-                    else:
-                        self.turn = BLACK_TURN
-                        self.last_white_moves.append([self.source_values,self.destination_values])
+                self.inventory[BLACK][source_i] &= ~(largest_piece_in_source)
+                self.board[dst_i][dst_j] |= largest_piece_in_source
+                self.switch_turns()
 
-                        self.turn_text = self.players_names[BLACK] + ' Turn'
-                else:
-                    return
+            else:
+                return
 
-            # if the source is a board.
-            elif (source_location == BOARD_TILE):
+        elif (source_location == WHITE_INVENTORY):
 
-                # get the value of the source location (board).
-                val_src = self.board[source_i][source_j]
-                # get the largest piece in that place.
-                largest_piece_in_source = get_largest_piece(val_src)
-                # if the move is valid, if the move is valid, go ahead with it.
-                if (is_move_valid(val_src, val_dst)):
-                    self.board[source_i][source_j] &= ~(largest_piece_in_source)
-                    self.board[i][j] |= largest_piece_in_source
-                    if self.turn == BLACK_TURN:
-                        self.last_black_moves.append([self.source_values,self.destination_values])
+            # get the value of the source location (White Inventory).
+            val_src = self.inventory[WHITE][source_i]
 
-                        self.turn = WHITE_TURN
-                        self.turn_text = self.players_names[WHITE] + ' Turn'
-                    else:
-                        self.turn = BLACK_TURN
-                        self.last_white_moves.append([self.source_values,self.destination_values])
-                        self.turn_text = self.players_names[BLACK] + ' Turn'
-                else:
-                    return
+            # get the largest piece in that place.
+            largest_piece_in_source = get_largest_piece(val_src)
+
+            # if the move is valid, if the move is valid, go ahead with it.
+            if (is_move_valid(val_src, val_dst)):
+                self.inventory[WHITE][source_i] &= ~(largest_piece_in_source)
+                self.board[dst_i][dst_j] |= largest_piece_in_source
+                self.switch_turns()
+            else:
+                return
+
+        # if the source is a board.
+        elif (source_location == BOARD_TILE):
+
+            # get the value of the source location (board).
+            val_src = self.board[source_i][source_j]
+            # get the largest piece in that place.
+            largest_piece_in_source = get_largest_piece(val_src)
+            # if the move is valid, if the move is valid, go ahead with it.
+            if (is_move_valid(val_src, val_dst)):
+                self.board[source_i][source_j] &= ~(largest_piece_in_source)
+                self.board[dst_i][dst_j] |= largest_piece_in_source
+                self.switch_turns()
+            else:
+                return
 
 
     def render(self, display):
+
+
         # Step 1: Clear the screen
         display.fill(self.game.BROWN)
 
@@ -364,7 +367,6 @@ class Playing(State):
         super().exit_state()
 
     # checks for a winner at the beginning of each round.
-    # TODO() Fix checking for largest piece
     def check_wins(self):
         # create 3 loops that checks for a winner in each row, column, diagonal.
         black = 0
@@ -484,6 +486,9 @@ class Playing(State):
                 return BLACK_INVENTORY, i, DONT_CARE , self.inventory[BLACK][i]
 
         return BOARDERS, DONT_CARE, DONT_CARE, DONT_CARE
+    
+
+
     def check_for_draw(self):
 
         if(len(self.last_white_moves) == 6 and compare_2d_lists(self.last_white_moves[0],self.last_white_moves[2]) and compare_2d_lists(self.last_white_moves[2],self.last_white_moves[4])):
@@ -491,3 +496,35 @@ class Playing(State):
 
         if(len(self.last_black_moves) == 6 and compare_2d_lists(self.last_black_moves[0],self.last_black_moves[2]) and compare_2d_lists(self.last_black_moves[2],self.last_black_moves[4])):
             self.is_draw = True
+
+        if(len(self.last_black_moves) > 6):
+            self.last_black_moves.popleft()
+
+
+        if(len(self.last_white_moves) > 6):
+            self.last_white_moves.popleft()
+
+
+    def host_game(self,host='localhost',port=9999):
+        self.server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.server.bind((host,port))
+        self.server.listen(1)
+
+
+
+
+    def connect_to_game(self,host='localhost',port=9999):
+        self.client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.client.connect((host,port))
+
+    def switch_turns(self):
+        if self.turn == BLACK_TURN:
+            self.turn = WHITE_TURN
+            self.last_black_moves.append([self.source_values,self.destination_values])
+            self.turn_text = self.players_names[WHITE] + ' Turn'
+        else:
+            self.turn = BLACK_TURN
+            self.last_white_moves.append([self.source_values,self.destination_values])
+            self.turn_text = self.players_names[BLACK] + ' Turn'
+        
+            
