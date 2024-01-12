@@ -1,6 +1,7 @@
 import pygame
 import subprocess
 import platform
+import re
 from math import log2
 
 EMPTY_TILE = 0
@@ -52,6 +53,14 @@ def compare_2d_lists(list1, list2):
 
     return True  # All elements are equal
 
+
+def convert_move_to_str(move):
+    move_str = f"{move[0][0]}+{move[0][1]}+{move[0][2]}+{move[1][0]}+{move[1][1]}+{move[1][2]}"
+    return move_str
+
+def convert_stream_to_list(move_str):
+    list=int(re.search(r'\d+', move_str).group())
+    return [list[0:3],list[3,6]]
 
 def is_move_valid(val_src, val_dst):
     if (val_src == 0):
