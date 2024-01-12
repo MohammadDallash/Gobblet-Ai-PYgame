@@ -7,11 +7,11 @@ class Credit(State):
     def __init__(self, game):
         State.__init__(self, game)
 
-        self.options_str = ['Leader : Dallash', 'Developer : Rana Hossny', 'Developer : Sara Hossny', ]
+        self.options_str = ['Leader : Dallash', 'Developer : Rana Hossny', 'Developer : Sara Hossny', 'Developer : Mark Ashraf', 'Developer : Mohamed Samir', 'Developer : Marco Sherif', 'Developer : Hossam Adel', 'Developer : Kerolos Sameh']
 
         self.cur_option = 0
 
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=30,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=20,
                                x_pos=self.game.DISPLAY_W / 2, justTxt=True)
 
     def update(self, delta_time, actions):
