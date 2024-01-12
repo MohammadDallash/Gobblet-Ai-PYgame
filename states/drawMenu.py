@@ -5,7 +5,7 @@ import pygame
 
 
 class DrawMenu(State):
-    def __init__(self, game, music_mode):
+    def __init__(self, game, play_mode,music_mode):
         State.__init__(self, game)
         self.options_str = ['New Game', 'Main Menu', 'Quit']
         
@@ -15,6 +15,8 @@ class DrawMenu(State):
         # if music was on before entering state it will be = 1
         self.music_mode = music_mode
         
+        # variable to save previous game mode
+        self.play_mode = play_mode
 
         self.cur_option = 0
 
@@ -31,8 +33,10 @@ class DrawMenu(State):
 
         if actions['enter']:
             if self.cur_option == 0:
+                self.exit_state()
+                self.exit_state()
                 from states.playing import Playing
-                playing_state = Playing(self.game,0)
+                playing_state = Playing(self.game,self.play_mode)
                 playing_state.enter_state()
                 pass
             elif self.cur_option == 1:
@@ -52,8 +56,10 @@ class DrawMenu(State):
         if actions['LEFT_MOUSE_KEY_PRESS']:
             x, y = pygame.mouse.get_pos()
             if self.menuGUI.mouse_collidepoint(x, y, 0):
+                self.exit_state()
+                self.exit_state()
                 from states.playing import Playing
-                playing_state = Playing(self.game,0)
+                playing_state = Playing(self.game, self.play_mode)
                 playing_state.enter_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 1):
