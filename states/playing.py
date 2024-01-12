@@ -110,10 +110,10 @@ class Playing(State):
                 
     
     def update(self, delta_time, actions):
-        # if self.turn == BLUE_PLAYER :
-        #     self.mode = PLAYER_VS_PLAYER
-        # elif self.turn == RED_PLAYER:
-        #     self.mode = AI_VS_AI
+        if self.turn == BLUE_PLAYER :
+            self.mode = PLAYER_VS_PLAYER
+        elif self.turn == RED_PLAYER:
+            self.mode = AI_VS_AI
         
         if(self.game_started == False):
             self.game_started = True

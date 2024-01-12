@@ -265,8 +265,8 @@ int static_evaluation(State curState)
         }
 
         row[i] = blue + red;
-        if(wh_count == -3 && bl_count == 1)red_close = 20;
-        if(bl_count == 3 && wh_count == -1)blue_close = -20;
+        if(wh_count == -3 && bl_count == 1)red_close += 20;
+        if(bl_count == 3 && wh_count == -1)blue_close += -20;
 
     }
 
@@ -293,8 +293,8 @@ int static_evaluation(State curState)
         }
 
         column[i] = blue + red;
-        if(y == -3 && x == 1)red_close = 20;
-        if(x == 3 && y == -1)blue_close = -20;
+        if(y == -3 && x == 1)red_close += 20;
+        if(x == 3 && y == -1)blue_close += -20;
     }
 
 
@@ -321,8 +321,8 @@ int static_evaluation(State curState)
 
 
     main_diagonal = blue + red;
-    if(y == -3 && x == 1)red_close = 20;
-    if(x == 3 && y == -1)blue_close = -20;
+    if(y == -3 && x == 1)red_close += 20;
+    if(x == 3 && y == -1)blue_close += -20;
 
     blue = 0;
     red = 0;
@@ -346,8 +346,8 @@ int static_evaluation(State curState)
 
     }
     other_diagonal = blue + red;
-    if(y == -3 && x == 1)red_close = 20;
-    if(x == 3 && y == -1)blue_close = -20;
+    if(y == -3 && x == 1)red_close += 20;
+    if(x == 3 && y == -1)blue_close += -20;
 
     // calculate the maximum - minimum
     int maxx = INT_MIN, minn = INT_MAX;
