@@ -75,7 +75,7 @@ class Playing(State):
         self.is_draw = False
 
         ################################
-        self.mode = PLAYER_VS_PLAYER
+        self.mode = AI_VS_AI
         ################################
         self.game_started = False
 
@@ -120,7 +120,8 @@ class Playing(State):
                 self.board[dst[1]][dst[2]] |=  largest_piece_src
                 self.board[src[1]][src[2]] &= ~largest_piece_src
                 
-            self.turn = WHITE_PLAYER if(self.turn==BLACK_PLAYER)  else BLACK_PLAYER
+            self.turn = WHITE_TURN if(self.turn==BLACK_TURN)  else BLACK_TURN
+
     
     def update(self, delta_time, actions):
 
