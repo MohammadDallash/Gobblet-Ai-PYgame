@@ -100,20 +100,22 @@ class Playing(State):
 
             if(src[0]==INVENTORY_MOVE):
                 largest_piece_src = get_largest_piece(self.inventory[src[1]][src[2]])
-                self.board[dst[1]][dst[2]] |= largest_piece_src
                 self.inventory[src[1]][src[2]] &= ~largest_piece_src
+                #create animation
+                self.board[dst[1]][dst[2]] |= largest_piece_src
+                
 
             elif(src[0]==BOARD_MOVE):
                 largest_piece_src = get_largest_piece(self.board[src[1]][src[2]])
-                self.board[dst[1]][dst[2]] |=  largest_piece_src
                 self.board[src[1]][src[2]] &= ~largest_piece_src
+                self.board[dst[1]][dst[2]] |=  largest_piece_src
         
     
     def update(self, delta_time, actions):
-        if self.turn == BLUE_PLAYER :
-            self.mode = PLAYER_VS_PLAYER
-        elif self.turn == RED_PLAYER:
-            self.mode = AI_VS_AI
+        # if self.turn == BLUE_PLAYER :
+        #     self.mode = PLAYER_VS_PLAYER
+        # elif self.turn == RED_PLAYER:
+        #     self.mode = AI_VS_AI
         
         if(self.game_started == False):
             self.game_started = True
