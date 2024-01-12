@@ -107,7 +107,7 @@ class Playing(State):
                 largest_piece_src = get_largest_piece(self.board[src[1]][src[2]])
                 self.board[dst[1]][dst[2]] |=  largest_piece_src
                 self.board[src[1]][src[2]] &= ~largest_piece_src
-                
+        
     
     def update(self, delta_time, actions):
         if self.turn == BLUE_PLAYER :
@@ -122,9 +122,9 @@ class Playing(State):
             return  
 
         
-        self.handle_mode_operations()
         self.check_for_draw()
         self.check_wins()
+        self.handle_mode_operations()
 
         
         self.highlight_nearest_tile(pygame.mouse.get_pos())
@@ -133,6 +133,7 @@ class Playing(State):
             if actions['LEFT_MOUSE_KEY_PRESS']:
                 time.sleep(0.1)
                 self.handle_mouse_click()
+        
 
         self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
         self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
