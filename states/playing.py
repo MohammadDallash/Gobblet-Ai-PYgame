@@ -204,7 +204,7 @@ class Playing(State):
         
         
         # if source is not selected.
-        if (not self.source_selected):
+        if (not self.source_selected and ( (self.turn == BLACK_TURN and get_largest_piece(state)<ALL_BLACK) or (self.turn == WHITE_TURN and get_largest_piece(state)>ALL_BLACK))):
             # save source values.
             self.source_values = [location, i, j]
             self.source_selected = True
@@ -215,12 +215,6 @@ class Playing(State):
         if(self.mode == PLAYER_VS_PLAYER):
             move = [self.source_values,self.destination_values]
             self.move_piece(move)
-            self.source_values = []
-            self.destination_values = []
-        elif(self.mode == MULTIPLAYER_CLIENT):
-            pass
-        elif(self.mode == MULTIPLAYER_SERVER):
-            pass
 
 
     # # checks if the held piece is near a board tile and highlight that tile.
