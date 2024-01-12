@@ -371,11 +371,11 @@ class Playing(State):
                     blue += 1
 
             if red == 4:
-                winner_state = WinnerMenu(self.game, RED_PLAYER, self.game.music_player.check_music())
+                winner_state = WinnerMenu(self.game, RED_PLAYER, self.mode, self.game.music_player.check_music())
                 # time.sleep(3)
                 winner_state.enter_state()
             elif blue == 4:
-                winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.game.music_player.check_music())
+                winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.mode, self.game.music_player.check_music())
                 # time.sleep(3)
                 winner_state.enter_state()
             # reset counters.
@@ -393,12 +393,12 @@ class Playing(State):
                     blue += 1
 
             if red == 4:
-                winner_state = WinnerMenu(self.game, RED_PLAYER, self.game.music_player.check_music())
+                winner_state = WinnerMenu(self.game, RED_PLAYER, self.mode, self.game.music_player.check_music())
                 # time.sleep(3)
                 winner_state.enter_state()
 
             elif blue == 4:
-                winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.game.music_player.check_music())
+                winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.mode, self.game.music_player.check_music())
                 # time.sleep(3)
                 winner_state.enter_state()
 
@@ -415,11 +415,11 @@ class Playing(State):
                 blue += 1
 
         if red == 4:
-            winner_state = WinnerMenu(self.game, RED_PLAYER, self.game.music_player.check_music())
+            winner_state = WinnerMenu(self.game, RED_PLAYER, self.mode, self.game.music_player.check_music())
             # time.sleep(3)
             winner_state.enter_state()
         elif blue == 4:
-            winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.game.music_player.check_music())
+            winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.mode, self.game.music_player.check_music())
             # time.sleep(3)
             winner_state.enter_state()
 
@@ -435,12 +435,12 @@ class Playing(State):
                 blue += 1
 
         if red == 4:
-            winner_state = WinnerMenu(self.game, RED_PLAYER, self.game.music_player.check_music())
+            winner_state = WinnerMenu(self.game, RED_PLAYER, self.mode, self.game.music_player.check_music())
             # time.sleep(3)
             winner_state.enter_state()
 
         elif blue == 4:
-            winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.game.music_player.check_music())
+            winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.mode, self.game.music_player.check_music())
             # time.sleep(3)
             winner_state.enter_state()
 
@@ -479,12 +479,12 @@ class Playing(State):
 
         if(len(self.last_red_moves) == 6 and compare_2d_lists(self.last_red_moves[0],self.last_red_moves[2]) and compare_2d_lists(self.last_red_moves[2],self.last_red_moves[4])):
             self.is_draw = True
-            draw_state = DrawMenu(self.game, self.game.music_player.check_music())
+            draw_state = DrawMenu(self.game, self.mode, self.game.music_player.check_music())
             draw_state.enter_state()
 
         if(len(self.last_blue_moves) == 6 and compare_2d_lists(self.last_blue_moves[0],self.last_blue_moves[2]) and compare_2d_lists(self.last_blue_moves[2],self.last_blue_moves[4])):
             self.is_draw = True
-            draw_state = DrawMenu(self.game, self.game.music_player.check_music())
+            draw_state = DrawMenu(self.game, self.mode, self.game.music_player.check_music())
             draw_state.enter_state()
 
     def switch_turns(self):
