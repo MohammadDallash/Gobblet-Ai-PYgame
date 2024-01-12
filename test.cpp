@@ -31,6 +31,7 @@ const int ALL_WHITE = 240;
 const int INVENTORY_MOVE = 0;
 const int BOARD_MOVE = 1;
 
+
 struct State
 {
     // Integer called turn
@@ -49,6 +50,7 @@ struct State
      *
     each of src and dest = [t, i, j]  (t is INVENTORY_MOVE OR BORAD_MOVE)*/
     vector<int> lastMove[2];
+    int static_evl;
 };
 
 
@@ -208,9 +210,173 @@ void debug_state(State state)
     }
 }
 
+// black is maximizer, white is minimizer
+// the sign of the return value determines which is closer to winning
+// the value determines how close to winning
+
+// if the returned number is +ve then black is closer to winning
+// if the returned number is -ve then white is closer to winning
+// the higher the positive number the closer is black to winning
+// the lower the negative number the closer is white to winning
+
+//hueristics:
+//1- number of white/black pieces in each row/column/diagonal
+//2- size of each piece in each row/column/diagonal
+int static_evaluation(State curState)
+{
+    // scores for each row, column, diagonal.
+    vector<int> row(4, 0);
+    vector<int> column(4, 0);
+    int main_diagonal = 0;
+    int other_diagonal = 0;
+
+    // int black_won = 0;
+    // int white_won = 0;
+
+    int black_close = 0;
+    int white_close = 0;
+
+    
+
+    // calculate the score of each row.
+    for (int i = 0; i < 4; i++)
+    {
+        int black = 0;
+        int white = 0;
+
+        //counters for black and white without considering size
+        int bl_count=0,wh_count=0;
+
+        for (int j = 0; j < 4; j++)
+        {
+            // if the piece is white and not an empty tile.
+            if (get_largest_piece(curState.board[i][j]) > ALL_BLACK and curState.board[i][j] != EMPTY_TILE){
+                white--; // its a white piece
+                wh_count--;
+                white-=get_largest_piece_size(curState.board[i][j]); // also add its size
+            }
+
+            // if the piece is white black and not an empty tile.
+            if (get_largest_piece(curState.board[i][j]) < WHITE_SMALL and curState.board[i][j] != EMPTY_TILE){
+                black++; // its a black piece
+                bl_count++;
+                black+=get_largest_piece_size(curState.board[i][j]); // also add its size
+            }
+        }
+
+        row[i] = black + white;
+        if(wh_count == -3 && bl_count == 1)white_close = 20;
+        if(bl_count == 3 && wh_count == -1)black_close = -20;
+
+    }
+
+    // columns
+    for (int i = 0; i < 4; i++)
+    {
+        int black = 0;
+        int white = 0;
+        int x=0,y=0;
+        for (int j = 0; j < 4; j++)
+        {
+
+            if (get_largest_piece(curState.board[j][i]) > ALL_BLACK and curState.board[j][i] != EMPTY_TILE){
+                white--; // its a white piece
+                y--;
+                white-=get_largest_piece_size(curState.board[j][i]); // also add its size
+            }
+
+            if (get_largest_piece(curState.board[j][i]) < WHITE_SMALL and curState.board[j][i] != EMPTY_TILE){
+                black++; // its a black piece
+                x++;
+                black+=get_largest_piece_size(curState.board[j][i]); // also add its size
+            }
+        }
+
+        column[i] = black + white;
+        if(y == -3 && x == 1)white_close = 20;
+        if(x == 3 && y == -1)black_close = -20;
+    }
+
+
+    int black = 0;
+    int white = 0;
+    int x=0,y=0;
+    // main diagonal
+    for (int i = 0; i < 4; i++)
+    {
+        if (get_largest_piece(curState.board[i][i]) > 15 and curState.board[i][i] != 0){
+            white--; // its a white piece
+            y--;
+            white-=get_largest_piece_size(curState.board[i][i]); // also add its size
+
+        }
+
+        if (get_largest_piece(curState.board[i][i]) < 16 and curState.board[i][i] != 0){
+            black++; // its a black piece
+            x++;
+            black+=get_largest_piece_size(curState.board[i][i]); // also add its size
+        }
+
+    }
+
+
+    main_diagonal = black + white;
+    if(y == -3 && x == 1)white_close = 20;
+    if(x == 3 && y == -1)black_close = -20;
+
+    black = 0;
+    white = 0;
+    x = 0;
+    y = 0;
+
+    // other diagonal
+    for (int i = 0; i < 4; i++)
+    {
+        if (get_largest_piece(curState.board[i][3 - i]) > ALL_BLACK and curState.board[i][3 - i] != EMPTY_TILE){
+            white--; // its a white piece
+            y--;
+            white -= get_largest_piece_size(curState.board[i][3 - i]); // also add its size
+        }
+
+        if (get_largest_piece(curState.board[i][3 - i]) < WHITE_SMALL and curState.board[i][3 - i] != EMPTY_TILE){
+            black++; // its a black piece
+            x++;
+            black += get_largest_piece_size(curState.board[i][3 - i]); // also add its size
+        }
+
+    }
+    other_diagonal = black + white;
+    if(y == -3 && x == 1)white_close = 20;
+    if(x == 3 && y == -1)black_close = -20;
+
+    // calculate the maximum - minimum
+    int maxx = INT_MIN, minn = INT_MAX;
+
+    fori(4)
+    {
+        maxx = max(row[i],maxx);
+        minn = min(row[i],minn);
+
+        maxx = max(column[i],maxx);
+        minn = min(column[i],minn);
+    }
+    maxx = max(max(other_diagonal,main_diagonal),maxx);
+    minn = min(min(other_diagonal,main_diagonal),minn);
+
+
+    return  maxx + minn + white_close + black_close;
+}
+
+bool customSort( State a,  State b) {
+            
+            return a.static_evl< b.static_evl;
+        
+        }
+
 //
 vector<State> generate_possible_states(State curState)
 {
+    vector<pair<int, State>> evaluated_states;
 
     if (checkWins(curState)) return { curState};
     vector<State> possible_outcome_states; // Initialize vector with 5 copies of curState
@@ -254,8 +420,8 @@ vector<State> generate_possible_states(State curState)
 
                     newState.lastMove[0] = {BOARD_MOVE, i, j};
                     newState.lastMove[1] = dest;
-
                     newState.turn = curState.turn ^ 1;
+                    newState.static_evl=static_evaluation(newState);
 
                     possible_outcome_states.push_back(newState);
                 }
@@ -292,175 +458,72 @@ vector<State> generate_possible_states(State curState)
                 newState.lastMove[1] = dest;
 
                 newState.turn = curState.turn ^ 1;
+                newState.static_evl=static_evaluation(newState);
+
                 possible_outcome_states.push_back(newState);
             }
         }
     }
 
+    sort(possible_outcome_states.begin(), possible_outcome_states.end(),customSort);
+
     return possible_outcome_states;
 }
 
-// black is maximizer, white is minimizer
-// the sign of the return value determines which is closer to winning
-// the value determines how close to winning
-
-// if the returned number is +ve then black is closer to winning
-// if the returned number is -ve then white is closer to winning
-// the higher the positive number the closer is black to winning
-// the lower the negative number the closer is white to winning
-
-//hueristics:
-//1- number of white/black pieces in each row/column/diagonal
-//2- size of each piece in each row/column/diagonal
-int static_evaluation(State curState)
-{
-    // scores for each row, column, diagonal.
-    vector<int> row(4, 0);
-    vector<int> column(4, 0);
-    int main_diagonal = 0;
-    int other_diagonal = 0;
 
 
-    // calculate the score of each row.
-    for (int i = 0; i < 4; i++)
-    {
-        int black = 0;
-        int white = 0;
-
-        for (int j = 0; j < 4; j++)
-        {
-            // if the piece is white and not an empty tile.
-            if (get_largest_piece(curState.board[i][j]) > ALL_BLACK and curState.board[i][j] != EMPTY_TILE){
-                white--; // its a white piece
-                white-=get_largest_piece_size(curState.board[i][j]); // also add its size
-            }
-
-            // if the piece is white black and not an empty tile.
-            if (get_largest_piece(curState.board[i][j]) < WHITE_SMALL and curState.board[i][j] != EMPTY_TILE){
-                black++; // its a black piece
-                black+=get_largest_piece_size(curState.board[i][j]); // also add its size
-            }
-        }
-
-        row[i] = black + white;
-    }
-
-    // columns
-    for (int i = 0; i < 4; i++)
-    {
-        int black = 0;
-        int white = 0;
-
-        for (int j = 0; j < 4; j++)
-        {
-
-            if (get_largest_piece(curState.board[j][i]) > ALL_BLACK and curState.board[j][i] != EMPTY_TILE){
-                white--; // its a white piece
-                white-=get_largest_piece_size(curState.board[j][i]); // also add its size
-            }
-
-            if (get_largest_piece(curState.board[j][i]) < WHITE_SMALL and curState.board[j][i] != EMPTY_TILE){
-                black++; // its a black piece
-                black+=get_largest_piece_size(curState.board[j][i]); // also add its size
-            }
-        }
-
-        column[i] = black + white;
-    }
 
 
-    int black = 0;
-    int white = 0;
-
-    // main diagonal
-    for (int i = 0; i < 4; i++)
-    {
-        if (get_largest_piece(curState.board[i][i]) > 15 and curState.board[i][i] != 0){
-            white--; // its a white piece
-            white-=get_largest_piece_size(curState.board[i][i]); // also add its size
-
-        }
-
-        if (get_largest_piece(curState.board[i][i]) < 16 and curState.board[i][i] != 0){
-            black++; // its a black piece
-            black+=get_largest_piece_size(curState.board[i][i]); // also add its size
-        }
-
-    }
-
-    main_diagonal = black + white;
-
-    black = 0;
-    white = 0;
-
-    // other diagonal
-    for (int i = 0; i < 4; i++)
-    {
-        if (get_largest_piece(curState.board[i][3 - i]) > ALL_BLACK and curState.board[i][3 - i] != EMPTY_TILE){
-            white--; // its a white piece
-            white -= get_largest_piece_size(curState.board[i][3 - i]); // also add its size
-        }
-
-        if (get_largest_piece(curState.board[i][3 - i]) < WHITE_SMALL and curState.board[i][3 - i] != EMPTY_TILE){
-            black++; // its a black piece
-            black += get_largest_piece_size(curState.board[i][3 - i]); // also add its size
-        }
-
-    }
-    other_diagonal = black + white;
 
 
-    // calculate the maximum - minimum
-    int maxx = INT_MIN, minn = INT_MAX;
-
-    fori(4)
-    {
-        maxx = max(row[i],maxx);
-        minn = min(row[i],minn);
-
-        maxx = max(column[i],maxx);
-        minn = min(column[i],minn);
-    }
-    maxx = max(max(other_diagonal,main_diagonal),maxx);
-    minn = min(min(other_diagonal,main_diagonal),minn);
-
-
-    return maxx + minn + rand()%2;
-
-
-}
-
-State minMax (State postion ,int depth)
-{
+State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool buring)
+{ 
+    int evl;
     State temp;
     vector<State> childs_States =generate_possible_states(postion);
 
     if(depth==0) return postion;
-    if(postion.turn == 0)
+    if(postion.turn == 0)//maximizer
     {
         int largest_Eval=INT32_MIN;
+        reverse(childs_States.begin(), childs_States.end());
         for(int i=0;i<childs_States.size();i++)
-        {
-            State largest_state =minMax (childs_States[i], depth-1);
-
-            if(static_evaluation(largest_state)>largest_Eval)
+        {  
+            State largest_state =minMax_alpha_beta (childs_States[i], depth-1,alpha,beta, buring);
+            evl=largest_state.static_evl;
+            alpha=max(evl,alpha);
+            if(evl>largest_Eval)
             {
                 temp = childs_States[i];
-                largest_Eval = static_evaluation(largest_state);
+                largest_Eval = evl;
+            }
+
+            if(alpha>= beta and buring){
+                break;
             }
         }
     }
-    else
+    else // minimizer
     {
+        
         int minest_Eval=INT32_MAX;
         for(int i=0;i<childs_States.size();i++)
         {
-            State minest_state =minMax(childs_States[i], depth-1);
-            if(static_evaluation(minest_state)<minest_Eval)
+  
+            State minest_state =minMax_alpha_beta(childs_States[i], depth-1,alpha,beta, buring);
+            evl=minest_state.static_evl;
+            beta=min(beta,evl);
+
+            if(evl<minest_Eval)
             {
                 temp = childs_States[i];
-                minest_Eval = static_evaluation(minest_state);
+                minest_Eval = evl;
             }
+
+            if(alpha>= beta and buring){
+                break;
+            }
+            
         }
     }
     return temp;
@@ -470,50 +533,29 @@ int main()
 {
     State initial_state;
 
-    // Input the turn
+    // Input the turn.
     cin >> initial_state.turn;
 
-    // Input the board
-    for (int i = 0; i < BOARD_SIZE; i++)
-    {
-        for (int j = 0; j < BOARD_SIZE; j++)
-        {
-            cin >> initial_state.board[i][j];
-        }
-    }
-
-    // Input the inventory
-    for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-    {
-        for (int j = 0; j < INVENTORY_SIZE; j++)
-        {
-            cin >> initial_state.inventory[i][j];
-        }
-    }
+    // Input the board.
+    fori(BOARD_SIZE) forj(BOARD_SIZE) cin >> initial_state.board[i][j];
+        
+    // Input the inventory.
+    fori(NUMBER_OF_PLAYERS) forj(INVENTORY_SIZE) cin >> initial_state.inventory[i][j];
+        
+    
 
     // debug_state(initial_state);
-    auto state =  minMax(initial_state,3);
+    auto state =  minMax_alpha_beta(initial_state,3,INT32_MIN,INT32_MAX, true);
 
-    cout << state.turn << " ";
+    // print source values.
+    fori(3) cout << state.lastMove[0][i] << " ";
 
+    cout << endl;
 
-
-    fori(BOARD_SIZE)
-    {
-        forj(BOARD_SIZE)
-        {
-            cout << state.board[i][j] << " ";
-        }
-    }
+    // print destenation values.
+    fori(3) cout << state.lastMove[1][i] << " ";
 
 
-    fori(NUMBER_OF_PLAYERS)
-    {
-        forj(INVENTORY_SIZE)
-        {
-            cout << state.inventory[i][j] << " ";
-        }
- 
-    }
     return 0;
 }
+
