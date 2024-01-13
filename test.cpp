@@ -364,7 +364,7 @@ int static_evaluation(State curState)
     minn = min(min(other_diagonal,main_diagonal),minn);
 
 
-    return  20*(maxx + minn);
+    return  20*(maxx + minn) ;
 }
 
 bool customSort( State a,  State b) {
