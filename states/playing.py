@@ -100,20 +100,34 @@ class Playing(State):
 
             if(src[0]==INVENTORY_MOVE):
                 largest_piece_src = get_largest_piece(self.inventory[src[1]][src[2]])
-                self.board[dst[1]][dst[2]] |= largest_piece_src
                 self.inventory[src[1]][src[2]] &= ~largest_piece_src
+                #TODO
+                '''
+                1-store x ,y cordinate of source and dist and equation
+                2-set self.animation = true
+                3-unset the source in self.board or self.inventory
+                '''
+              #  self.board[dst[1]][dst[2]] |= largest_piece_src
+                
 
             elif(src[0]==BOARD_MOVE):
                 largest_piece_src = get_largest_piece(self.board[src[1]][src[2]])
-                self.board[dst[1]][dst[2]] |=  largest_piece_src
                 self.board[src[1]][src[2]] &= ~largest_piece_src
+                
+                #TODO
+                '''
+                1-store x ,y cordinate of source and dist and equation
+                2-set self.animation = true
+                3-unset the source in self.board or self.inventory
+                '''
+                # self.board[dst[1]][dst[2]] |=  largest_piece_src
         
     
     def update(self, delta_time, actions):
-        if self.turn == BLUE_PLAYER :
-            self.mode = PLAYER_VS_PLAYER
-        elif self.turn == RED_PLAYER:
-            self.mode = AI_VS_AI
+        # if self.turn == BLUE_PLAYER :
+        #     self.mode = PLAYER_VS_PLAYER
+        # elif self.turn == RED_PLAYER:
+        #     self.mode = AI_VS_AI
         
         if(self.game_started == False):
             self.game_started = True
@@ -148,10 +162,19 @@ class Playing(State):
     def handle_mode_operations(self):
         
         if(self.mode == AI_VS_AI):
-            self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
-            s = (self.helper.cpp_code("current_state_file.txt"))
-            self.parse_input_string(s)
-            self.switch_turns()
+            
+            if self.animatoin:
+                #TODO
+                ttceocjweojcewot=2
+                """
+                increment x and y by dx and dy 
+                if we have arrived set the animation equal false and set the destination in the self.board
+                """   
+            else:
+                self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
+                s = (self.helper.cpp_code("current_state_file.txt"))
+                self.parse_input_string(s)
+                self.switch_turns()
 
 
 
@@ -350,6 +373,9 @@ class Playing(State):
             if(largest_piece_in_source):
                 self.map.selected_tile(largest_piece_in_source,mouse_pos).draw(display)
 
+        #TODO
+        if self.animaton:
+            self.map.selected_tile(self.largest_piece_in_source_that_came_from_parse_input_string,[self.animeX, self.animey]).draw(display)
 
         # Step 4: Update the display
         pygame.display.flip()  # or pygame.display.update()
