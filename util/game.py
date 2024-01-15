@@ -33,6 +33,9 @@ class Game():
 
         self.font_name = "assets/font/f.TTF"
         
+        # menus background
+        self.menubg = pygame.image.load("assets/background/background(space).png")
+        
         # background music
         self.music_player = MusicPlayer()
         self.music_track = 'assets/sound/8-bit Menu.mp3'

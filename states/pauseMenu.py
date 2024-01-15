@@ -60,7 +60,7 @@ class PauseMenu(State):
                 self.game.running = False
 
     def render(self, display):
-        display.fill(self.game.BLUE)
+        display.blit(self.game.menubg, (0, 0))
         self.helper.draw_text(display, 'Pause Menu', self.game.RED, 80, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 

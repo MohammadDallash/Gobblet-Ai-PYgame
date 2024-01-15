@@ -173,32 +173,32 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">tiles/tilesbluedown0.png</key>
-            <key type="filename">tiles/tilesbluedown1.png</key>
-            <key type="filename">tiles/tilesbluedown2.png</key>
-            <key type="filename">tiles/tilesbluedown3.png</key>
-            <key type="filename">tiles/tilesblueup0.png</key>
-            <key type="filename">tiles/tilesblueup1.png</key>
-            <key type="filename">tiles/tilesblueup2.png</key>
-            <key type="filename">tiles/tilesblueup3.png</key>
-            <key type="filename">tiles/tilesreddown0.png</key>
-            <key type="filename">tiles/tilesreddown1.png</key>
-            <key type="filename">tiles/tilesreddown2.png</key>
-            <key type="filename">tiles/tilesreddown3.png</key>
-            <key type="filename">tiles/tilesredup0.png</key>
-            <key type="filename">tiles/tilesredup1.png</key>
-            <key type="filename">tiles/tilesredup2.png</key>
-            <key type="filename">tiles/tilesredup3.png</key>
+            <key type="filename">tiles/tilesblack0.png</key>
+            <key type="filename">tiles/tilesblack1.png</key>
+            <key type="filename">tiles/tilesblack2.png</key>
+            <key type="filename">tiles/tilesblack3.png</key>
+            <key type="filename">tiles/tilesblackdown0.png</key>
+            <key type="filename">tiles/tilesblackdown1.png</key>
+            <key type="filename">tiles/tilesblackdown2.png</key>
+            <key type="filename">tiles/tilesblackdown3.png</key>
+            <key type="filename">tiles/tilesblackup0.png</key>
+            <key type="filename">tiles/tilesblackup1.png</key>
+            <key type="filename">tiles/tilesblackup2.png</key>
+            <key type="filename">tiles/tilesblackup3.png</key>
+            <key type="filename">tiles/tileswhite0.png</key>
+            <key type="filename">tiles/tileswhite1.png</key>
+            <key type="filename">tiles/tileswhite2.png</key>
+            <key type="filename">tiles/tileswhite3.png</key>
+            <key type="filename">tiles/tileswhitedown0.png</key>
+            <key type="filename">tiles/tileswhitedown1.png</key>
+            <key type="filename">tiles/tileswhitedown2.png</key>
+            <key type="filename">tiles/tileswhitedown3.png</key>
+            <key type="filename">tiles/tileswhiteup0.png</key>
+            <key type="filename">tiles/tileswhiteup1.png</key>
+            <key type="filename">tiles/tileswhiteup2.png</key>
+            <key type="filename">tiles/tileswhiteup3.png</key>
             <key type="filename">tiles/zvoid.png</key>
-            <key type="filename">../../../project assets/sprites/tilesblue0.png</key>
-            <key type="filename">../../../project assets/sprites/tilesblue1.png</key>
-            <key type="filename">../../../project assets/sprites/tilesblue2.png</key>
-            <key type="filename">../../../project assets/sprites/tilesblue3.png</key>
-            <key type="filename">../../../project assets/sprites/tilesred0.png</key>
-            <key type="filename">../../../project assets/sprites/tilesred1.png</key>
-            <key type="filename">../../../project assets/sprites/tilesred2.png</key>
-            <key type="filename">../../../project assets/sprites/tilesred3.png</key>
-            <key type="filename">../../../project assets/sprites/zboard_rec.png</key>
+            <key type="filename">../../../project assets/background/space/zboard_rec.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -220,32 +220,32 @@
             <struct type="SpriteSheet">
                 <key>files</key>
                 <array>
-                    <filename>tiles/tilesbluedown0.png</filename>
-                    <filename>tiles/tilesbluedown1.png</filename>
-                    <filename>tiles/tilesbluedown2.png</filename>
-                    <filename>tiles/tilesbluedown3.png</filename>
-                    <filename>tiles/tilesblueup0.png</filename>
-                    <filename>tiles/tilesblueup1.png</filename>
-                    <filename>tiles/tilesblueup2.png</filename>
-                    <filename>tiles/tilesblueup3.png</filename>
-                    <filename>tiles/tilesreddown0.png</filename>
-                    <filename>tiles/tilesreddown1.png</filename>
-                    <filename>tiles/tilesreddown2.png</filename>
-                    <filename>tiles/tilesreddown3.png</filename>
-                    <filename>tiles/tilesredup0.png</filename>
-                    <filename>tiles/tilesredup1.png</filename>
-                    <filename>tiles/tilesredup2.png</filename>
-                    <filename>tiles/tilesredup3.png</filename>
                     <filename>tiles/zvoid.png</filename>
-                    <filename>../../../project assets/sprites/zboard_rec.png</filename>
-                    <filename>../../../project assets/sprites/tilesblue0.png</filename>
-                    <filename>../../../project assets/sprites/tilesblue1.png</filename>
-                    <filename>../../../project assets/sprites/tilesblue2.png</filename>
-                    <filename>../../../project assets/sprites/tilesblue3.png</filename>
-                    <filename>../../../project assets/sprites/tilesred0.png</filename>
-                    <filename>../../../project assets/sprites/tilesred1.png</filename>
-                    <filename>../../../project assets/sprites/tilesred2.png</filename>
-                    <filename>../../../project assets/sprites/tilesred3.png</filename>
+                    <filename>../../../project assets/background/space/zboard_rec.png</filename>
+                    <filename>tiles/tilesblack0.png</filename>
+                    <filename>tiles/tilesblack1.png</filename>
+                    <filename>tiles/tilesblack2.png</filename>
+                    <filename>tiles/tilesblack3.png</filename>
+                    <filename>tiles/tilesblackdown0.png</filename>
+                    <filename>tiles/tilesblackdown1.png</filename>
+                    <filename>tiles/tilesblackdown2.png</filename>
+                    <filename>tiles/tilesblackdown3.png</filename>
+                    <filename>tiles/tilesblackup0.png</filename>
+                    <filename>tiles/tilesblackup1.png</filename>
+                    <filename>tiles/tilesblackup2.png</filename>
+                    <filename>tiles/tilesblackup3.png</filename>
+                    <filename>tiles/tileswhite0.png</filename>
+                    <filename>tiles/tileswhite1.png</filename>
+                    <filename>tiles/tileswhite2.png</filename>
+                    <filename>tiles/tileswhite3.png</filename>
+                    <filename>tiles/tileswhitedown0.png</filename>
+                    <filename>tiles/tileswhitedown1.png</filename>
+                    <filename>tiles/tileswhitedown2.png</filename>
+                    <filename>tiles/tileswhitedown3.png</filename>
+                    <filename>tiles/tileswhiteup0.png</filename>
+                    <filename>tiles/tileswhiteup1.png</filename>
+                    <filename>tiles/tileswhiteup2.png</filename>
+                    <filename>tiles/tileswhiteup3.png</filename>
                 </array>
             </struct>
         </map>

@@ -47,7 +47,7 @@ class Playing(State):
         State.__init__(self, game)
         self.spritesheet = Spritesheet('assets/sprites/sprites.png')
         self.map = TileMap('assets/sprites/map.csv', self.spritesheet)
-        self.bg = pygame.image.load("assets/background/background.png")
+        self.bg = pygame.image.load("assets/background/game background(space).png")
         self.turn = BLUE_PLAYER  # BLUE starts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text = self.players_names[self.turn - 1] + ' Turn'

@@ -38,7 +38,7 @@ class PauseOptions(State):
                     option_state.enter_state()
 
     def render(self, display):
-        display.fill(self.game.BLUE)
+        display.blit(self.game.menubg, (0, 0))
         self.helper.draw_text(display, 'Pause Options', self.game.RED, 80, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
