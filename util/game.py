@@ -38,7 +38,7 @@ class Game():
         
         # background music
         self.music_player = MusicPlayer()
-        self.music_track = 'assets/sound/8-bit Menu.mp3'
+        self.music_track = 'assets/sound/background music.mp3'
         self.music_player.load_track(self.music_track)
         self.music_player.play()
 
