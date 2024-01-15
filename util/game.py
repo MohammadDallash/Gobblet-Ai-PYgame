@@ -17,6 +17,7 @@ class Game():
                         "LEFT_MOUSE_KEY_PRESS": False}
 
         self.DISPLAY_W, self.DISPLAY_H = 1200, 720
+    
 
         self.game_canvas = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
@@ -30,7 +31,9 @@ class Game():
         self.state_stack = []
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
-
+        pygame.display.set_caption('Space Gobblet')
+        self.icon = pygame.image.load("assets/sprites/tiles/tileswhite2.png")
+        pygame.display.set_icon(self.icon)
         self.font_name = "assets/font/f.TTF"
         
         # menus background

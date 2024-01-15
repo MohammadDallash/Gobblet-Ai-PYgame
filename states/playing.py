@@ -5,6 +5,7 @@ from states.winnerMenu import WinnerMenu
 from states.drawMenu import DrawMenu
 from util.sprite import Spritesheet
 from util.tile import TileMap
+from util.music import *
 import pygame
 from util.helpers import *
 import time
@@ -57,8 +58,8 @@ class Playing(State):
         self.source_selected = False  # stores whether the source piece is selected
         self.source_values =  [-1,-1,-1] # stores source values
         self.destination_values =  [-1,-1,-1] # stores dest values
-
-
+        self.music_player = MusicPlayer()
+        self.music_track = 'assets/sound/move_piece.mp3'
         self.last_red_moves = []
         self.last_red_moves = deque(self.last_red_moves)
 
@@ -324,6 +325,8 @@ class Playing(State):
                 self.switch_turns()
             else:
                 return
+        self.music_player.play_sfx(self.music_track)
+        
 
     def render(self, display):
         # Step 1: Clear the screen
@@ -374,8 +377,8 @@ class Playing(State):
                 self.map.selected_tile(largest_piece_in_source,mouse_pos).draw(display)
 
         #TODO
-        if self.animaton:
-            self.map.selected_tile(self.largest_piece_in_source_that_came_from_parse_input_string,[self.animeX, self.animey]).draw(display)
+        # if self.animaton:
+        #     self.map.selected_tile(self.largest_piece_in_source_that_came_from_parse_input_string,[self.animeX, self.animey]).draw(display)
 
         # Step 4: Update the display
         pygame.display.flip()  # or pygame.display.update()
