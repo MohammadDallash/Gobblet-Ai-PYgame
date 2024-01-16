@@ -1,3 +1,4 @@
+#include <ctime> 
 #include <iostream>
 #include <vector>
 #include <string>
@@ -374,7 +375,7 @@ bool customSort( State a,  State b) {
         }
 
 //
-vector<State> generate_possible_states(State curState)
+vector<State> generate_possible_states(State curState, bool sorting)
 {
     vector<pair<int, State>> evaluated_states;
 
@@ -465,7 +466,8 @@ vector<State> generate_possible_states(State curState)
         }
     }
 
-    sort(possible_outcome_states.begin(), possible_outcome_states.end(),customSort);
+    if(sorting)
+        sort(possible_outcome_states.begin(), possible_outcome_states.end(),customSort);
 
     return possible_outcome_states;
 }
@@ -476,11 +478,11 @@ vector<State> generate_possible_states(State curState)
 
 
 
-State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool buring)
+State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool buring, bool mutation)
 { 
     int evl;
     State temp;
-    vector<State> childs_States =generate_possible_states(postion);
+    vector<State> childs_States =generate_possible_states(postion, buring);
 
     if(depth==0) return postion;
     if(postion.turn == 0)//maximizer
@@ -489,10 +491,10 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
         reverse(childs_States.begin(), childs_States.end());
         for(int i=0;i<childs_States.size();i++)
         {  
-            State largest_state =minMax_alpha_beta (childs_States[i], depth-1,alpha,beta, buring);
+            State largest_state =minMax_alpha_beta (childs_States[i], depth-1,alpha,beta, buring, mutation);
             evl=largest_state.static_evl;
             alpha=max(evl,alpha);
-            if(evl>largest_Eval)
+            if(evl>largest_Eval or (evl== largest_Eval and mutation and rand()%3 == 1))
             {
                 temp = childs_States[i];
                 largest_Eval = evl;
@@ -510,11 +512,11 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
         for(int i=0;i<childs_States.size();i++)
         {
   
-            State minest_state =minMax_alpha_beta(childs_States[i], depth-1,alpha,beta, buring);
+            State minest_state =minMax_alpha_beta(childs_States[i], depth-1,alpha,beta, buring, mutation);
             evl=minest_state.static_evl;
             beta=min(beta,evl);
 
-            if(evl<minest_Eval)
+            if(evl<minest_Eval or (evl== minest_Eval and mutation and rand()%3 == 1))
             {
                 temp = childs_States[i];
                 minest_Eval = evl;
@@ -531,6 +533,7 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
 
 int main()
 {
+    srand(static_cast<unsigned int>(time(0)));
     State initial_state;
 
     // Input the turn.
@@ -545,7 +548,7 @@ int main()
     
 
     // debug_state(initial_state);
-    auto state =  minMax_alpha_beta(initial_state,3,INT32_MIN,INT32_MAX, true);
+    auto state =  minMax_alpha_beta(initial_state,3,INT32_MIN,INT32_MAX, true, true);
 
     // print source values.
     fori(3) cout << state.lastMove[0][i] << " ";
