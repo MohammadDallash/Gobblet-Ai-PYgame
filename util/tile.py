@@ -5,14 +5,18 @@ from util.tile import *
 
 # pieces for each color.
 EMPTY_TILE = 0
-BLACK_SMALL = 1
-BLACK_MEDIUM = 2
-BLACK_LARGE = 4
-BLACK_XLARGE = 8
-WHITE_SMALL = 16
-WHITE_MEDIUM = 32
-WHITE_LARGE = 64
-WHITE_XLARGE = 128
+BLUE_SMALL = 1
+BLUE_MEDIUM = 2
+BLUE_LARGE = 4
+BLUE_XLARGE = 8
+RED_SMALL = 16
+RED_MEDIUM = 32
+RED_LARGE = 64
+RED_XLARGE = 128
+
+BLUE, RED = 0, 1
+INVENTORY_MOVE = 0
+BOARD_MOVE = 1
 
 
 class Tile(pygame.sprite.Sprite):
@@ -56,14 +60,14 @@ class TileMap():
         self.inventory_surface.set_colorkey((0, 0, 0))
         self.piece_to_idx = {
             EMPTY_TILE: get_drawing_idx_on_Tilemap(EMPTY_TILE),
-            BLACK_SMALL: get_drawing_idx_on_Tilemap(BLACK_SMALL),
-            BLACK_MEDIUM: get_drawing_idx_on_Tilemap(BLACK_MEDIUM),
-            BLACK_LARGE: get_drawing_idx_on_Tilemap(BLACK_LARGE),
-            BLACK_XLARGE: get_drawing_idx_on_Tilemap(BLACK_XLARGE),
-            WHITE_SMALL: get_drawing_idx_on_Tilemap(WHITE_SMALL),
-            WHITE_MEDIUM: get_drawing_idx_on_Tilemap(WHITE_MEDIUM),
-            WHITE_LARGE: get_drawing_idx_on_Tilemap(WHITE_LARGE),
-            WHITE_XLARGE: get_drawing_idx_on_Tilemap(WHITE_XLARGE)}
+            BLUE_SMALL: get_drawing_idx_on_Tilemap(BLUE_SMALL),
+            BLUE_MEDIUM: get_drawing_idx_on_Tilemap(BLUE_MEDIUM),
+            BLUE_LARGE: get_drawing_idx_on_Tilemap(BLUE_LARGE),
+            BLUE_XLARGE: get_drawing_idx_on_Tilemap(BLUE_XLARGE),
+            RED_SMALL: get_drawing_idx_on_Tilemap(RED_SMALL),
+            RED_MEDIUM: get_drawing_idx_on_Tilemap(RED_MEDIUM),
+            RED_LARGE: get_drawing_idx_on_Tilemap(RED_LARGE),
+            RED_XLARGE: get_drawing_idx_on_Tilemap(RED_XLARGE)}
         self.reconstruct_map()
         self.reconstruct_inventory()
 
@@ -78,14 +82,19 @@ class TileMap():
         surface.blit(self.inventory_surface, (0, 0))
 
     # draw inventory on the screen.
-    def reconstruct_inventory(self, inventory=[[1, 1, 1], [16, 16, 16]]):
+    def reconstruct_inventory(self, inventory=[[1, 1, 1], [16, 16, 16]], src_is_selected = False, srcNotToDraw = [-1,-1,-1]):
+        if src_is_selected and srcNotToDraw[0] != INVENTORY_MOVE:
+            src_is_selected = False
+
+
         self.inventory_surface.fill((0, 0, 0))
         inv_p1, inv_p2 = [], []
         for i in range(3):
             # get the pieces on top.
 
-            itr_p1 = get_largest_piece(inventory[0][i])
-            itr_p2 = get_largest_piece(inventory[1][i])
+
+            itr_p1 = get_largest_piece(inventory[BLUE][i], secLargest=src_is_selected and srcNotToDraw[2] == i and srcNotToDraw[1] == BLUE)
+            itr_p2 = get_largest_piece(inventory[RED][i], secLargest=src_is_selected and srcNotToDraw[2] == i and srcNotToDraw[1] == RED)
 
             # get coordinates for the inventory pieces.
             y = (1 + i) * int(self.tile_size * 1.5) - int(self.tile_size / 2)
@@ -115,7 +124,10 @@ class TileMap():
         tile.rect.y = position[1] - offset_y
         return tile
 
-    def reconstruct_map(self, board=None):
+    def reconstruct_map(self, board=None, src_is_selected = False, srcNotToDraw = [-1,-1,-1]):
+        if src_is_selected and srcNotToDraw[0] != BOARD_MOVE:
+            src_is_selected = False
+        
         self.board_surface.fill((0, 0, 0))
         board_tiles = []
         if board is not None:
@@ -123,7 +135,9 @@ class TileMap():
             for y in range(row):
                 row_tiles = []
                 for x in range(col):
-                    idx = self.piece_to_idx[get_largest_piece(board[y][x])]
+                    largest_peace = get_largest_piece(board[y][x], secLargest=src_is_selected and y == srcNotToDraw[1] and x == srcNotToDraw[2])
+                 
+                    idx = self.piece_to_idx[largest_peace]
                     tile_x = (x + 3) * self.tile_size
                     tile_y = (y + 1) * self.tile_size
                     T = Tile(idx, tile_x, tile_y, self.spritesheet)

@@ -38,8 +38,8 @@ class PauseOptions(State):
                     option_state.enter_state()
 
     def render(self, display):
-        display.fill(self.game.BLACK)
-        self.helper.draw_text(display, 'Pause Options', self.game.WHITE, 80, self.game.DISPLAY_W / 2, 50)
+        display.blit(self.game.menubg, (0, 0))
+        self.helper.draw_text(display, 'Pause Options', self.game.RED, 80, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
     def enter_state(self):
@@ -50,6 +50,10 @@ class PauseOptions(State):
 
     def set_music(self, val):
         self.Music = val
+        if val == 'Off':
+            self.game.music_player.pause()
+        elif val == "On":
+            self.game.music_player.unpause()
 
     def set_volume(self, val):
         self.volume = val

@@ -1,19 +1,20 @@
 import pygame
 import subprocess
 import platform
+import re
 from math import log2
 
 EMPTY_TILE = 0
-BLACK_SMALL = 1
-BLACK_MEDIUM = 2
-BLACK_LARGE = 4
-BLACK_XLARGE = 8
-ALL_BLACK = 15
-WHITE_SMALL = 16
-WHITE_MEDIUM = 32
-WHITE_LARGE = 64
-WHITE_XLARGE = 128
-ALL_WHITE = 240
+BLUE_SMALL = 1
+BLUE_MEDIUM = 2
+BLUE_LARGE = 4
+BLUE_XLARGE = 8
+ALL_BLUE = 15
+RED_SMALL = 16
+RED_MEDIUM = 32
+RED_LARGE = 64
+RED_XLARGE = 128
+ALL_RED = 240
 
 
 # get the order of the highest bit in the number.
@@ -30,18 +31,41 @@ def get_highest_multiple_of_2(n):
     return 1 << bit
 
 
-def get_largest_piece(n):
-    pieces = [BLACK_XLARGE, WHITE_XLARGE,
-              BLACK_LARGE, WHITE_LARGE,
-              BLACK_MEDIUM, WHITE_MEDIUM,
-              BLACK_SMALL, WHITE_SMALL]
+def get_largest_piece(n, secLargest = False):
+    pieces = [BLUE_XLARGE, RED_XLARGE,
+              BLUE_LARGE, RED_LARGE,
+              BLUE_MEDIUM, RED_MEDIUM,
+              BLUE_SMALL, RED_SMALL]
+
+    first_time = False
 
     for piece in pieces:
-        if (piece & n):
-            return piece
+        if piece & n:
+            if not first_time and secLargest:
+                first_time = True
+            else:
+                return piece
 
     return 0
 
+def compare_2d_lists(list1, list2):
+
+    # Iterate through each element and compare them
+    for i in range(len(list1)):
+        for j in range(len(list1[i])):
+            if list1[i][j] != list2[i][j]:
+                return False  # Elements are not equal
+
+    return True  # All elements are equal
+
+
+def convert_move_to_str(move):
+    move_str = f"{move[0][0]}+{move[0][1]}+{move[0][2]}+{move[1][0]}+{move[1][1]}+{move[1][2]}"
+    return move_str
+
+def convert_stream_to_list(move_str):
+    list=int(re.search(r'\d+', move_str).group())
+    return [list[0:3],list[3,6]]
 
 def is_move_valid(val_src, val_dst):
     if (val_src == 0):
@@ -50,11 +74,11 @@ def is_move_valid(val_src, val_dst):
     largest_piece_src = get_largest_piece(val_src)
     largest_piece_dst = get_largest_piece(val_dst)
 
-    # check if any of the tiles are white, convert to a unified base for comparison.
-    if (largest_piece_src > ALL_BLACK):
+    # check if any of the tiles are red, convert to a unified base for comparison.
+    if (largest_piece_src > ALL_BLUE):
         largest_piece_src = largest_piece_src >> 4
 
-    if (largest_piece_dst > ALL_BLACK):
+    if (largest_piece_dst > ALL_BLUE):
         largest_piece_dst = largest_piece_dst >> 4
 
     # check the largest piece in both sides after being unified, if the move is valid, go ahead with it.
@@ -73,12 +97,25 @@ def get_drawing_idx_on_Tilemap(number):
     else:
         largest_bit = int(log2(get_highest_multiple_of_2(number)))
 
-    has_white = 0
+    has_red = 0
     if (largest_bit > 3):
         largest_bit = largest_bit - 4
-        has_white = 1
+        has_red = 1
 
-    return largest_bit + has_white * 12
+    return largest_bit + has_red * 12
+
+
+
+def compare_2d_lists(list1, list2):
+
+    # Iterate through each element and compare them
+    for i in range(len(list1)):
+        for j in range(len(list1[i])):
+            if list1[i][j] != list2[i][j]:
+                return False  # Elements are not equal
+
+    return True  # All elements are equal
+
 
 
 class Helper:
@@ -168,7 +205,7 @@ class MenuGUI:
         width_menu = 3 * self.font_size * self.n_options - 3 * self.font_size
         start_y = (self.game.DISPLAY_H - width_menu) // 2
         for idx, options_txt in enumerate(self.options_str):
-            color = self.game.YELLOW if idx == self.cur_option and not self.justTxt else self.game.WHITE
+            color = self.game.YELLOW if idx == self.cur_option and not self.justTxt else self.game.RED
             text_rect = self.game.helper.draw_text(
                 display, options_txt, color, self.font_size, self.x_pos, start_y + idx * 3 * self.font_size
             )

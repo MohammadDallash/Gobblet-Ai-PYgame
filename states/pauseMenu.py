@@ -34,6 +34,7 @@ class PauseMenu(State):
             elif self.cur_option == 2:
                 self.exit_state()
                 self.exit_state()
+                self.exit_state()
                 pass
             else:
                 self.game.running = False
@@ -54,12 +55,13 @@ class PauseMenu(State):
             if self.menuGUI.mouse_collidepoint(x, y, 2):
                 self.exit_state()
                 self.exit_state()
+                self.exit_state()
             if self.menuGUI.mouse_collidepoint(x, y, 3):
                 self.game.running = False
 
     def render(self, display):
-        display.fill(self.game.BLACK)
-        self.helper.draw_text(display, 'Pause Menu', self.game.WHITE, 80, self.game.DISPLAY_W / 2, 50)
+        display.blit(self.game.menubg, (0, 0))
+        self.helper.draw_text(display, 'Pause Menu', self.game.RED, 80, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
     def enter_state(self):
