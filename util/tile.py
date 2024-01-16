@@ -14,9 +14,10 @@ RED_MEDIUM = 32
 RED_LARGE = 64
 RED_XLARGE = 128
 
-BLUE_INVENTORY,RED_INVENTORY = "blue" ,"red"
+BLUE, RED = 0, 1
+INVENTORY_MOVE = 0
+BOARD_MOVE = 1
 
-BOARD_TILE = "board"
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, imageIdx, x, y, spritesheet):
@@ -82,7 +83,7 @@ class TileMap():
 
     # draw inventory on the screen.
     def reconstruct_inventory(self, inventory=[[1, 1, 1], [16, 16, 16]], src_is_selected = False, srcNotToDraw = [-1,-1,-1]):
-        if src_is_selected and srcNotToDraw[0] != BLUE_INVENTORY and srcNotToDraw[0] != RED_INVENTORY:
+        if src_is_selected and srcNotToDraw[0] != INVENTORY_MOVE:
             src_is_selected = False
 
 
@@ -92,8 +93,8 @@ class TileMap():
             # get the pieces on top.
 
 
-            itr_p1 = get_largest_piece(inventory[0][i], secLargest=src_is_selected and srcNotToDraw[1] == i and srcNotToDraw[0] == BLUE_INVENTORY)
-            itr_p2 = get_largest_piece(inventory[1][i], secLargest=src_is_selected and srcNotToDraw[1] == i and srcNotToDraw[0] == RED_INVENTORY)
+            itr_p1 = get_largest_piece(inventory[BLUE][i], secLargest=src_is_selected and srcNotToDraw[2] == i and srcNotToDraw[1] == BLUE)
+            itr_p2 = get_largest_piece(inventory[RED][i], secLargest=src_is_selected and srcNotToDraw[2] == i and srcNotToDraw[1] == RED)
 
             # get coordinates for the inventory pieces.
             y = (1 + i) * int(self.tile_size * 1.5) - int(self.tile_size / 2)
@@ -124,7 +125,7 @@ class TileMap():
         return tile
 
     def reconstruct_map(self, board=None, src_is_selected = False, srcNotToDraw = [-1,-1,-1]):
-        if src_is_selected and srcNotToDraw[0] != BOARD_TILE:
+        if src_is_selected and srcNotToDraw[0] != BOARD_MOVE:
             src_is_selected = False
         
         self.board_surface.fill((0, 0, 0))

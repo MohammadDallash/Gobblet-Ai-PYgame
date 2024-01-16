@@ -23,12 +23,8 @@ BLUE, RED = 0, 1
 # SRC OR DEST (CLICK_LOCATION , i , j)
 
 
-BLUE_INVENTORY,RED_INVENTORY = "blue" ,"red"
-
-BOARD_TILE = "board"
 
 BOARDERS = "empty"
-DONT_CARE = "anything invalid"
 BLUE_TURN = BLUE_PLAYER =  1
 RED_TURN = RED_PLAYER =  2
 
@@ -92,6 +88,43 @@ class Playing(State):
         self.game_started = False
 
 
+        self.animation = False
+
+        self.animated_tile_pos = {'x': -1, 'y':-1 }
+        self.src_for_anime_pos = {'x': -1, 'y':-1 }
+        self.dst_for_anime_pos = {'x': -1, 'y':-1 }
+        self.animation_speed = 60
+        self.slope = -1
+
+    
+    def set_animation_parameter(self, src, dst):
+        if(src[0]==INVENTORY_MOVE):
+            largest_piece_src = get_largest_piece(self.inventory[src[1]][src[2]])
+            self.inventory[src[1]][src[2]] &= ~largest_piece_src
+            self.src_for_anime_pos['x'] = self.inventory_tiles[src[1]][src[2]].rect.x + self.map.tile_size/2
+            self.src_for_anime_pos['y'] = self.inventory_tiles[src[1]][src[2]].rect.y+ self.map.tile_size/2
+
+
+        elif(src[0]==BOARD_MOVE):
+            largest_piece_src = get_largest_piece(self.board[src[1]][src[2]])
+            self.board[src[1]][src[2]] &= ~largest_piece_src
+            self.src_for_anime_pos['x'] = self.board_tiles[src[1]][src[2]].rect.x+ self.map.tile_size/2
+            self.src_for_anime_pos['y'] = self.board_tiles[src[1]][src[2]].rect.y+ self.map.tile_size/2
+
+        self.animated_tile_pos = self.src_for_anime_pos
+
+
+        self.dst_for_anime_pos['x'] = self.board_tiles[dst[1]][dst[2]].rect.x+ self.map.tile_size/2
+        self.dst_for_anime_pos['y'] = self.board_tiles[dst[1]][dst[2]].rect.y+ self.map.tile_size/2
+
+        self.largest_peice_for_animation = largest_piece_src   
+        
+        self.slope = (self.dst_for_anime_pos['y'] - self.src_for_anime_pos['y']) / (self.dst_for_anime_pos['x'] - self.src_for_anime_pos['x'] + 0.0001)
+        self.destination_values = dst   
+        self.animation = True
+
+
+
     def parse_input_string(self,input_string):
         # Convert the input string to a numeric array
         if input_string :
@@ -99,59 +132,42 @@ class Playing(State):
             src = numeric_array[0:3]
             dst = numeric_array[3:6]
 
-            if(src[0]==INVENTORY_MOVE):
-                largest_piece_src = get_largest_piece(self.inventory[src[1]][src[2]])
-                self.inventory[src[1]][src[2]] &= ~largest_piece_src
-                #TODO
-                '''
-                1-store x ,y cordinate of source and dist and equation
-                2-set self.animation = true
-                3-unset the source in self.board or self.inventory
-                '''
-              #  self.board[dst[1]][dst[2]] |= largest_piece_src
-                
+            print(src,dst)
 
-            elif(src[0]==BOARD_MOVE):
-                largest_piece_src = get_largest_piece(self.board[src[1]][src[2]])
-                self.board[src[1]][src[2]] &= ~largest_piece_src
-                
-                #TODO
-                '''
-                1-store x ,y cordinate of source and dist and equation
-                2-set self.animation = true
-                3-unset the source in self.board or self.inventory
-                '''
-                # self.board[dst[1]][dst[2]] |=  largest_piece_src
-        
+            self.set_animation_parameter(src, dst)
+            
     
     def update(self, delta_time, actions):
-        # if self.turn == BLUE_PLAYER :
-        #     self.mode = PLAYER_VS_PLAYER
-        # elif self.turn == RED_PLAYER:
-        #     self.mode = AI_VS_AI
-        
         if(self.game_started == False):
             self.game_started = True
-            self.board_tiles = self.map.reconstruct_map(self.board)
-            self.inventory_tiles = self.map.reconstruct_inventory(self.inventory)
             return  
 
-        
-        self.check_for_draw()
-        self.check_wins()
-        self.handle_mode_operations()
+
+
+        if self.turn == BLUE_PLAYER :
+            self.mode = PLAYER_VS_PLAYER
+        elif self.turn == RED_PLAYER:
+            self.mode = AI_VS_AI
+
+
+        # print("Animated Tile Pos:", self.animated_tile_pos)
+        # print("Source for Anime Pos:", self.src_for_anime_pos)
+        # print("Destination for Anime Pos:", self.dst_for_anime_pos)
+
+
+        self.handle_mode_operations()       
+        if not self.animation: 
+            self.check_for_draw()
+            self.check_wins()
+
 
         
         self.highlight_nearest_tile(pygame.mouse.get_pos())
-
         if(self.mode != AI_VS_AI):
             if actions['LEFT_MOUSE_KEY_PRESS']:
                 time.sleep(0.1)
                 self.handle_mouse_click()
-        
 
-        self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
-        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
 
 
         if actions['Esc']:
@@ -161,21 +177,27 @@ class Playing(State):
 
 
     def handle_mode_operations(self):
-        
         if(self.mode == AI_VS_AI):
-            
-            if self.animatoin:
-                #TODO
-                ttceocjweojcewot=2
-                """
-                increment x and y by dx and dy 
-                if we have arrived set the animation equal false and set the destination in the self.board
-                """   
+            if self.animation:
+                if self.animated_tile_pos['x'] < self.dst_for_anime_pos['x']:
+                    self.animated_tile_pos['x'] += self.animation_speed
+                    self.animated_tile_pos['y'] += self.animation_speed * self.slope
+                elif self.animated_tile_pos['x'] > self.dst_for_anime_pos['x']:
+                    self.animated_tile_pos['x'] -= self.animation_speed
+                    self.animated_tile_pos['y'] -= self.animation_speed * self.slope
+                else:
+                    self.board[self.destination_values[1]][self.destination_values[2]] |= self.largest_peice_for_animation
+                    self.music_player.play_sfx(self.music_track)
+                    self.animation = False
+                    self.switch_turns()
+
+
             else:
                 self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
                 s = (self.helper.cpp_code("current_state_file.txt"))
                 self.parse_input_string(s)
-                self.switch_turns()
+
+
 
 
 
@@ -201,41 +223,41 @@ class Playing(State):
 
 
     def handle_mouse_click(self):
-        location, i, j, state = self.get_clicked_tile_id(self.board_tiles, self.inventory_tiles)
+        move_type, i, j, state = self.get_clicked_tile_id(self.board_tiles, self.inventory_tiles)
 
         # if the source is in the boarders, ignore it.
-        if (location == BOARDERS):
+        if (move_type == BOARDERS):
             return
 
         # if the source is an empty tile
-        if (not self.source_selected and location == BOARD_TILE and state == EMPTY_TILE):
+        if (not self.source_selected and move_type == BOARD_MOVE and state == EMPTY_TILE):
             return
 
         # if the source is the same as the destination.
-        elif (self.source_selected and [location, i, j] == self.source_values):
+        elif (self.source_selected and [move_type, i, j] == self.source_values):
             return
 
         # if the destination is the inventory.
-        elif (self.source_selected and (location == BLUE_INVENTORY or location == RED_INVENTORY)):
+        elif (self.source_selected and (move_type == INVENTORY_MOVE)):
             return
 
         # if selected from inventory is blue and it's red turn
-        elif location == BLUE_INVENTORY and self.turn == RED_TURN:
+        elif move_type == INVENTORY_MOVE and self.turn == RED_TURN and i == BLUE:
             return
 
         # if selected from inventory is red and it's blue turn
-        elif location == RED_INVENTORY and self.turn == BLUE_TURN:
+        elif move_type == INVENTORY_MOVE and self.turn == BLUE_TURN and  i == RED:
             return
         
         
         # if source is not selected.
         if (not self.source_selected and ( (self.turn == BLUE_TURN and get_largest_piece(state)<ALL_BLUE) or (self.turn == RED_TURN and get_largest_piece(state)>ALL_BLUE))):
             # save source values.
-            self.source_values = [location, i, j]
+            self.source_values = [move_type, i, j]
             self.source_selected = True
             return
         else:
-            self.destination_values = [location,i,j]
+            self.destination_values = [move_type,i,j]
 
         if(self.mode == PLAYER_VS_PLAYER):
             move = [self.source_values,self.destination_values]
@@ -261,7 +283,7 @@ class Playing(State):
     def move_piece(self,move):
 
         # load source and destenation values into a variable for better readability.
-        source_location, source_i, source_j = move[0]
+        source_type, source_i, source_j = move[0]
         dst_location,dst_i,dst_j = move[1] # save destenation values.
 
         self.source_selected = False
@@ -269,7 +291,7 @@ class Playing(State):
         val_dst = self.board[dst_i][dst_j]
 
         # piece selected is blue in red's turn or red in blue's turn.
-        if (source_location == BOARD_TILE):
+        if (source_type == BOARD_MOVE):
             if get_largest_piece(self.board[source_i][source_j]) in [BLUE_SMALL, BLUE_MEDIUM, BLUE_LARGE,BLUE_XLARGE] and self.turn == RED_TURN:
                 return
 
@@ -277,10 +299,10 @@ class Playing(State):
                 return
 
         # if the source is an inventory.
-        if source_location == BLUE_INVENTORY:
+        if source_type == INVENTORY_MOVE:
 
             # get the value of the source location (BLUE Inventory)
-            val_src = self.inventory[BLUE][source_i]
+            val_src = self.inventory[source_i][source_j]
 
             # get the largest piece in that place
             largest_piece_in_source = get_largest_piece(val_src)
@@ -288,31 +310,15 @@ class Playing(State):
             # if the move is valid, if the move is valid, go ahead with it.
             if is_move_valid(val_src, val_dst):
 
-                self.inventory[BLUE][source_i] &= ~(largest_piece_in_source)
+                self.inventory[source_i][source_j] &= ~(largest_piece_in_source)
                 self.board[dst_i][dst_j] |= largest_piece_in_source
                 self.switch_turns()
 
-            else:
-                return
-
-        elif (source_location == RED_INVENTORY):
-
-            # get the value of the source location (RED Inventory).
-            val_src = self.inventory[RED][source_i]
-
-            # get the largest piece in that place.
-            largest_piece_in_source = get_largest_piece(val_src)
-
-            # if the move is valid, if the move is valid, go ahead with it.
-            if (is_move_valid(val_src, val_dst)):
-                self.inventory[RED][source_i] &= ~(largest_piece_in_source)
-                self.board[dst_i][dst_j] |= largest_piece_in_source
-                self.switch_turns()
             else:
                 return
 
         # if the source is a board.
-        elif (source_location == BOARD_TILE):
+        elif (source_type == BOARD_MOVE):
 
             # get the value of the source location (board).
             val_src = self.board[source_i][source_j]
@@ -329,6 +335,10 @@ class Playing(State):
         
 
     def render(self, display):
+        self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
+        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
+
+
         # Step 1: Clear the screen
         # display.fill(self.game.BROWN)
         display.blit(self.bg, (0, 0))
@@ -356,7 +366,7 @@ class Playing(State):
             largest_piece_in_source = None
 
             # if the source is on the board, get the largest piece in that location.
-            if(source_location==BOARD_TILE):
+            if(source_location==BOARD_MOVE):
                 largest_piece_in_source = get_largest_piece(self.board[source_i][source_j])
 
                 # if the its not that player's turn, cancel drawing.
@@ -364,21 +374,17 @@ class Playing(State):
                     return
                     
             # only allow drawing if the source is the blue inventory, and it's the blue turn.       
-            elif(source_location==BLUE_INVENTORY and self.turn == BLUE_TURN):
-                largest_piece_in_source = get_largest_piece(self.inventory[BLUE][source_i])
+            elif(source_location==INVENTORY_MOVE):
+                largest_piece_in_source = get_largest_piece(self.inventory[source_i][source_j])
 
              
-            # only allow drawing if the source is the red inventory, and it's the red turn.    
-            elif(source_location==RED_INVENTORY and self.turn == RED_TURN):
-                largest_piece_in_source = get_largest_piece(self.inventory[RED][source_i])
+          
 
             # draw the selected piece on the mouse.
-            if(largest_piece_in_source):
-                self.map.selected_tile(largest_piece_in_source,mouse_pos).draw(display)
+            self.map.selected_tile(largest_piece_in_source,mouse_pos).draw(display)
 
-        #TODO
-        # if self.animaton:
-        #     self.map.selected_tile(self.largest_piece_in_source_that_came_from_parse_input_string,[self.animeX, self.animey]).draw(display)
+        if self.animation:
+            self.map.selected_tile(self.largest_peice_for_animation,[self.animated_tile_pos['x'], self.animated_tile_pos['y']]).draw(display)    
 
         # Step 4: Update the display
         pygame.display.flip()  # or pygame.display.update()
@@ -489,7 +495,7 @@ class Playing(State):
             for j in range(4):
                 rect = board_tiles[i][j].get_rect()
                 if rect.collidepoint(mouse_location_x, mouse_location_y):
-                    return BOARD_TILE, i, j, self.board[i][j]
+                    return BOARD_MOVE, i, j, self.board[i][j]
 
         # check red inventory tiles
         for i in range(3):
@@ -497,8 +503,8 @@ class Playing(State):
 
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (self.inventory[RED][i] == 0):
-                    return BOARDERS, DONT_CARE, DONT_CARE, DONT_CARE
-                return RED_INVENTORY, i, DONT_CARE , self.inventory[RED][i]
+                    return BOARDERS, BOARDERS, BOARDERS, BOARDERS
+                return INVENTORY_MOVE, RED, i , self.inventory[RED][i]
 
         # check blue inventory tiles
         for i in range(3):
@@ -506,10 +512,10 @@ class Playing(State):
 
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (not self.inventory[BLUE][i]):
-                    return BOARDERS, DONT_CARE, DONT_CARE, DONT_CARE
-                return BLUE_INVENTORY, i, DONT_CARE , self.inventory[BLUE][i]
+                    return BOARDERS, BOARDERS, BOARDERS, BOARDERS
+                return INVENTORY_MOVE, BLUE, i , self.inventory[BLUE][i]
 
-        return BOARDERS, DONT_CARE, DONT_CARE, DONT_CARE
+        return BOARDERS, BOARDERS, BOARDERS, BOARDERS
     def check_for_draw(self):
 
         if(len(self.last_red_moves) == 6 and compare_2d_lists(self.last_red_moves[0],self.last_red_moves[2]) and compare_2d_lists(self.last_red_moves[2],self.last_red_moves[4])):
