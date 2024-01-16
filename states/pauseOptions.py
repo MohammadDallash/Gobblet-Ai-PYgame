@@ -57,6 +57,12 @@ class PauseOptions(State):
 
     def set_volume(self, val):
         self.volume = val
+        if val == 'Higher':
+            self.game.music_player.set_volume(1.0)
+        elif val=='Lower':
+            self.game.music_player.set_volume(0.5)
+        else:
+            self.game.music_player.set_volume(0.0)
 
 
 class PoptionsSelect(State):

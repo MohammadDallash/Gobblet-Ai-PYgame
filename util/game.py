@@ -12,7 +12,6 @@ class Game():
         pygame.init()
 
         self.running = True
-
         self.actions = {"left": False, "right": False, "up": False, "down": False, "Esc": False, "enter": False,
                         "LEFT_MOUSE_KEY_PRESS": False}
 
@@ -27,7 +26,7 @@ class Game():
         self.helper = Helper(self)
 
         self.dt, self.prev_time = 0.0, 0.0
-
+        self.ai_difficulty = 1
         self.state_stack = []
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
@@ -42,6 +41,7 @@ class Game():
         # background music
         self.music_player = MusicPlayer()
         self.music_track = 'assets/sound/background music.mp3'
+        
         self.music_player.load_track(self.music_track)
         self.music_player.play()
 

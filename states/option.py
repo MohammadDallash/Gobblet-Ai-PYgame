@@ -63,9 +63,16 @@ class Option(State):
 
     def set_volume(self, val):
         self.volume = val
+        if val == 'Higher':
+            self.game.music_player.set_volume(1.0)
+        elif val=='Lower':
+            self.game.music_player.set_volume(0.5)
+        else:
+            self.game.music_player.set_volume(0.0)
 
     def set_PlayerMode(self, val):
         self.PlayerMode = val
+
 
     def set_Difficulty(self, val):
         self.Difficulty = val

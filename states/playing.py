@@ -27,7 +27,7 @@ BLUE, RED = 0, 1
 BOARDERS = "empty"
 BLUE_TURN = BLUE_PLAYER =  1
 RED_TURN = RED_PLAYER =  2
-
+EASY , HARD = 1, 2
 # different playing modes
 PLAYER_VS_PLAYER = 0
 PLAYER_VS_AI = 1
@@ -54,20 +54,16 @@ class Playing(State):
         self.source_selected = False  # stores whether the source piece is selected
         self.source_values =  [-1,-1,-1] # stores source values
         self.destination_values =  [-1,-1,-1] # stores dest values
-        self.music_player = MusicPlayer()
-        self.music_track = 'assets/sound/move_piece.mp3'
+        self.music_player = game.music_player
         self.last_red_moves = []
         self.last_red_moves = deque(self.last_red_moves)
-
 
         self.last_blue_moves = []
         self.last_blue_moves = deque(self.last_blue_moves)
 
+        self.ai_difficulty = self.game.ai_difficulty
         self.is_draw = False
-
-        ################################
         self.mode = game_type
-        ################################
         self.game_started = False
 
 
@@ -138,11 +134,10 @@ class Playing(State):
             
     
     def update(self, delta_time, actions):
+
         if(self.game_started == False):
             self.game_started = True
-            return  
-
-
+            return
 
         if self.turn == BLUE_PLAYER :
             self.mode = PLAYER_VS_PLAYER
@@ -165,7 +160,6 @@ class Playing(State):
         self.highlight_nearest_tile(pygame.mouse.get_pos())
         if(self.mode != AI_VS_AI):
             if actions['LEFT_MOUSE_KEY_PRESS']:
-                time.sleep(0.1)
                 self.handle_mouse_click()
 
 
@@ -187,7 +181,7 @@ class Playing(State):
                     self.animated_tile_pos['y'] -= self.animation_speed * self.slope
                 else:
                     self.board[self.destination_values[1]][self.destination_values[2]] |= self.largest_peice_for_animation
-                    self.music_player.play_sfx(self.music_track)
+                    self.music_player.play_sfx()
                     self.animation = False
                     self.switch_turns()
 
@@ -331,7 +325,7 @@ class Playing(State):
                 self.switch_turns()
             else:
                 return
-        self.music_player.play_sfx(self.music_track)
+        self.music_player.play_sfx()
         
 
     def render(self, display):
@@ -377,8 +371,6 @@ class Playing(State):
             elif(source_location==INVENTORY_MOVE):
                 largest_piece_in_source = get_largest_piece(self.inventory[source_i][source_j])
 
-             
-          
 
             # draw the selected piece on the mouse.
             self.map.selected_tile(largest_piece_in_source,mouse_pos).draw(display)
@@ -516,8 +508,11 @@ class Playing(State):
                 return INVENTORY_MOVE, BLUE, i , self.inventory[BLUE][i]
 
         return BOARDERS, BOARDERS, BOARDERS, BOARDERS
+    
+    
+    # checks for a draw in the beginning of a round.
+    # has a bug TODO()
     def check_for_draw(self):
-
         if(len(self.last_red_moves) == 6 and compare_2d_lists(self.last_red_moves[0],self.last_red_moves[2]) and compare_2d_lists(self.last_red_moves[2],self.last_red_moves[4])):
             self.is_draw = True
             draw_state = DrawMenu(self.game, self.mode, self.game.music_player.check_music())
@@ -528,6 +523,7 @@ class Playing(State):
             draw_state = DrawMenu(self.game, self.mode, self.game.music_player.check_music())
             draw_state.enter_state()
 
+    # switches turns after a move is made.
     def switch_turns(self):
         if self.turn == BLUE_TURN:
             self.turn = RED_TURN
