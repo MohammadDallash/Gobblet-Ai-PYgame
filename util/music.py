@@ -1,3 +1,4 @@
+import time
 import pygame
 
 class MusicPlayer:
@@ -6,6 +7,7 @@ class MusicPlayer:
         self.current_track = None
         self.background_sound = None
         self.sfx = pygame.mixer.Sound('assets/sound/move_piece.mp3')
+        self.win_sound = pygame.mixer.Sound('assets/sound/win sound.mp3')
         self.volume = 1.0
 
     def load_track(self, track_path):
@@ -37,3 +39,10 @@ class MusicPlayer:
     def play_sfx(self):
         self.sfx.set_volume(self.volume)
         pygame.mixer.Channel(1).play(self.sfx)
+
+    def play_win_sound(self):
+        pygame.mixer.Channel(0).play(self.win_sound,loops=-1)
+        time.sleep(3)
+        pygame.mixer.Channel(0).play(self.background_sound,loops=-1)
+        
+
