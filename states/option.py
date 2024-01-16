@@ -14,9 +14,7 @@ class Option(State):
         self.Music_on_options = ['On', 'Off']
         self.Difficulty_options = ['Easy', 'Hard']
         self.volume = 'Higher'
-        
         self.Difficulty = 'Easy'
-
         self.cur_option = 0
         self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=30,
                                x_pos=self.game.DISPLAY_W / 2,
@@ -76,6 +74,10 @@ class Option(State):
 
     def set_Difficulty(self, val):
         self.Difficulty = val
+        if val == 'Easy':
+            self.game.ai_difficulty = 1
+        else:
+            self.game.ai_difficulty = 2
 
 
 class Option_select(State):
