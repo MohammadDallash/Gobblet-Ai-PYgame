@@ -92,7 +92,7 @@ class Playing(State):
 
         if(src[0]==INVENTORY_MOVE):
             largest_piece_src = get_largest_piece(self.inventory[src[1]][src[2]])
-            
+
             self.inventory[src[1]][src[2]] &= ~largest_piece_src
             self.src_for_anime_pos['x'] = self.inventory_tiles[src[1]][src[2]].rect.x + self.map.tile_size/2
             self.src_for_anime_pos['y'] = self.inventory_tiles[src[1]][src[2]].rect.y+ self.map.tile_size/2
@@ -245,7 +245,6 @@ class Playing(State):
         else:
             self.destination_values = [move_type,i,j]
 
-
         source_type, source_i, source_j = self.source_values
 
         # piece selected is blue in red's turn or red in blue's turn.
@@ -280,7 +279,7 @@ class Playing(State):
     def move_piece(self,move):
 
         # load source and destenation values into a variable for better readability.
-        source_type, source_i, source_j = move[0]
+        source_type, src_i, src_j = move[0]
         dst_location,dst_i,dst_j = move[1] # save destenation values.
         self.source_selected = False
         val_dst = self.board[dst_i][dst_j]
@@ -290,31 +289,25 @@ class Playing(State):
         if source_type == INVENTORY_MOVE:
 
             # get the value of the source location (BLUE Inventory)
-            val_src = self.inventory[source_i][source_j]
-
-            # get the largest piece in that place
-            largest_piece_in_source = get_largest_piece(val_src)
+            val_src = self.inventory[src_i][src_j]
 
             # if the move is valid, if the move is valid, go ahead with it.
-            if is_move_valid(val_src, val_dst):
-                self.inventory[source_i][source_j] &= ~(largest_piece_in_source)
-                self.board[dst_i][dst_j] |= largest_piece_in_source
-            else:
+            if not is_move_valid(val_src, val_dst):
                 return
+            
+            apply_move(self.inventory,src_i,src_j,self.board,dst_i,dst_j)
 
         # if the source is a board.
         elif (source_type == BOARD_MOVE):
 
             # get the value of the source location (board).
-            val_src = self.board[source_i][source_j]
-            # get the largest piece in that place.
-            largest_piece_in_source = get_largest_piece(val_src)
+            val_src = self.board[src_i][src_j]
+            
             # if the move is valid, if the move is valid, go ahead with it.
-            if (is_move_valid(val_src, val_dst)):
-                self.board[source_i][source_j] &= ~(largest_piece_in_source)
-                self.board[dst_i][dst_j] |= largest_piece_in_source
-            else:
+            if (not is_move_valid(val_src, val_dst)):
                 return
+
+            apply_move(self.board,src_i,src_j,self.board,dst_i,dst_j)
             
         self.switch_turns()
         self.global_music_player.play_sfx()
