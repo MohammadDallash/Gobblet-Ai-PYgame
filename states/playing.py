@@ -368,6 +368,8 @@ class Playing(State):
                 self.board[source_i][source_j] &= ~(largest_piece_in_source)
                 self.board[dst_i][dst_j] |= largest_piece_in_source
                 self.switch_turns()
+                move = [self.source_values,self.destination_values]
+                self.client_socket.send(convert_move_to_str(move).encode())
             else:
                 return
         self.music_player.play_sfx()
