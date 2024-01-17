@@ -9,6 +9,8 @@ from util.music import *
 import pygame
 from util.helpers import *
 import time
+import socket
+
 
 
 
@@ -91,6 +93,16 @@ class Playing(State):
         self.dst_for_anime_pos = {'x': -1, 'y':-1 }
         self.animation_speed = 60
         self.slope = -1
+        #Multplyer_CLient
+        self.server_ip = '127.0.0.1'
+        self.server_port = 8000
+
+        # Create a socket object
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # Connect to the server
+        self.client_socket.connect((self.server_ip, self.server_port))
+        print(f"Connected to server at {self.server_ip}:{self.server_port}")
 
     
     def set_animation_parameter(self, src, dst):
@@ -142,7 +154,7 @@ class Playing(State):
         if self.turn == BLUE_PLAYER :
             self.mode = PLAYER_VS_PLAYER
         elif self.turn == RED_PLAYER:
-            self.mode = AI_VS_AI
+            self.mode = MULTIPLAYER_CLIENT
 
 
         # print("Animated Tile Pos:", self.animated_tile_pos)
@@ -197,10 +209,28 @@ class Playing(State):
 
 
         elif(self.mode == MULTIPLAYER_CLIENT):
-            if(self.destination_values):
-                move = [self.source_values,self.destination_values]
-                self.client.send(convert_move_to_str(move).encode('utf-8'))
-                data = self.client.recv(1024)
+            
+            # if(self.destination_values):
+            #     move = [self.source_values,self.destination_values]
+            #     self.client.send(convert_move_to_str(move).encode('utf-8'))
+            #     data = self.client.recv(1024)
+            if self.animation:
+                if self.animated_tile_pos['x'] < self.dst_for_anime_pos['x']:
+                    self.animated_tile_pos['x'] += self.animation_speed
+                    self.animated_tile_pos['y'] += self.animation_speed * self.slope
+                elif self.animated_tile_pos['x'] > self.dst_for_anime_pos['x']:
+                    self.animated_tile_pos['x'] -= self.animation_speed
+                    self.animated_tile_pos['y'] -= self.animation_speed * self.slope
+                else:
+                    self.board[self.destination_values[1]][self.destination_values[2]] |= self.largest_peice_for_animation
+                    self.music_player.play_sfx()
+                    self.animation = False
+                    self.switch_turns()
+
+
+            else:
+                s = self.client_socket.recv(1024).decode()
+                self.parse_input_string(s)
 
 
         elif(self.mode==MULTIPLAYER_SERVER):
@@ -307,6 +337,8 @@ class Playing(State):
                 self.inventory[source_i][source_j] &= ~(largest_piece_in_source)
                 self.board[dst_i][dst_j] |= largest_piece_in_source
                 self.switch_turns()
+                move = [self.source_values,self.destination_values]
+                self.client_socket.send(convert_move_to_str(move).encode())
 
             else:
                 return
@@ -323,6 +355,10 @@ class Playing(State):
                 self.board[source_i][source_j] &= ~(largest_piece_in_source)
                 self.board[dst_i][dst_j] |= largest_piece_in_source
                 self.switch_turns()
+                move = [self.source_values,self.destination_values]
+                self.client_socket.send(convert_move_to_str(move).encode())
+
+
             else:
                 return
         self.music_player.play_sfx()
