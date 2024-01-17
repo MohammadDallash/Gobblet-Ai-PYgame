@@ -5,21 +5,12 @@ import pygame
 
 
 class WinnerMenu(State):
-    def __init__(self, game, winner, play_mode, music_mode):
+    def __init__(self, game, winner, play_mode):
         State.__init__(self, game)
         self.options_str = ['New Game', 'Main Menu', 'Quit']
         self.winner = winner
-        
-
-        
-        # if music was on before entering state it will be = 1
-        self.music_mode = music_mode
-        
-        # variable to save previous game mode
         self.play_mode = play_mode
-
         self.cur_option = 0
-
         self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=30,
                                x_pos=self.game.DISPLAY_W / 2)
 
@@ -77,10 +68,6 @@ class WinnerMenu(State):
 
     def enter_state(self):
         super().enter_state()
-        self.game.music_player.play_win_sound()
-
-        # if self.music_mode:
-        #     self.game.music_player.unpause()
 
     def exit_state(self):
         super().exit_state()

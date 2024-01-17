@@ -54,19 +54,19 @@ class Option(State):
     def set_music(self, val):
         self.Music = val
         if val == 'Off':
-            self.game.music_player.pause()
+            self.game.global_music_player.pause()
         elif val == "On":
-            self.game.music_player.unpause()
+            self.game.global_music_player.unpause()
             
 
     def set_volume(self, val):
         self.volume = val
         if val == 'Higher':
-            self.game.music_player.set_volume(1.0)
+            self.game.global_music_player.set_volume(1.0)
         elif val=='Lower':
-            self.game.music_player.set_volume(0.5)
+            self.game.global_music_player.set_volume(0.5)
         else:
-            self.game.music_player.set_volume(0.0)
+            self.game.global_music_player.set_volume(0.0)
 
     def set_PlayerMode(self, val):
         self.PlayerMode = val

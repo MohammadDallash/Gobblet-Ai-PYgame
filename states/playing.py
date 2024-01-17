@@ -54,17 +54,16 @@ class Playing(State):
         self.source_selected = False  # stores whether the source piece is selected
         self.source_values =  [-1,-1,-1] # stores source values
         self.destination_values =  [-1,-1,-1] # stores dest values
-        self.music_player = game.music_player
-        self.last_red_moves = []
-        self.last_red_moves = deque(self.last_red_moves)
+        self.global_music_player = game.global_music_player
+        self.last_red = []
+        self.last_red = deque(self.last_red)
 
-        self.last_blue_moves = []
-        self.last_blue_moves = deque(self.last_blue_moves)
+        self.last_blue = []
+        self.last_blue = deque(self.last_blue)
 
         self.ai_difficulty = self.game.ai_difficulty
-        self.is_draw = False
         self.mode = game_type
-        self.game_started = False
+
 
 
         # Initial board                                                          
@@ -81,7 +80,6 @@ class Playing(State):
 
         self.map.reconstruct_map(self.board)
 
-        self.game_started = False
 
 
         self.animation = False
@@ -135,14 +133,11 @@ class Playing(State):
     
     def update(self, delta_time, actions):
 
-        if(self.game_started == False):
-            self.game_started = True
-            return
 
-        if self.turn == BLUE_PLAYER :
-            self.mode = PLAYER_VS_PLAYER
-        elif self.turn == RED_PLAYER:
-            self.mode = AI_VS_AI
+        # if self.turn == BLUE_PLAYER :
+        #     self.mode = PLAYER_VS_PLAYER
+        # elif self.turn == RED_PLAYER:
+        #     self.mode = AI_VS_AI
 
 
         # print("Animated Tile Pos:", self.animated_tile_pos)
@@ -181,7 +176,7 @@ class Playing(State):
                     self.animated_tile_pos['y'] -= self.animation_speed * self.slope
                 else:
                     self.board[self.destination_values[1]][self.destination_values[2]] |= self.largest_peice_for_animation
-                    self.music_player.play_sfx()
+                    self.global_music_player.play_sfx()
                     self.animation = False
                     self.switch_turns()
 
@@ -190,8 +185,6 @@ class Playing(State):
                 self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
                 s = (self.helper.cpp_code("current_state_file.txt"))
                 self.parse_input_string(s)
-
-
 
 
 
@@ -217,7 +210,7 @@ class Playing(State):
 
 
     def handle_mouse_click(self):
-        move_type, i, j, state = self.get_clicked_tile_id(self.board_tiles, self.inventory_tiles)
+        move_type, i, j, state = self.get_clicked_tile_id()
 
         # if the source is in the boarders, ignore it.
         if (move_type == BOARDERS):
@@ -325,7 +318,7 @@ class Playing(State):
                 self.switch_turns()
             else:
                 return
-        self.music_player.play_sfx()
+        self.global_music_player.play_sfx()
         
 
     def render(self, display):
@@ -364,7 +357,7 @@ class Playing(State):
                 largest_piece_in_source = get_largest_piece(self.board[source_i][source_j])
 
                 # if the its not that player's turn, cancel drawing.
-                if not (largest_piece_in_source>ALL_BLUE and self.turn==RED_TURN) and not(largest_piece_in_source<ALL_BLUE and self.turn==BLUE_TURN):
+                if not (is_red(largest_piece_in_source) and self.turn==RED_TURN) and not(is_blue(largest_piece_in_source) and self.turn==BLUE_TURN):
                     return
                     
             # only allow drawing if the source is the blue inventory, and it's the blue turn.       
@@ -397,20 +390,18 @@ class Playing(State):
             # check if the row has 4 pieces of the same color.
             for j in range(4):
                 # if the current piece is red then increment red by 1.
-                if get_largest_piece(self.board[i][j]) > ALL_BLUE and not self.board[i][j] == EMPTY_TILE:
+                if is_red(get_largest_piece(self.board[i][j])) and not self.board[i][j] == EMPTY_TILE:
                     red += 1
                 # if the current piece is blue then increment blue by 1.
-                elif get_largest_piece(self.board[i][j]) < RED_SMALL and not self.board[i][j] == EMPTY_TILE:
+                elif is_blue(get_largest_piece(self.board[i][j])) and not self.board[i][j] == EMPTY_TILE:
                     blue += 1
 
             if red == 4:
-                winner_state = WinnerMenu(self.game, RED_PLAYER, self.mode, self.game.music_player.check_music())
-                # time.sleep(3)
-                winner_state.enter_state()
+                self.announce_winner(RED_PLAYER)
+
             elif blue == 4:
-                winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.mode, self.game.music_player.check_music())
-                # time.sleep(3)
-                winner_state.enter_state()
+                self.announce_winner(BLUE_PLAYER)
+
             # reset counters.
             blue = 0
             red = 0
@@ -419,21 +410,19 @@ class Playing(State):
             # check if the column has 4 pieces of the same color.
             for j in range(4):
                 # if the current piece is red then increment red by 1.
-                if get_largest_piece(self.board[j][i]) > ALL_BLUE and not self.board[j][i] == EMPTY_TILE:
+                if is_red(get_largest_piece(self.board[j][i])) and not self.board[j][i] == EMPTY_TILE:
                     red += 1
                 # if the current piece is blue then increment blue by 1.
-                elif get_largest_piece(self.board[j][i]) < RED_SMALL and not self.board[j][i] == EMPTY_TILE:
+                elif is_blue(get_largest_piece(self.board[j][i])) and not self.board[j][i] == EMPTY_TILE:
                     blue += 1
 
             if red == 4:
-                winner_state = WinnerMenu(self.game, RED_PLAYER, self.mode, self.game.music_player.check_music())
-                # time.sleep(3)
-                winner_state.enter_state()
+                self.announce_winner(RED_PLAYER)
+                
 
             elif blue == 4:
-                winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.mode, self.game.music_player.check_music())
-                # time.sleep(3)
-                winner_state.enter_state()
+                self.announce_winner(BLUE_PLAYER)
+                
 
             # reset counters.
             blue = 0
@@ -441,57 +430,53 @@ class Playing(State):
 
         # main diagonal
         for i in range(4):
-            if get_largest_piece(self.board[i][i]) > ALL_BLUE and not self.board[i][i] == EMPTY_TILE:
+            if is_red(get_largest_piece(self.board[i][i])) and not self.board[i][i] == EMPTY_TILE:
                 red += 1
 
-            elif get_largest_piece(self.board[i][i]) < RED_SMALL and not self.board[i][i] == EMPTY_TILE:
+            elif is_blue(get_largest_piece(self.board[i][i])) and not self.board[i][i] == EMPTY_TILE:
                 blue += 1
 
         if red == 4:
-            winner_state = WinnerMenu(self.game, RED_PLAYER, self.mode, self.game.music_player.check_music())
-            # time.sleep(3)
-            winner_state.enter_state()
+            self.announce_winner(RED_PLAYER)
+
         elif blue == 4:
-            winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.mode, self.game.music_player.check_music())
-            # time.sleep(3)
-            winner_state.enter_state()
+            self.announce_winner(BLUE_PLAYER)
+            
 
         blue = 0
         red = 0
 
         # other diagonal
         for i in range(4):
-            if get_largest_piece(self.board[i][3-i]) > ALL_BLUE and not self.board[i][3 - i] == EMPTY_TILE:
+            if  is_red(get_largest_piece(self.board[i][3-i])) and not self.board[i][3 - i] == EMPTY_TILE:
                 red += 1
 
-            elif get_largest_piece(self.board[i][3-i]) < RED_SMALL and not self.board[i][3 - i] == EMPTY_TILE:
+            elif is_blue(get_largest_piece(self.board[i][3-i])) and not self.board[i][3 - i] == EMPTY_TILE:
                 blue += 1
 
         if red == 4:
-            winner_state = WinnerMenu(self.game, RED_PLAYER, self.mode, self.game.music_player.check_music())
-            # time.sleep(3)
-            winner_state.enter_state()
+            self.announce_winner(RED_PLAYER)
 
         elif blue == 4:
-            winner_state = WinnerMenu(self.game, BLUE_PLAYER, self.mode, self.game.music_player.check_music())
-            # time.sleep(3)
-            winner_state.enter_state()
+            self.announce_winner(BLUE_PLAYER)
+
+
 
     # check if the mouse click is within a certain tile and returns its position.
-    def get_clicked_tile_id(self, board_tiles, inventory_tiles):
+    def get_clicked_tile_id(self):
 
         mouse_location_x, mouse_location_y = pygame.mouse.get_pos()
 
         # check board tiles.
         for i in range(4):
             for j in range(4):
-                rect = board_tiles[i][j].get_rect()
+                rect = self.board_tiles[i][j].get_rect()
                 if rect.collidepoint(mouse_location_x, mouse_location_y):
                     return BOARD_MOVE, i, j, self.board[i][j]
 
         # check red inventory tiles
         for i in range(3):
-            rect = inventory_tiles[RED][i].get_rect()
+            rect = self.inventory_tiles[RED][i].get_rect()
 
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (self.inventory[RED][i] == 0):
@@ -500,7 +485,7 @@ class Playing(State):
 
         # check blue inventory tiles
         for i in range(3):
-            rect = inventory_tiles[BLUE][i].get_rect()
+            rect = self.inventory_tiles[BLUE][i].get_rect()
 
             if rect.collidepoint(mouse_location_x, mouse_location_y):
                 if (not self.inventory[BLUE][i]):
@@ -511,25 +496,35 @@ class Playing(State):
     
     
     # checks for a draw in the beginning of a round.
-    # has a bug TODO()
+    
     def check_for_draw(self):
-        if(len(self.last_red_moves) == 6 and compare_2d_lists(self.last_red_moves[0],self.last_red_moves[2]) and compare_2d_lists(self.last_red_moves[2],self.last_red_moves[4])):
-            self.is_draw = True
-            draw_state = DrawMenu(self.game, self.mode, self.game.music_player.check_music())
+        
+        if(is_draw(self.last_blue,self.last_red)):
+            draw_state = DrawMenu(self.game, self.mode)
             draw_state.enter_state()
 
-        if(len(self.last_blue_moves) == 6 and compare_2d_lists(self.last_blue_moves[0],self.last_blue_moves[2]) and compare_2d_lists(self.last_blue_moves[2],self.last_blue_moves[4])):
-            self.is_draw = True
-            draw_state = DrawMenu(self.game, self.mode, self.game.music_player.check_music())
-            draw_state.enter_state()
+        if(len(self.last_blue) > 6):
+            self.last_blue.popleft()
+
+        if(len(self.last_red) > 6):
+            self.last_red.popleft()
+
+        
+    def announce_winner(self,player):
+        self.global_music_player.play_win_sound()
+        time.sleep(3)
+        self.global_music_player.play_background_sound()
+        winner_state = WinnerMenu(self.game, player, self.mode)
+        winner_state.enter_state() 
+
 
     # switches turns after a move is made.
     def switch_turns(self):
         if self.turn == BLUE_TURN:
             self.turn = RED_TURN
-            self.last_blue_moves.append([self.source_values,self.destination_values])
+            self.last_blue.append([self.source_values,self.destination_values])
             self.turn_text = self.players_names[RED] + ' Turn'
         else:
             self.turn = BLUE_TURN
-            self.last_red_moves.append([self.source_values,self.destination_values])
+            self.last_red.append([self.source_values,self.destination_values])
             self.turn_text = self.players_names[BLUE] + ' Turn'

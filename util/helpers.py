@@ -117,6 +117,40 @@ def compare_2d_lists(list1, list2):
     return True  # All elements are equal
 
 
+def is_blue(piece):
+
+    return piece < ALL_BLUE
+
+
+def is_red(piece):
+        
+    return piece > ALL_BLUE
+
+
+
+def is_draw(last_blue,last_red):
+    condition1 = len(last_red) == 6 and compare_2d_lists(last_red[0],last_red[2])  and compare_2d_lists(last_red[1],last_red[3])  and compare_2d_lists(last_red[2],last_red[4])  and compare_2d_lists(last_red[3],last_red[5])
+
+    condition2 = len(last_blue) == 6 and compare_2d_lists(last_blue[0],last_blue[2]) and compare_2d_lists(last_blue[1],last_blue[3]) and compare_2d_lists(last_blue[2],last_blue[4]) and compare_2d_lists(last_blue[3],last_blue[5])
+
+    if(condition1 or condition2):
+        return True
+    else:
+        return False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Helper:
     def __init__(self, game):

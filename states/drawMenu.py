@@ -5,7 +5,7 @@ import pygame
 
 
 class DrawMenu(State):
-    def __init__(self, game, play_mode,music_mode):
+    def __init__(self, game, play_mode):
         State.__init__(self, game)
         self.options_str = ['New Game', 'Main Menu', 'Quit']
         
@@ -13,7 +13,7 @@ class DrawMenu(State):
         # self.draw_sound = pygame.mixer.Sound('assets/sound/win sound.mp3')
         
         # if music was on before entering state it will be = 1
-        self.music_mode = music_mode
+        # self.music_mode = music_mode
         
         # variable to save previous game mode
         self.play_mode = play_mode
@@ -77,11 +77,11 @@ class DrawMenu(State):
 
     def enter_state(self):
         super().enter_state()
-        # self.game.music_player.pause()
+        # self.game.global_music_player.pause()
         # self.draw_sound.play()
         # time.sleep(3)
         # if self.music_mode:
-        #     self.game.music_player.unpause()
+        #     self.game.global_music_player.unpause()
 
     def exit_state(self):
         super().exit_state()
