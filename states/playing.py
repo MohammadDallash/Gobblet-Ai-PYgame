@@ -94,8 +94,8 @@ class Playing(State):
         self.animation_speed = 60
         self.slope = -1
         #Multplyer_CLient
-        self.server_ip = '127.0.0.1'
-        self.server_port = 8000
+        self.server_ip = '192.168.1.57'
+        self.server_port = 1233
 
         # Create a socket object
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

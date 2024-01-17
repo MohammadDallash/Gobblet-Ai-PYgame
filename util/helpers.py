@@ -60,7 +60,7 @@ def compare_2d_lists(list1, list2):
 
 
 def convert_move_to_str(move):
-    move_str = f"{move[0][0]}+{move[0][1]}+{move[0][2]}+{move[1][0]}+{move[1][1]}+{move[1][2]}"
+    move_str = f"{move[0][0]} {move[0][1]} {move[0][2]} {move[1][0]} {move[1][1]} {move[1][2]}"
     return move_str
 
 def convert_stream_to_list(move_str):
