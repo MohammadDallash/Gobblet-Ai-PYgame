@@ -214,7 +214,7 @@ class Playing(State):
 
 
 
-        elif(self.mode == MULTIPLAYER_CLIENT):
+        elif(self.mode == MULTIPLAYER_SERVER):
             # if(self.destination_values):
             #     move = [self.source_values,self.destination_values]
             #     self.client.send(convert_move_to_str(move).encode('utf-8'))
@@ -245,7 +245,7 @@ class Playing(State):
             # self.client_socket.send(message.encode())
 
 
-        elif(self.mode==MULTIPLAYER_SERVER):
+        elif(self.mode==MULTIPLAYER_CLIENT):
             if(self.destination_values):
                 client, addr = self.server.accept()
                 data = client.recv(1024)
