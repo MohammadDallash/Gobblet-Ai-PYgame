@@ -347,8 +347,8 @@ int static_evaluation(State curState)
 
     }
     other_diagonal = blue + red;
-    if(y == -3 && x == 1)red_close = 20;
-    if(x == 3 && y == -1)blue_close = -20;
+    if(y == -3 && x == 1)red_close = 10;
+    if(x == 3 && y == -1)blue_close = -10;
 
     // calculate the maximum - minimum
     int maxx = INT_MIN, minn = INT_MAX;
@@ -363,9 +363,10 @@ int static_evaluation(State curState)
     }
     maxx = max(max(other_diagonal,main_diagonal),maxx);
     minn = min(min(other_diagonal,main_diagonal),minn);
+    int sum_inv1 = curState.inventory[0][0] + curState.inventory[0][1] + curState.inventory[0][2]; 
+    int sum_inv2 = curState.inventory[1][0] + curState.inventory[1][1] + curState.inventory[1][2];
 
-
-    return  20*(maxx + minn) ;
+    return  5*(maxx + minn) + red_close + blue_close + sum_inv1 + sum_inv2;
 }
 
 bool customSort( State a,  State b) {
