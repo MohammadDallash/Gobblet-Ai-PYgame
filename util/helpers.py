@@ -138,10 +138,7 @@ def is_draw(last_blue,last_red):
     else:
         return False
 
-def apply_move(src,src_i,src_j,dst,dst_i,dst_j):
-        largest_piece_in_source = get_largest_piece(src[src_i][src_j])
-        src[src_i][src_j] &= ~(largest_piece_in_source)
-        dst[dst_i][dst_j] |= largest_piece_in_source
+
 
 
 

@@ -25,8 +25,8 @@ BLUE, RED = 0, 1
 
 
 BOARDERS = -1
-BLUE_TURN = BLUE_PLAYER =  1
-RED_TURN = RED_PLAYER =  2
+BLUE_TURN = BLUE_PLAYER =  0
+RED_TURN = RED_PLAYER =  1
 EASY , HARD = 1, 2
 
 # different playing modes
@@ -65,6 +65,8 @@ class Playing(State):
         self.ai_difficulty = self.game.ai_difficulty
         self.mode = game_type
 
+        
+
 
 
         # Initial board                                                          
@@ -79,17 +81,17 @@ class Playing(State):
             [ALL_RED, ALL_RED, ALL_RED]  # inv for red
         ]
 
+        self.refresh_UI()
 
         self.animation = False
         self.animated_tile_pos = {'x': -1, 'y':-1 }
         self.src_for_anime_pos = {'x': -1, 'y':-1 }
         self.dst_for_anime_pos = {'x': -1, 'y':-1 }
-        self.animation_speed = 60
+        self.animation_speed = 120
         self.slope = -1
 
     
     def set_animation_parameter(self, src, dst):
-
         if(src[0]==INVENTORY_MOVE):
             largest_piece_src = get_largest_piece(self.inventory[src[1]][src[2]])
 
@@ -116,6 +118,10 @@ class Playing(State):
         self.destination_values = dst   
         self.animation = True
 
+        self.refresh_UI()
+
+        
+
 
 
     def parse_input_string(self,input_string):
@@ -131,33 +137,17 @@ class Playing(State):
             
     
     def update(self, delta_time, actions):
-
-
-        # if self.turn == BLUE_PLAYER :
-        #     self.mode = PLAYER_VS_PLAYER
-        # elif self.turn == RED_PLAYER:
-        #     self.mode = AI_VS_AI
-
-
-        # print("Animated Tile Pos:", self.animated_tile_pos)
-        # print("Source for Anime Pos:", self.src_for_anime_pos)
-        # print("Destination for Anime Pos:", self.dst_for_anime_pos)
-
-        
+        if not self.animation:
+            self.check_for_draw()
+            self.check_wins()
 
         self.handle_mode_operations()
 
         
-
-        if not self.animation: 
-            self.check_for_draw()
-            self.check_wins()
-
-
         
         self.highlight_nearest_tile(pygame.mouse.get_pos())
         if(self.mode != AI_VS_AI or(self.turn ==BLUE_TURN and self.mode==PLAYER_VS_AI)):
-            if actions['LEFT_MOUSE_KEY_PRESS']:
+            if not self.animation and actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click()
 
 
@@ -178,13 +168,18 @@ class Playing(State):
                     self.animated_tile_pos['x'] -= self.animation_speed
                     self.animated_tile_pos['y'] -= self.animation_speed * self.slope
                 else:
+                    print(self.largest_peice_for_animation,  self.destination_values,'--------------------------------------')
                     self.board[self.destination_values[1]][self.destination_values[2]] |= self.largest_peice_for_animation
                     self.global_music_player.play_sfx()
                     self.animation = False
                     self.switch_turns()
 
+
+                    self.refresh_UI()
+
+
             else:
-                self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
+                self.helper.flush_to_file(self.turn, self.board,self.inventory)
                 s = (self.helper.cpp_code("current_state_file.txt"))
                 self.parse_input_string(s)
 
@@ -206,6 +201,20 @@ class Playing(State):
                 move = convert_stream_to_list(data_str)
                 client.send(move)
                 # self.server.close()
+
+
+    def refresh_UI(self):
+        self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
+        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
+
+
+
+    def apply_move(self,src,src_i,src_j,dst,dst_i,dst_j):
+        largest_piece_in_source = get_largest_piece(src[src_i][src_j])
+        src[src_i][src_j] &= ~(largest_piece_in_source)
+        dst[dst_i][dst_j] |= largest_piece_in_source
+
+        self.refresh_UI()
 
 
 
@@ -244,7 +253,7 @@ class Playing(State):
             self.source_values = [move_type, i, j]
             self.source_selected = True
             return
-        else:
+        else :
             self.destination_values = [move_type,i,j]
 
         source_type, source_i, source_j = self.source_values
@@ -297,7 +306,7 @@ class Playing(State):
             if not is_move_valid(val_src, val_dst):
                 return
             
-            apply_move(self.inventory,src_i,src_j,self.board,dst_i,dst_j)
+            self.apply_move(self.inventory,src_i,src_j,self.board,dst_i,dst_j)
 
         # if the source is a board.
         elif (source_type == BOARD_MOVE):
@@ -309,7 +318,7 @@ class Playing(State):
             if (not is_move_valid(val_src, val_dst)):
                 return
 
-            apply_move(self.board,src_i,src_j,self.board,dst_i,dst_j)
+            self.apply_move(self.board,src_i,src_j,self.board,dst_i,dst_j)
             
         self.switch_turns()
         self.global_music_player.play_sfx()
@@ -318,9 +327,6 @@ class Playing(State):
     def render(self, display):
 
         display.blit(self.bg, (0, 0))
-        # draw board and inventory tiles on the screen.
-        self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
-        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
 
         # Display the current turn text at the top of the screen
         self.helper.draw_text(display, self.turn_text, self.game.RED, 20, self.game.DISPLAY_W / 2, 30)
@@ -475,7 +481,7 @@ class Playing(State):
         self.global_music_player.play_win_sound()
         time.sleep(3)
         self.global_music_player.play_background_sound()
-        winner_state = WinnerMenu(self.game, player, self.mode)
+        winner_state = WinnerMenu(self.game, player+1, self.mode)
         winner_state.enter_state() 
 
     # switches turns after a move is made.
