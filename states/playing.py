@@ -153,7 +153,7 @@ class Playing(State):
 
         
         self.highlight_nearest_tile(pygame.mouse.get_pos())
-        if(self.mode != AI_VS_AI):
+        if(self.mode != AI_VS_AI or(self.turn ==BLUE_TURN and self.mode==PLAYER_VS_AI)):
             if actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click()
 
@@ -166,7 +166,7 @@ class Playing(State):
 
 
     def handle_mode_operations(self):
-        if(self.mode == AI_VS_AI):
+        if(self.mode == AI_VS_AI or (self.turn ==RED_TURN and self.mode==PLAYER_VS_AI) ):
             if self.animation:
                 if self.animated_tile_pos['x'] < self.dst_for_anime_pos['x']:
                     self.animated_tile_pos['x'] += self.animation_speed
@@ -179,7 +179,6 @@ class Playing(State):
                     self.global_music_player.play_sfx()
                     self.animation = False
                     self.switch_turns()
-
 
             else:
                 self.helper.flush_to_file(self.turn-1, self.board,self.inventory)
@@ -255,7 +254,7 @@ class Playing(State):
             if is_red(get_largest_piece(self.board[source_i][source_j]))  and self.turn == BLUE_TURN:
                 return
             
-        if(self.mode == PLAYER_VS_PLAYER):
+        if(self.mode == PLAYER_VS_PLAYER or (self.turn ==BLUE_TURN and self.mode==PLAYER_VS_AI)):
             move = [self.source_values,self.destination_values]
             self.move_piece(move)
 
@@ -315,8 +314,10 @@ class Playing(State):
 
     def render(self, display):
 
-
         display.blit(self.bg, (0, 0))
+        # draw board and inventory tiles on the screen.
+        self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
+        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
 
         # Display the current turn text at the top of the screen
         self.helper.draw_text(display, self.turn_text, self.game.RED, 20, self.game.DISPLAY_W / 2, 30)
@@ -329,9 +330,6 @@ class Playing(State):
             s.fill((255,255,255)) # set color to red
             display.blit(s,(self.highlighted_tile_rect.x+5,self.highlighted_tile_rect.y+5))  # shift start coordinates of the surface and blit
 
-        # draw board and inventory tiles on the screen.
-        self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
-        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
 
         # if a piece is choosen
         if self.source_selected:
