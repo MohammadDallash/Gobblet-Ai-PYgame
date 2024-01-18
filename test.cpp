@@ -366,7 +366,7 @@ int static_evaluation(State curState)
     int sum_inv1 = curState.inventory[0][0] + curState.inventory[0][1] + curState.inventory[0][2]; 
     int sum_inv2 = curState.inventory[1][0] + curState.inventory[1][1] + curState.inventory[1][2];
 
-    return  5*(maxx + minn) + red_close + blue_close + sum_inv1 + sum_inv2;
+    return  10*(maxx + minn) + 3*(red_close + blue_close) + 0.5*(sum_inv1 + sum_inv2);
 }
 
 bool customSort( State a,  State b) {
