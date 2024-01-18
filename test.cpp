@@ -540,33 +540,41 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
     return temp;
 }
 
-int main()
+int main(int argc, char *argv[]) 
 {
     srand(static_cast<unsigned int>(time(0)));
     State initial_state;
 
     // Input the turn.
-    cin >> initial_state.turn;
+    initial_state.turn = atoi(argv[1]);
 
     // Input the board.
-    fori(BOARD_SIZE) forj(BOARD_SIZE) cin >> initial_state.board[i][j];
-        
+    int arg_index = 2;
+    fori(BOARD_SIZE) {
+        forj(BOARD_SIZE) {
+            initial_state.board[i][j] = atoi(argv[arg_index++]);
+        }
+    }
+
     // Input the inventory.
-    fori(NUMBER_OF_PLAYERS) forj(INVENTORY_SIZE) cin >> initial_state.inventory[i][j];
-        
-    
+    fori(NUMBER_OF_PLAYERS) {
+        forj(INVENTORY_SIZE) {
+            initial_state.inventory[i][j] = atoi(argv[arg_index++]);
+        }
+    }
+
+    int depth = atoi(argv[arg_index]);
 
     // debug_state(initial_state);
-    auto state =  minMax_alpha_beta(initial_state,3,INT32_MIN,INT32_MAX, true, true);
+    auto state = minMax_alpha_beta(initial_state, depth, INT32_MIN, INT32_MAX, true, true);
 
     // print source values.
     fori(3) cout << state.lastMove[0][i] << " ";
 
     cout << endl;
 
-    // print destenation values.
+    // print destination values.
     fori(3) cout << state.lastMove[1][i] << " ";
-
 
     return 0;
 }

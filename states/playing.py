@@ -179,8 +179,8 @@ class Playing(State):
 
 
             else:
-                self.helper.flush_to_file(self.turn, self.board,self.inventory)
-                s = (self.helper.cpp_code("current_state_file.txt"))
+                state_Astext = self.helper.flush(self.turn, self.board,self.inventory)
+                s = (self.helper.cpp_code(state_Astext))
                 self.parse_input_string(s)
 
 

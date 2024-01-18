@@ -3,6 +3,7 @@ import subprocess
 import platform
 import re
 from math import log2
+import time
 
 EMPTY_TILE = 0
 BLUE_SMALL = 1
@@ -168,17 +169,16 @@ class Helper:
 
         return text_rect
 
-    def cpp_code(self, file_namee):
+    def cpp_code(self, args):
         file_name = 'test.cpp'
-        input_file_name = file_namee
 
-        compilation_command = f"g++ -o {file_name.split('.')[0]} {file_name}"
+        ##compilation_command = f"g++ -o {file_name.split('.')[0]} {file_name}"
 
         executable_name = file_name.split('.')[0]
 
         executable_name = f"./{executable_name}" if platform.system() != 'Windows' else f"{executable_name} "
 
-        executing_command = f"{executable_name} < {input_file_name}"
+        executing_command = f"{executable_name}  {args}"
 
         # try:
         #     subprocess.run(compilation_command, shell=True, check=True)
@@ -186,6 +186,9 @@ class Helper:
         # except subprocess.CalledProcessError as e:
         #     print(f"Compilation failed with error: {e}")
 
+        if self.game.ai_difficulty == 1:
+            time.sleep(1)
+       
         try:
             result = subprocess.run(executing_command, shell=True, check=True, capture_output=True, text=True)
             return result.stdout
@@ -194,25 +197,29 @@ class Helper:
             print(f"Execution failed with error: {e}")
             print("Error Output:", e.stderr)
 
-    def flush_to_file(self, turn=1, board=[[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],
+
+    def flush(self, turn=1, board=[[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],
                       inv=[[1, 2, 3], [1, 2, 3]]):
 
-        with open("current_state_file.txt", "w") as f:
+        s = ''
 
-            f.write(str(turn) + "\n")
+        s+=(str(turn) + " ")
 
-            for row in board:
-                for i in row:
-                    f.write(str(i) + " ")
+        for row in board:
+            for i in row:
+                s+=(str(i) + " ")
 
-                f.write("\n")
+            s+=' ' 
 
-            f.write("\n")
+        s+=' ' 
 
-            for row in inv:
-                for i in row:
-                    f.write(str(i) + " ")
-                f.write("\n")
+        for row in inv:
+            for i in row:
+                s+=(str(i) + " ")
+            s+=' ' 
+
+        s+= str(self.game.ai_difficulty)
+        return s
 
 
 class MenuGUI:
