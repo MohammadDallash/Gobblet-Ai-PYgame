@@ -143,8 +143,12 @@ class Playing(State):
         # print("Source for Anime Pos:", self.src_for_anime_pos)
         # print("Destination for Anime Pos:", self.dst_for_anime_pos)
 
-
+        self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
+        self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
+        
         self.handle_mode_operations()
+
+        
 
         if not self.animation: 
             self.check_for_draw()
