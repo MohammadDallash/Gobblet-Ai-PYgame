@@ -266,8 +266,8 @@ int static_evaluation(State curState)
         }
 
         row[i] = blue + red;
-        if(wh_count == -3 && bl_count == 1)red_close = 20;
-        if(bl_count == 3 && wh_count == -1)blue_close = -20;
+        if(wh_count == -3 && bl_count == 1)red_close += 10;
+        if(bl_count == 3 && wh_count == -1)blue_close += -10;
 
     }
 
@@ -294,8 +294,8 @@ int static_evaluation(State curState)
         }
 
         column[i] = blue + red;
-        if(y == -3 && x == 1)red_close = 20;
-        if(x == 3 && y == -1)blue_close = -20;
+        if(y == -3 && x == 1)red_close += 10;
+        if(x == 3 && y == -1)blue_close += -10;
     }
 
 
@@ -322,8 +322,8 @@ int static_evaluation(State curState)
 
 
     main_diagonal = blue + red;
-    if(y == -3 && x == 1)red_close = 20;
-    if(x == 3 && y == -1)blue_close = -20;
+    if(y == -3 && x == 1)red_close += 10;
+    if(x == 3 && y == -1)blue_close += -10;
 
     blue = 0;
     red = 0;
@@ -347,8 +347,8 @@ int static_evaluation(State curState)
 
     }
     other_diagonal = blue + red;
-    if(y == -3 && x == 1)red_close = 10;
-    if(x == 3 && y == -1)blue_close = -10;
+    if(y == -3 && x == 1)red_close += 10;
+    if(x == 3 && y == -1)blue_close += -10;
 
     // calculate the maximum - minimum
     int maxx = INT_MIN, minn = INT_MAX;
@@ -366,7 +366,7 @@ int static_evaluation(State curState)
     int sum_inv1 = curState.inventory[0][0] + curState.inventory[0][1] + curState.inventory[0][2]; 
     int sum_inv2 = curState.inventory[1][0] + curState.inventory[1][1] + curState.inventory[1][2];
 
-    return  5*(maxx + minn) + 3*(red_close + blue_close) + 0.1*(sum_inv1 + sum_inv2);
+    return  3*(maxx + minn) + (0.5)*((!curState.turn)*red_close*red_close + curState.turn*blue_close*blue_close*-1);
 }
 
 bool customSort( State a,  State b) {
