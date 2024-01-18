@@ -325,36 +325,11 @@ class Playing(State):
 
         # if the mouse is near a certain tile.
         if self.highlighted_tile_rect:
-            s = pygame.Surface((TILE_WIDTH-10,TILE_HEIGHT-10))  # create a surface with these dimensions
-            s.set_alpha(64)  # alpha level (opacity)
-            s.fill((255,255,255)) # set color to red
-            display.blit(s,(self.highlighted_tile_rect.x+5,self.highlighted_tile_rect.y+5))  # shift start coordinates of the surface and blit
-
+            self.render_highlighted_tile(display)
 
         # if a piece is choosen
         if self.source_selected:
-            # get fetch data from source values.
-            source_location = self.source_values[0]
-            source_i = self.source_values[1]
-            source_j = self.source_values[2]
-            mouse_pos = pygame.mouse.get_pos()
-            largest_piece_in_source = None
-
-            # if the source is on the board, get the largest piece in that location.
-            if(source_location==BOARD_MOVE):
-                largest_piece_in_source = get_largest_piece(self.board[source_i][source_j])
-
-                # if the its not that player's turn, cancel drawing.
-                if not (is_red(largest_piece_in_source) and self.turn==RED_TURN) and not(is_blue(largest_piece_in_source) and self.turn==BLUE_TURN):
-                    return
-                    
-            # only allow drawing if the source is the blue inventory, and it's the blue turn.       
-            elif(source_location==INVENTORY_MOVE):
-                largest_piece_in_source = get_largest_piece(self.inventory[source_i][source_j])
-
-
-            # draw the selected piece on the mouse.
-            self.map.selected_tile(largest_piece_in_source,mouse_pos).draw(display)
+            self.render_selected_tile(display)
 
         if self.animation:
             self.map.selected_tile(self.largest_peice_for_animation,[self.animated_tile_pos['x'], self.animated_tile_pos['y']]).draw(display)    
@@ -510,3 +485,34 @@ class Playing(State):
             self.turn = BLUE_TURN
             self.last_red.append([self.source_values,self.destination_values])
             self.turn_text = self.players_names[BLUE] + ' Turn'
+
+    def render_selected_tile(self,display):
+            # get fetch data from source values.
+            source_location = self.source_values[0]
+            source_i = self.source_values[1]
+            source_j = self.source_values[2]
+            mouse_pos = pygame.mouse.get_pos()
+            largest_piece_in_source = None
+
+            # if the source is on the board, get the largest piece in that location.
+            if(source_location==BOARD_MOVE):
+                largest_piece_in_source = get_largest_piece(self.board[source_i][source_j])
+
+                # if the its not that player's turn, cancel drawing.
+                if not (is_red(largest_piece_in_source) and self.turn==RED_TURN) and not(is_blue(largest_piece_in_source) and self.turn==BLUE_TURN):
+                    return
+                    
+            # only allow drawing if the source is the blue inventory, and it's the blue turn.       
+            elif(source_location==INVENTORY_MOVE):
+                largest_piece_in_source = get_largest_piece(self.inventory[source_i][source_j])
+
+            # draw the selected piece on the mouse.
+            self.map.selected_tile(largest_piece_in_source,mouse_pos).draw(display)
+
+
+    def render_highlighted_tile(self,display):
+            
+            s = pygame.Surface((TILE_WIDTH-10,TILE_HEIGHT-10))  # create a surface with these dimensions
+            s.set_alpha(64)  # alpha level (opacity)
+            s.fill((255,255,255)) # set color to red
+            display.blit(s,(self.highlighted_tile_rect.x+5,self.highlighted_tile_rect.y+5))  # shift start coordinates of the surface and blit
