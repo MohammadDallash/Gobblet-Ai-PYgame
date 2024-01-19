@@ -9,10 +9,7 @@ class MultiplayerHelper:
     def get_ip_address(self, start_port = 1000, end_port=8000):
         try:
             # Create a temporary socket to get the local IP address
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(('8.8.8.8', 80))  # Using a well-known IP address (Google DNS) and port
-            ip_address = s.getsockname()[0]
-            s.close()
+            ip_address = socket.gethostbyname(socket.gethostname())
 
             # Find an available port in the specified range
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
