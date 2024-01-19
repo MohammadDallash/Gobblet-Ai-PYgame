@@ -177,7 +177,7 @@ class Helper:
         executable_name = file_name.split('.')[0]
         executable_path = os.path.join(sys._MEIPASS, executable_name) if hasattr(sys, '_MEIPASS') else executable_name
 
-        executing_command = f"./{executable_path} {args}"
+        executing_command = f"{executable_path} {args}"
 
        
 

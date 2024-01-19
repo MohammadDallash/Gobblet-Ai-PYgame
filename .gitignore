@@ -8,4 +8,4 @@ test.py
 build/
 dist/
 *.spec
-
+*.dll
