@@ -563,18 +563,39 @@ int main(int argc, char *argv[])
         }
     }
 
+
     int depth = atoi(argv[arg_index]);
+    // itr deepening
+    State best_state;
+    if(initial_state.turn==0) // max
+    best_state.static_evl = INT32_MIN;
+    else best_state.static_evl = INT32_MAX;
+
+
+    for(int i = depth; i<=depth; i++)
+    {
+
+    auto state = minMax_alpha_beta(initial_state, i, INT32_MIN, INT32_MAX, true, true);
+
+    if      (state.static_evl > best_state.static_evl && initial_state.turn == 0) best_state = state;
+    else if (state.static_evl < best_state.static_evl && initial_state.turn == 1) best_state = state;
+
+
+
+    }
+
+
+
 
     // debug_state(initial_state);
-    auto state = minMax_alpha_beta(initial_state, depth, INT32_MIN, INT32_MAX, true, true);
 
     // print source values.
-    fori(3) cout << state.lastMove[0][i] << " ";
+    fori(3) cout << best_state.lastMove[0][i] << " ";
 
     cout << endl;
 
     // print destination values.
-    fori(3) cout << state.lastMove[1][i] << " ";
+    fori(3) cout << best_state.lastMove[1][i] << " ";
 
     return 0;
 }
