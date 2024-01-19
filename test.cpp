@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <unordered_set>
 #include <climits>
+#include <unordered_map>
+#include <random>
 
 using namespace std;
 
@@ -28,7 +30,7 @@ const int ALL_RED = 240;
 
 #define fori(size) for (int i = 0; i < (size); i++)
 #define forj(size) for (int j = 0; j < (size); j++)
-
+#define fork(size) for (int k = 0; k < (size); k++)
 const int INVENTORY_MOVE = 0;
 const int BOARD_MOVE = 1;
 
@@ -53,6 +55,88 @@ struct State
     vector<int> lastMove[2];
     int static_evl;
 };
+unsigned long long zobTable[4][4][8];
+
+void fill_table()
+{
+    std::random_device rd;     // Get a random seed from the OS entropy device, or whatever
+    std::mt19937_64 eng(rd()); // Use the 64-bit Mersenne Twister 19937 generator
+                               // and seed it with entropy.
+
+    // Define the distribution, by default it goes from 0 to MAX(unsigned long long)
+    // or what have you.
+    std::uniform_int_distribution<unsigned long long> distr;
+
+    fori(4)
+    {
+        forj(4)
+        {
+            fork(8)
+            {
+                zobTable[i][j][k] = distr(eng);
+            }
+        }
+    }
+}
+
+int indexing(int piece)
+{
+    if (piece == BLUE_SMALL)
+        return 1;
+    if (piece == BLUE_MEDIUM)
+        return 2;
+    if (piece == BLUE_LARGE)
+        return 3;
+    if (piece == BLUE_XLARGE)
+        return 4;
+    if (piece == RED_SMALL)
+        return 5;
+    if (piece == RED_MEDIUM)
+        return 6;
+    if (piece == RED_LARGE)
+        return 7;
+    if (piece == RED_XLARGE)
+        return 8;
+    else
+        return 0;
+}
+
+int board[4][4] = {
+    {BLUE_MEDIUM, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE},
+    {EMPTY_TILE, BLUE_XLARGE, BLUE_LARGE, EMPTY_TILE},
+    {EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE},
+    {EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE}};
+
+int32_t get_largest_piecee(int n)
+{
+    vector<int> pieces = {BLUE_XLARGE, RED_XLARGE, BLUE_LARGE, RED_LARGE, BLUE_MEDIUM, RED_MEDIUM, BLUE_SMALL, RED_SMALL};
+
+    for (int piece : pieces)
+    {
+        if (piece & n)
+
+            return piece;
+    }
+    return 0;
+}
+
+unsigned long long computeHash(int board[][4], int turn)
+{
+    unsigned long long h = 0;
+    fori(4)
+    {
+        forj(4)
+        {
+            if (board[i][j] != EMPTY_TILE)
+            {
+                int piece = indexing(get_largest_piecee(board[i][j]));
+                h ^= zobTable[i][j][piece];
+            }
+        }
+    }
+    return h + turn;
+}
+
 
 
 
@@ -223,8 +307,18 @@ void debug_state(State state)
 //hueristics:
 //1- number of red/blue pieces in each row/column/diagonal
 //2- size of each piece in each row/column/diagonal
+
+
+unordered_map<unsigned long long, int> calculated_states;
+
 int static_evaluation(State curState)
 {
+    unsigned long long current_hash = computeHash(curState.board,curState.turn);
+    if(calculated_states.find(current_hash)!=calculated_states.end())
+    {
+        return calculated_states[current_hash];
+    }
+
     // scores for each row, column, diagonal.
     vector<int> row(4, 0);
     vector<int> column(4, 0);
@@ -374,7 +468,11 @@ int static_evaluation(State curState)
     int sum_inv1 = curState.inventory[0][0] + curState.inventory[0][1] + curState.inventory[0][2]; 
     int sum_inv2 = curState.inventory[1][0] + curState.inventory[1][1] + curState.inventory[1][2];
 
-    return  10*(maxx + minn) + 3*((!curState.turn)*red_close + curState.turn*blue_close) + red_won + blue_won;
+    int result =10*(maxx + minn) + 3*((!curState.turn)*red_close + curState.turn*blue_close) + red_won + blue_won;
+
+    calculated_states[current_hash] = result;
+
+    return  result;
 }
 
 bool customSort( State a,  State b) {
@@ -542,6 +640,8 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
 
 int main(int argc, char *argv[]) 
 {
+    fill_table();
+
     srand(static_cast<unsigned int>(time(0)));
     State initial_state;
 
@@ -579,6 +679,8 @@ int main(int argc, char *argv[])
 
     if      (state.static_evl > best_state.static_evl && initial_state.turn == 0) best_state = state;
     else if (state.static_evl < best_state.static_evl && initial_state.turn == 1) best_state = state;
+    else if (state.static_evl == best_state.static_evl && (rand()%3 == 1) ) best_state = state;
+        
 
 
 
