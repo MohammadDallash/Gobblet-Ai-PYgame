@@ -41,16 +41,16 @@ class Game():
 
         assets_path = os.path.join(base_path, "assets")
 
-        self.icon = pygame.image.load(rf"{assets_path}\sprites\tiles\tileswhite2.png")
+        self.icon = pygame.image.load(rf"{assets_path}/sprites/tiles/tileswhite2.png")
         pygame.display.set_icon(self.icon)
-        self.font_name = rf"{assets_path}\font\f.TTF"
+        self.font_name = rf"{assets_path}/font/f.TTF"
         
         # menus background
-        self.menubg = pygame.image.load(rf"{assets_path}\background\background(space).png")
+        self.menubg = pygame.image.load(rf"{assets_path}/background/background(space).png")
         
         # background music
         self.global_music_player = MusicPlayer()
-        self.music_track = rf'{assets_path}\sound\background music.mp3'
+        self.music_track = rf'{assets_path}/sound/background music.mp3'
         
         self.global_music_player.load_track(self.music_track)
         self.global_music_player.play()

@@ -14,9 +14,9 @@ class MusicPlayer:
             base_path = os.path.abspath(".")
 
         assets_path = os.path.join(base_path, "assets")
-        self.background_sound = pygame.mixer.Sound(rf'{assets_path}\sound\background music.mp3')
-        self.sfx = pygame.mixer.Sound(f'{assets_path}\sound\move_piece.mp3')
-        self.win_sound = pygame.mixer.Sound(f'{assets_path}\sound\win sound.mp3')
+        self.background_sound = pygame.mixer.Sound(rf'{assets_path}/sound/background music.mp3')
+        self.sfx = pygame.mixer.Sound(f'{assets_path}/sound/move_piece.mp3')
+        self.win_sound = pygame.mixer.Sound(f'{assets_path}/sound/win sound.mp3')
         self.master_volume = 1.0
         self.disable_background_music = False
 

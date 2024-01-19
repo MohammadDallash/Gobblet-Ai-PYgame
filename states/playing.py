@@ -53,9 +53,9 @@ class Playing(State):
 
         assets_path = os.path.join(base_path, "assets")
 
-        self.spritesheet = Spritesheet(rf'{assets_path}\sprites\sprites.png')
-        self.map = TileMap(rf'{assets_path}\sprites\map.csv', self.spritesheet)
-        self.bg = pygame.image.load(rf"{assets_path}\background\game background(space).png")
+        self.spritesheet = Spritesheet(rf'{assets_path}/sprites/sprites.png')
+        self.map = TileMap(rf'{assets_path}/sprites/map.csv', self.spritesheet)
+        self.bg = pygame.image.load(rf"{assets_path}/background/game background(space).png")
         self.turn = BLUE_PLAYER  # BLUE starts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text = self.players_names[self.turn - 1] + ' Turn'
