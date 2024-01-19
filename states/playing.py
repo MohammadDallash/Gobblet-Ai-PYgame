@@ -170,8 +170,9 @@ class Playing(State):
         
         if(self.done):
             self.x = threading.Thread(target=self.handle_thread).start()
-        
-        self.highlight_nearest_tile(pygame.mouse.get_pos())
+            
+        if(self.mode!=AI_VS_AI and ( not (self.turn == RED_TURN and self.mode == PLAYER_VS_OTHER) or self.turn == BLUE_TURN)):
+            self.highlight_nearest_tile(pygame.mouse.get_pos())
         
         if(self.mode != AI_VS_AI or(self.turn == self.my_color and self.mode==PLAYER_VS_OTHER)):
             if not self.animation and actions['LEFT_MOUSE_KEY_PRESS']:
