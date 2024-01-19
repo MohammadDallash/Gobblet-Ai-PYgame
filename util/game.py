@@ -31,16 +31,26 @@ class Game():
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
         pygame.display.set_caption('Space Gobblet')
-        self.icon = pygame.image.load("assets/sprites/tiles/tileswhite2.png")
+
+        if getattr(sys, 'frozen', False):
+            # Running as compiled executable
+            base_path = sys._MEIPASS
+        else:
+            # Running as a script
+            base_path = os.path.abspath(".")
+
+        assets_path = os.path.join(base_path, "assets")
+
+        self.icon = pygame.image.load(rf"{assets_path}\sprites\tiles\tileswhite2.png")
         pygame.display.set_icon(self.icon)
-        self.font_name = "assets/font/f.TTF"
+        self.font_name = rf"{assets_path}\font\f.TTF"
         
         # menus background
-        self.menubg = pygame.image.load("assets/background/background(space).png")
+        self.menubg = pygame.image.load(rf"{assets_path}\background\background(space).png")
         
         # background music
         self.global_music_player = MusicPlayer()
-        self.music_track = 'assets/sound/background music.mp3'
+        self.music_track = rf'{assets_path}\sound\background music.mp3'
         
         self.global_music_player.load_track(self.music_track)
         self.global_music_player.play()
