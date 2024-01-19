@@ -1,4 +1,5 @@
 from collections import deque
+import threading
 from states.pauseMenu import PauseMenu
 from states.state import State
 from states.winnerMenu import WinnerMenu
@@ -9,6 +10,7 @@ from util.music import *
 import pygame
 from util.helpers import *
 import time
+from threading import Lock, Thread
 
 
 
@@ -56,9 +58,11 @@ class Playing(State):
 
         assets_path = os.path.join(base_path, "assets")
 
+        self.lock = Lock()
         self.spritesheet = Spritesheet(rf'{assets_path}/sprites/sprites.png')
         self.map = TileMap(rf'{assets_path}/sprites/map.csv', self.spritesheet)
         self.bg = pygame.image.load(rf"{assets_path}/background/game background(space).png")
+        
         self.turn = BLUE_PLAYER  # BLUE starts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text = self.players_names[self.turn - 1] + ' Turn'
@@ -71,20 +75,15 @@ class Playing(State):
         self.global_music_player = game.global_music_player
         self.last_red = []
         self.last_red = deque(self.last_red)
-
+        self.done = True
         self.last_blue = []
         self.last_blue = deque(self.last_blue)
-
         self.mode = game_type
-
         self.my_color = my_color
         self.opponent_type_in_other_mode = opponent_type_in_other_mode
         self.client_socket = client_socket
-
         
         
-
-
 
         # Initial board                                                          
         self.board = [
@@ -134,11 +133,26 @@ class Playing(State):
         self.slope = (self.dst_for_anime_pos['y'] - self.src_for_anime_pos['y']) / (self.dst_for_anime_pos['x'] - self.src_for_anime_pos['x'] + 0.0001)
         self.destination_values = dst   
         self.animation = True
+        self.x = None
 
         self.refresh_UI()
-
         
 
+    def handle_thread(self):
+        
+        self.lock.acquire()
+        self.done = False
+        self.lock.release()
+        
+        if not self.animation:
+            self.check_for_draw()
+            self.check_wins()
+        self.handle_mode_operations()
+        
+        self.lock.acquire()
+        self.done = True
+        self.lock.release()
+        
 
 
     def parse_input_string(self,input_string):
@@ -147,27 +161,20 @@ class Playing(State):
             numeric_array = [int(num) for num in input_string.split()]
             src = numeric_array[0:3]
             dst = numeric_array[3:6]
-
             print(src,dst)
-
             self.set_animation_parameter(src, dst)
             
     
     def update(self, delta_time, actions):
-        if not self.animation:
-            self.check_for_draw()
-            self.check_wins()
-
-        self.handle_mode_operations()
-
         
+        if(self.done):
+            self.x = threading.Thread(target=self.handle_thread).start()
         
         self.highlight_nearest_tile(pygame.mouse.get_pos())
-        if(self.mode != AI_VS_AI or(self.turn ==self.my_color and self.mode==PLAYER_VS_OTHER)):
+        
+        if(self.mode != AI_VS_AI or(self.turn == self.my_color and self.mode==PLAYER_VS_OTHER)):
             if not self.animation and actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click()
-
-
 
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)
@@ -176,6 +183,7 @@ class Playing(State):
 
 
     def handle_mode_operations(self):
+        self.lock.acquire()
         if(self.mode == AI_VS_AI or (self.turn ==(1-self.my_color) and self.mode==PLAYER_VS_OTHER) ):
             if self.animation:
                 if self.animated_tile_pos['x'] < self.dst_for_anime_pos['x']:
@@ -190,10 +198,7 @@ class Playing(State):
                     self.global_music_player.play_sfx()
                     self.animation = False
                     self.switch_turns()
-
-
                     self.refresh_UI()
-
 
             else:
                 if(self.mode == AI_VS_AI or self.opponent_type_in_other_mode == AI_OPPONENT_IN_OTHER):
@@ -201,8 +206,8 @@ class Playing(State):
                     s = (self.helper.cpp_code(state_Astext))
                 elif(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
                     s = self.client_socket.recv(1024).decode()
-
                 self.parse_input_string(s)
+        self.lock.release()
 
  
 
@@ -224,9 +229,6 @@ class Playing(State):
             move = [self.source_values,self.destination_values]
             self.client_socket.send(convert_move_to_str(move).encode())
             self.check_wins()
-
-
-
         self.refresh_UI()
 
 

@@ -88,7 +88,7 @@ class Game():
         self.keys = []
         self.actions["LEFT_MOUSE_KEY_PRESS"] = False
 
-        pygame.event.pump()
+        #pygame.event.pump()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
