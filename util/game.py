@@ -13,7 +13,7 @@ class Game():
 
         self.running = True
         self.actions = {"left": False, "right": False, "up": False, "down": False, "Esc": False, "enter": False,
-                        "LEFT_MOUSE_KEY_PRESS": False}
+                        "LEFT_MOUSE_KEY_PRESS": False, 'backspace': False}
 
         self.DISPLAY_W, self.DISPLAY_H = 1200, 720
     
@@ -21,7 +21,7 @@ class Game():
         self.game_canvas = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
 
-        self.BLUE, self.RED, self.YELLOW, self.BROWN = (0, 0, 0), (255, 255, 255), (255, 255, 0), (130, 77, 47)
+        self.BLUE, self.WHITE, self.YELLOW, self.BROWN, self.RED = (0, 0, 0), (255, 255, 255), (255, 255, 0), (46, 32, 26), (255, 0 ,0)
 
         self.helper = Helper(self)
 
@@ -55,6 +55,8 @@ class Game():
         self.global_music_player.load_track(self.music_track)
         self.global_music_player.play()
 
+        self.keys = []
+
     def game_loop(self):
 
         while self.running:
@@ -82,41 +84,83 @@ class Game():
         self.window.blit(pygame.transform.scale(self.game_canvas, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
 
         pygame.display.flip()  # It controls when and how changes made in your code will be visible on the screen
-
     def update_events(self):
+        self.keys = []
+        self.actions["LEFT_MOUSE_KEY_PRESS"] = False
+
         pygame.event.pump()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-                    self.actions['left'] = True
-                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                    self.actions['right'] = True
-                if event.key == pygame.K_w or event.key == pygame.K_UP:
-                    self.actions['up'] = True
-                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                    self.actions['down'] = True
-                if event.key == pygame.K_ESCAPE:
-                    self.actions['Esc'] = True
-                if event.key == pygame.K_RETURN:
-                    self.actions['enter'] = True
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-                    self.actions['left'] = False
-                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-                    self.actions['right'] = False
-                if event.key == pygame.K_w or event.key == pygame.K_UP:
-                    self.actions['up'] = False
-                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
-                    self.actions['down'] = False
-                if event.key == pygame.K_ESCAPE:
-                    self.actions['Esc'] = False
-                if event.key == pygame.K_RETURN:
-                    self.actions['enter'] = False
-            if event.type == pygame.MOUSEBUTTONUP:
-                if not pygame.mouse.get_pressed()[0]:
-                    self.actions["LEFT_MOUSE_KEY_PRESS"] = False
 
-            if pygame.mouse.get_pressed()[0]:  # left click
-                self.actions["LEFT_MOUSE_KEY_PRESS"] = True
+            elif event.type == pygame.KEYDOWN:
+                self.handle_keydown(event)
+
+            elif event.type == pygame.KEYUP:
+                self.handle_keyup(event)
+
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.handle_mouse_button_up(event)
+
+        if pygame.mouse.get_pressed()[0]:  # left click
+            self.actions["LEFT_MOUSE_KEY_PRESS"] = True
+
+    def handle_keydown(self, event):
+        if event.key in (pygame.K_a, pygame.K_LEFT):
+            self.actions['left'] = True
+        elif event.key in (pygame.K_d, pygame.K_RIGHT):
+            self.actions['right'] = True
+        elif event.key in (pygame.K_w, pygame.K_UP):
+            self.actions['up'] = True
+        elif event.key in (pygame.K_s, pygame.K_DOWN):
+            self.actions['down'] = True
+        elif event.key == pygame.K_ESCAPE:
+            self.actions['Esc'] = True
+        elif event.key == pygame.K_RETURN:
+            self.actions['enter'] = True
+        elif event.key == pygame.K_BACKSPACE:
+            self.actions['backspace'] = True
+        
+        char = event.unicode
+        if char:
+            self.handle_char_input(char, event.mod)
+
+    def handle_keyup(self, event):
+        if event.key in (pygame.K_a, pygame.K_LEFT):
+            self.actions['left'] = False
+        elif event.key in (pygame.K_d, pygame.K_RIGHT):
+            self.actions['right'] = False
+        elif event.key in (pygame.K_w, pygame.K_UP):
+            self.actions['up'] = False
+        elif event.key in (pygame.K_s, pygame.K_DOWN):
+            self.actions['down'] = False
+        elif event.key == pygame.K_ESCAPE:
+            self.actions['Esc'] = False
+        elif event.key == pygame.K_RETURN:
+            self.actions['enter'] = False
+        elif event.key == pygame.K_BACKSPACE:
+            self.actions['backspace'] = False
+        
+        
+
+    def handle_char_input(self, char, mod):
+        if char.isalpha():
+            self.handle_alpha_input(char, mod)
+        elif char.isdigit():
+            self.keys.append(char)
+        # elif char in (pygame.K_SPACE, pygame.K_EXCLAIM, pygame.K_QUOTEDBL, ..., pygame.K_SLASH) and char not in self.keys:
+        #     self.keys.append(char)
+
+
+    def handle_alpha_input(self, char, mod):
+        if not mod & pygame.KMOD_SHIFT:
+            self.keys = [item for item in self.keys if item != char.lower()]
+            self.keys.append(char.lower())
+        else:
+            self.keys = [item for item in self.keys if item != char.upper()]
+            self.keys.append(char.upper())
+
+    def handle_mouse_button_up(self, event):
+        if not pygame.mouse.get_pressed()[0]:
+            self.actions["LEFT_MOUSE_KEY_PRESS"] = False

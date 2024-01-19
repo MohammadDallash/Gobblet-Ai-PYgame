@@ -1,3 +1,4 @@
+from states.MultiplayerUI import *
 from states.state import State
 from states.credit import Credit
 from states.playing import Playing
@@ -12,7 +13,7 @@ class MainMenu(State):
         State.__init__(self, game)
 
         self.options_str = ['Play', 'options', 'credit', 'quit']
-        self.Player_Mode = ['Player vs Player', 'Player vs Computer', 'Computer vs Computer']
+        self.Player_Mode = ['Player vs Player', 'Player vs Computer', 'Computer vs Computer', 'multiplayer']
 
         self.cur_option = 0
         
@@ -107,11 +108,23 @@ class Play_Mode(State):
         if (actions['enter']):
             playing_state = Playing(self.game, self.cur_option)
             playing_state.enter_state()  ## enter play state
+            if(self.cur_option  == 3):
+                multiplayerMenu = MultiplayerChoseMenu(self.game)
+                multiplayerMenu.enter_state()
+            else:
+                playing_state = Playing(self.game, self.cur_option)
+                playing_state.enter_state()  ## enter play state
         if (actions['LEFT_MOUSE_KEY_PRESS']):
             x, y = pygame.mouse.get_pos()
             if self.menuGUI.mouse_collidepoint(x, y, self.cur_option):
                 playing_state = Playing(self.game, self.cur_option)
                 playing_state.enter_state()  ## enter play state
+                if(self.cur_option  == 3):
+                    multiplayerMenu = MultiplayerChoseMenu(self.game)
+                    multiplayerMenu.enter_state()
+                else:
+                    playing_state = Playing(self.game, self.cur_option)
+                    playing_state.enter_state()
                 
 
     def render(self, display):

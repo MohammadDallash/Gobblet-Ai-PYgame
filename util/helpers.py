@@ -177,7 +177,13 @@ class Helper:
         executable_name = file_name.split('.')[0]
         executable_path = os.path.join(sys._MEIPASS, executable_name) if hasattr(sys, '_MEIPASS') else executable_name
 
-        executing_command = f"{executable_path} {args}"
+        if platform.system() == "Windows": 
+            executing_command = f"{executable_path} {args}"
+
+        else:
+            executing_command = f"./{executable_path} {args}"
+        
+
 
        
 
@@ -240,7 +246,7 @@ class MenuGUI:
         width_menu = 3 * self.font_size * self.n_options - 3 * self.font_size
         start_y = (self.game.DISPLAY_H - width_menu) // 2
         for idx, options_txt in enumerate(self.options_str):
-            color = self.game.YELLOW if idx == self.cur_option and not self.justTxt else self.game.RED
+            color = self.game.YELLOW if idx == self.cur_option and not self.justTxt else self.game.WHITE
             text_rect = self.game.helper.draw_text(
                 display, options_txt, color, self.font_size, self.x_pos, start_y + idx * 3 * self.font_size
             )
