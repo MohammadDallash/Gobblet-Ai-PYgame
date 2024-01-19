@@ -481,7 +481,7 @@ int static_evaluation(State curState)
     }
 
 
-    int result = cblue[4]*10 + cblue[3]*5 + cblue[2]*2 + cblue[1]*1  - (cred[4]*10 + cred[3]*5 + cred[2]*2 + cred[1]*1) + maxx + minn;
+    int result = (cblue[4]*10 + cblue[3]*5 + cblue[2]*2 + cblue[1]*1)  - (cred[4]*10 + cred[3]*5 + cred[2]*2 + cred[1]*1) + 10*(maxx + minn);
 
     calculated_states[current_hash] = result;
 
