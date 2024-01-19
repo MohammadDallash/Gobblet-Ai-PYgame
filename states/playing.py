@@ -265,7 +265,7 @@ class Playing(State):
             return
         
         # if source is not selected.
-        if (not self.source_selected and ((self.turn == BLUE_TURN and is_blue(get_largest_piece(state))) or (self.turn == RED_TURN and is_red(get_largest_piece(state))))):
+        if (not self.source_selected and ((self.turn == BLUE_TURN and is_blue(get_largest_piece(state))) or (self.turn == RED_TURN and is_red(get_largest_piece(state)))) and not (self.mode == PLAYER_VS_OTHER and self.turn != self.my_color)):
             # save source values.
             self.source_values = [move_type, i, j]
             self.source_selected = True
