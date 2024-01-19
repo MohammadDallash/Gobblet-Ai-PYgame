@@ -63,7 +63,7 @@ class Playing(State):
         self.map = TileMap(rf'{assets_path}/sprites/map.csv', self.spritesheet)
         self.bg = pygame.image.load(rf"{assets_path}/background/game background(space).png")
         
-        self.turn = BLUE_PLAYER  # BLUE starts the game
+        self.turn = BLUE_PLAYER  # BLUE staconda arts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text = self.players_names[self.turn - 1] + ' Turn'
         self.inventory_tiles = None
@@ -81,6 +81,7 @@ class Playing(State):
         self.mode = game_type
         self.my_color = my_color
         self.opponent_type_in_other_mode = opponent_type_in_other_mode
+
         self.client_socket = client_socket
         
         
@@ -161,7 +162,7 @@ class Playing(State):
             numeric_array = [int(num) for num in input_string.split()]
             src = numeric_array[0:3]
             dst = numeric_array[3:6]
-            print(src,dst)
+            # print(src,dst)
             self.set_animation_parameter(src, dst)
             
     
@@ -193,7 +194,7 @@ class Playing(State):
                     self.animated_tile_pos['x'] -= self.animation_speed
                     self.animated_tile_pos['y'] -= self.animation_speed * self.slope
                 else:
-                    print(self.largest_peice_for_animation,  self.destination_values,'--------------------------------------')
+                    # print(self.largest_peice_for_animation,  self.destination_values,'--------------------------------------')
                     self.board[self.destination_values[1]][self.destination_values[2]] |= self.largest_peice_for_animation
                     self.global_music_player.play_sfx()
                     self.animation = False
@@ -204,9 +205,10 @@ class Playing(State):
                 if(self.mode == AI_VS_AI or self.opponent_type_in_other_mode == AI_OPPONENT_IN_OTHER):
                     state_Astext = self.helper.flush(self.turn, self.board,self.inventory)
                     s = (self.helper.cpp_code(state_Astext))
+                    self.parse_input_string(s)
                 elif(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
                     s = self.client_socket.recv(1024).decode()
-                self.parse_input_string(s)
+                    self.parse_input_string(s)
         self.lock.release()
 
  
@@ -500,7 +502,7 @@ class Playing(State):
         self.global_music_player.play_win_sound()
         time.sleep(3)
         self.global_music_player.play_background_sound()
-        winner_state = WinnerMenu(self.game, player+1, self.mode)
+        winner_state = WinnerMenu(self.game, player+1, self.mode, self.my_color, self.opponent_type_in_other_mode , self.client_socket)
         winner_state.enter_state() 
 
     # switches turns after a move is made.
