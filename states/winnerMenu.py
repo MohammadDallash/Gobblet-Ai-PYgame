@@ -33,9 +33,8 @@ class WinnerMenu(State):
                 playing_state.enter_state()
                 pass
             elif self.cur_option == 1:
-                self.exit_state()
-                self.exit_state()
-                self.exit_state()
+                for i in range (len (self.game.state_stack) -1 ): ##exit all the state except the menu one
+                    self.exit_state()
                 pass
             else:
                 self.game.running = False
@@ -57,9 +56,8 @@ class WinnerMenu(State):
                 playing_state.enter_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 1):
-                self.exit_state()
-                self.exit_state()
-                self.exit_state()
+                for i in range (len (self.game.state_stack) -1 ): ##exit all the state except the menu one
+                    self.exit_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 2):
                 self.game.running = False
