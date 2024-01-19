@@ -46,7 +46,7 @@ ONLINE_OPPONENT_IN_OTHER= 1
 
 
 class Playing(State):
-    def __init__(self, game, game_type, my_color = BLUE, opponent_type_in_other_mode = None, client_socket = None):
+    def __init__(self, game, game_type, my_color = BLUE, opponent_type_in_other_mode = None):
         State.__init__(self, game)
 
         if getattr(sys, 'frozen', False):
@@ -82,7 +82,7 @@ class Playing(State):
         self.my_color = my_color
         self.opponent_type_in_other_mode = opponent_type_in_other_mode
 
-        self.client_socket = client_socket
+        self.client_socket = self.game.client_socket
         
         
 
@@ -369,6 +369,8 @@ class Playing(State):
         super().enter_state()
 
     def exit_state(self):
+        if(self.game.socket != None):
+            self.game.socket.close()
         super().exit_state()
 
     # checks for a winner at the beginning of each round.
@@ -502,7 +504,7 @@ class Playing(State):
         self.global_music_player.play_win_sound()
         time.sleep(3)
         self.global_music_player.play_background_sound()
-        winner_state = WinnerMenu(self.game, player+1, self.mode, self.my_color, self.opponent_type_in_other_mode , self.client_socket)
+        winner_state = WinnerMenu(self.game, player+1, self.mode, self.my_color, self.opponent_type_in_other_mode )
         winner_state.enter_state() 
 
     # switches turns after a move is made.

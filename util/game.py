@@ -57,6 +57,9 @@ class Game():
 
         self.keys = []
 
+        self.client_socket =   None
+
+
     def game_loop(self):
 
         while self.running:

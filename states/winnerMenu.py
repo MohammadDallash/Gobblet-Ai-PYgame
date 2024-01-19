@@ -6,7 +6,7 @@ import pygame
 BLUE, RED = 0, 1
 
 class WinnerMenu(State):
-    def __init__(self, game, winner, play_mode, my_color , opponent_type_in_other_mode , client_socket ):
+    def __init__(self, game, winner, play_mode, my_color , opponent_type_in_other_mode  ):
         State.__init__(self, game)
         self.options_str = ['New Game', 'Main Menu', 'Quit']
         self.winner = winner
@@ -16,7 +16,6 @@ class WinnerMenu(State):
                                x_pos=self.game.DISPLAY_W / 2)
         self.my_color  =my_color
         self.opponent_type_in_other_mode = opponent_type_in_other_mode
-        self.client_socket = client_socket
     def update(self, delta_time, actions):
         self.cur_option = self.menuGUI.update_cur_opt(actions)
         x, y = pygame.mouse.get_pos()
@@ -30,7 +29,7 @@ class WinnerMenu(State):
                 self.exit_state()
                 self.exit_state()
                 from states.playing import Playing
-                playing_state = Playing(self.game,self.play_mode, self.my_color, self.opponent_type_in_other_mode, self.client_socket)
+                playing_state = Playing(self.game,self.play_mode, self.my_color, self.opponent_type_in_other_mode)
                 playing_state.enter_state()
                 pass
             elif self.cur_option == 1:
@@ -53,7 +52,7 @@ class WinnerMenu(State):
                 self.exit_state()
                 self.exit_state()
                 from states.playing import Playing
-                playing_state = Playing(self.game,self.play_mode, self.my_color, self.opponent_type_in_other_mode, self.client_socket)
+                playing_state = Playing(self.game,self.play_mode, self.my_color, self.opponent_type_in_other_mode)
             
                 playing_state.enter_state()
                 pass

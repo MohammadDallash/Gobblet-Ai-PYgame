@@ -43,7 +43,6 @@ class MultiplayerChoseMenu(State):
         if (actions['Esc']):
             self.exit_state()
             self.exit_state()
-            self.exit_state()
 
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
@@ -81,8 +80,9 @@ class MultiplayeClinetMenu(State):
 
                 self.client_socket.connect((ip, port))
 
+                self.game.client_socket =   self.client_socket
 
-                playing_state = Playing (self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode=ONLINE_OPPONENT_IN_OTHER, my_color = RED,  client_socket = self.client_socket)    
+                playing_state = Playing (self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode=ONLINE_OPPONENT_IN_OTHER, my_color = RED)    
                 playing_state.enter_state()
 
 
@@ -147,10 +147,13 @@ class MultiplayerHostMenu(State):
 
         self.client_socket, self.client_address = self.server_socket.accept()
         print(f"Accepted connection from {self.client_address}")
+               
+               
+        self.game.client_socket =   self.client_socket
 
         self.server_socket.close()
 
-        playing_state = Playing(self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode= ONLINE_OPPONENT_IN_OTHER, my_color = BLUE, client_socket = self.client_socket)
+        playing_state = Playing(self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode= ONLINE_OPPONENT_IN_OTHER, my_color = BLUE)
         playing_state.enter_state()
 
 
