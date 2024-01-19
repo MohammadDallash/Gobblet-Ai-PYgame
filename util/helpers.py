@@ -51,6 +51,25 @@ def get_largest_piece(n, secLargest = False):
 
     return 0
 
+def get_largest_piece_neutural(n):
+    pieces = [BLUE_XLARGE, RED_XLARGE,
+              BLUE_LARGE, RED_LARGE,
+              BLUE_MEDIUM, RED_MEDIUM,
+              BLUE_SMALL, RED_SMALL]
+
+    for piece in pieces:
+        if piece & n:
+            if(piece>=16):
+                return int(piece/16)
+            else: return piece
+
+    return 0
+
+
+
+
+
+
 def compare_2d_lists(list1, list2):
 
     # Iterate through each element and compare them

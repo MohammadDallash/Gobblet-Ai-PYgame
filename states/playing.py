@@ -240,7 +240,17 @@ class Playing(State):
 
     def handle_mouse_click(self):
         move_type, i, j, state = self.get_clicked_tile_id()
+        source_type, source_i, source_j = self.source_values
+        
+        if(source_type == BOARD_MOVE):
+            if(self.source_selected and (get_largest_piece_neutural(self.board[source_i][source_j]) <= get_largest_piece_neutural(self.board[i][j]))):
+                return
+        
+        if(source_type == INVENTORY_MOVE):
+            if(self.source_selected and (get_largest_piece_neutural(self.inventory[source_i][source_j]) <= get_largest_piece_neutural(self.board[i][j]))):
+                return
 
+  
         # if the source is in the boarders, ignore it.
         if (move_type == BOARDERS):
             return
@@ -265,6 +275,7 @@ class Playing(State):
         elif move_type == INVENTORY_MOVE and self.turn == BLUE_TURN and  i == RED:
             return
         
+        
         # if source is not selected.
         if (not self.source_selected and ((self.turn == BLUE_TURN and is_blue(get_largest_piece(state))) or (self.turn == RED_TURN and is_red(get_largest_piece(state)))) and not (self.mode == PLAYER_VS_OTHER and self.turn != self.my_color)):
             # save source values.
@@ -276,7 +287,6 @@ class Playing(State):
         else :
             self.destination_values = [move_type,i,j]
 
-        source_type, source_i, source_j = self.source_values
 
         # piece selected is blue in red's turn or red in blue's turn.
         if (source_type == BOARD_MOVE):
@@ -285,6 +295,8 @@ class Playing(State):
 
             if is_red(get_largest_piece(self.board[source_i][source_j]))  and self.turn == BLUE_TURN:
                 return
+        # if destination piece is a larger piece dont allow it
+        
             
         if(self.mode == PLAYER_VS_PLAYER or (self.turn ==self.my_color and self.mode==PLAYER_VS_OTHER)):
             move = [self.source_values,self.destination_values]
