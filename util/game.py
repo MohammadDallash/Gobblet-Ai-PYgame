@@ -26,7 +26,7 @@ class Game():
         self.helper = Helper(self)
 
         self.dt, self.prev_time = 0.0, 0.0
-        self.ai_difficulty = 1
+        self.ai_difficulty = 3
         self.state_stack = []
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
