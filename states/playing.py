@@ -31,17 +31,20 @@ EASY , HARD = 1, 2
 
 # different playing modes
 PLAYER_VS_PLAYER = 0
-PLAYER_VS_AI = 1
+PLAYER_VS_OTHER = 1
 AI_VS_AI = 2
-MULTIPLAYER_SERVER = 3
-MULTIPLAYER_CLIENT = 4
 
 TILE_SIZE = TILE_HEIGHT = TILE_WIDTH = 120
 INVENTORY_MOVE = 0
 BOARD_MOVE = 1
 
+
+AI_OPPONENT_IN_OTHER= 0
+ONLINE_OPPONENT_IN_OTHER= 1
+
+
 class Playing(State):
-    def __init__(self, game, game_type):
+    def __init__(self, game, game_type, my_color = BLUE, opponent_type_in_other_mode = None, client_socket = None):
         State.__init__(self, game)
 
         if getattr(sys, 'frozen', False):
@@ -72,9 +75,13 @@ class Playing(State):
         self.last_blue = []
         self.last_blue = deque(self.last_blue)
 
-        self.ai_difficulty = self.game.ai_difficulty
         self.mode = game_type
 
+        self.my_color = my_color
+        self.opponent_type_in_other_mode = opponent_type_in_other_mode
+        self.client_socket = client_socket
+
+        
         
 
 
@@ -156,7 +163,7 @@ class Playing(State):
         
         
         self.highlight_nearest_tile(pygame.mouse.get_pos())
-        if(self.mode != AI_VS_AI or(self.turn ==BLUE_TURN and self.mode==PLAYER_VS_AI)):
+        if(self.mode != AI_VS_AI or(self.turn ==self.my_color and self.mode==PLAYER_VS_OTHER)):
             if not self.animation and actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click()
 
@@ -169,7 +176,7 @@ class Playing(State):
 
 
     def handle_mode_operations(self):
-        if(self.mode == AI_VS_AI or (self.turn ==RED_TURN and self.mode==PLAYER_VS_AI) ):
+        if(self.mode == AI_VS_AI or (self.turn ==(1-self.my_color) and self.mode==PLAYER_VS_OTHER) ):
             if self.animation:
                 if self.animated_tile_pos['x'] < self.dst_for_anime_pos['x']:
                     self.animated_tile_pos['x'] += self.animation_speed
@@ -189,28 +196,17 @@ class Playing(State):
 
 
             else:
-                state_Astext = self.helper.flush(self.turn, self.board,self.inventory)
-                s = (self.helper.cpp_code(state_Astext))
+                if(self.mode == AI_VS_AI or self.opponent_type_in_other_mode == AI_OPPONENT_IN_OTHER):
+                    state_Astext = self.helper.flush(self.turn, self.board,self.inventory)
+                    s = (self.helper.cpp_code(state_Astext))
+                elif(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
+                    s = self.client_socket.recv(1024).decode()
+
                 self.parse_input_string(s)
 
+ 
 
 
-
-        elif(self.mode == MULTIPLAYER_CLIENT):
-            if(self.destination_values):
-                move = [self.source_values,self.destination_values]
-                self.client.send(convert_move_to_str(move).encode('utf-8'))
-                data = self.client.recv(1024)
-
-
-        elif(self.mode==MULTIPLAYER_SERVER):
-            if(self.destination_values):
-                client, addr = self.server.accept()
-                data = client.recv(1024)
-                data_str = data.decode('utf-8')
-                move = convert_stream_to_list(data_str)
-                client.send(move)
-                # self.server.close()
 
 
     def refresh_UI(self):
@@ -223,6 +219,13 @@ class Playing(State):
         largest_piece_in_source = get_largest_piece(src[src_i][src_j])
         src[src_i][src_j] &= ~(largest_piece_in_source)
         dst[dst_i][dst_j] |= largest_piece_in_source
+
+        if(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
+            move = [self.source_values,self.destination_values]
+            self.client_socket.send(convert_move_to_str(move).encode())
+            self.check_wins()
+
+
 
         self.refresh_UI()
 
@@ -262,6 +265,8 @@ class Playing(State):
             # save source values.
             self.source_values = [move_type, i, j]
             self.source_selected = True
+            self.refresh_UI()
+
             return
         else :
             self.destination_values = [move_type,i,j]
@@ -276,7 +281,7 @@ class Playing(State):
             if is_red(get_largest_piece(self.board[source_i][source_j]))  and self.turn == BLUE_TURN:
                 return
             
-        if(self.mode == PLAYER_VS_PLAYER or (self.turn ==BLUE_TURN and self.mode==PLAYER_VS_AI)):
+        if(self.mode == PLAYER_VS_PLAYER or (self.turn ==self.my_color and self.mode==PLAYER_VS_OTHER)):
             move = [self.source_values,self.destination_values]
             self.move_piece(move)
 
@@ -488,6 +493,8 @@ class Playing(State):
 
     # handles events that happen when a player wins.
     def announce_winner(self,player):
+        if(self.client_socket != None):
+            self.client_socket.close()
         self.global_music_player.play_win_sound()
         time.sleep(3)
         self.global_music_player.play_background_sound()

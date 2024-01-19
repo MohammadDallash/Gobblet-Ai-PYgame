@@ -8,6 +8,10 @@ from states.option import Option
 from util.music import MusicPlayer
 
 
+AI_OPPONENT_IN_OTHER= 0
+ONLINE_OPPONENT_IN_OTHER= 1
+
+
 class MainMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
@@ -111,6 +115,9 @@ class Play_Mode(State):
             if(self.cur_option  == 3):
                 multiplayerMenu = MultiplayerChoseMenu(self.game)
                 multiplayerMenu.enter_state()
+            elif(self.cur_option  == 1): #TODO
+                playing_state = Playing(self.game, self.cur_option, opponent_type_in_other_mode=AI_OPPONENT_IN_OTHER)
+                playing_state.enter_state()
             else:
                 playing_state = Playing(self.game, self.cur_option)
                 playing_state.enter_state()  ## enter play state
@@ -122,6 +129,10 @@ class Play_Mode(State):
                 if(self.cur_option  == 3):
                     multiplayerMenu = MultiplayerChoseMenu(self.game)
                     multiplayerMenu.enter_state()
+                elif(self.cur_option  == 1): #TODO
+                    playing_state = Playing(self.game, self.cur_option, opponent_type_in_other_mode=AI_OPPONENT_IN_OTHER)
+                    playing_state.enter_state()
+           
                 else:
                     playing_state = Playing(self.game, self.cur_option)
                     playing_state.enter_state()
