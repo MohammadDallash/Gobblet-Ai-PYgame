@@ -43,9 +43,19 @@ BOARD_MOVE = 1
 class Playing(State):
     def __init__(self, game, game_type):
         State.__init__(self, game)
-        self.spritesheet = Spritesheet('assets/sprites/sprites.png')
-        self.map = TileMap('assets/sprites/map.csv', self.spritesheet)
-        self.bg = pygame.image.load("assets/background/game background(space).png")
+
+        if getattr(sys, 'frozen', False):
+            # Running as compiled executable
+            base_path = sys._MEIPASS
+        else:
+            # Running as a script
+            base_path = os.path.abspath(".")
+
+        assets_path = os.path.join(base_path, "assets")
+
+        self.spritesheet = Spritesheet(rf'{assets_path}\sprites\sprites.png')
+        self.map = TileMap(rf'{assets_path}\sprites\map.csv', self.spritesheet)
+        self.bg = pygame.image.load(rf"{assets_path}\background\game background(space).png")
         self.turn = BLUE_PLAYER  # BLUE starts the game
         self.players_names = ['Player 1', 'Player 2']
         self.turn_text = self.players_names[self.turn - 1] + ' Turn'

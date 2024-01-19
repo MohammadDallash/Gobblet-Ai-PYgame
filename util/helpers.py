@@ -1,6 +1,8 @@
 import pygame
 import subprocess
 import platform
+import os
+import sys
 import re
 from math import log2
 import time
@@ -172,19 +174,10 @@ class Helper:
     def cpp_code(self, args):
         file_name = 'test.cpp'
 
-        ##compilation_command = f"g++ -o {file_name.split('.')[0]} {file_name}"
-
         executable_name = file_name.split('.')[0]
+        executable_path = os.path.join(sys._MEIPASS, executable_name) if hasattr(sys, '_MEIPASS') else executable_name
 
-        executable_name = f"./{executable_name}" if platform.system() != 'Windows' else f"{executable_name} "
-
-        executing_command = f"{executable_name}  {args}"
-
-        # try:
-        #     subprocess.run(compilation_command, shell=True, check=True)
-        #     print("Compilation success")
-        # except subprocess.CalledProcessError as e:
-        #     print(f"Compilation failed with error: {e}")
+        executing_command = f"{executable_path} {args}"
 
         if self.game.ai_difficulty == 1:
             time.sleep(1)
@@ -192,7 +185,6 @@ class Helper:
         try:
             result = subprocess.run(executing_command, shell=True, check=True, capture_output=True, text=True)
             return result.stdout
-
         except subprocess.CalledProcessError as e:
             print(f"Execution failed with error: {e}")
             print("Error Output:", e.stderr)
