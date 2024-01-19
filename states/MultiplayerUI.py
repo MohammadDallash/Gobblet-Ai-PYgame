@@ -3,7 +3,12 @@ import socket
 from util.helpers import MenuGUI
 import pygame
 from util.MultiplayerHelper import MultiplayerHelper
+from states.playing import Playing
 
+PLAYER_VS_OTHER = 1
+ONLINE_OPPONENT_IN_OTHER= 1
+
+BLUE, RED = 0, 1
 
 class MultiplayerChoseMenu(State):
     def __init__(self, game):
@@ -69,7 +74,24 @@ class MultiplayeClinetMenu(State):
     def update(self, delta_time, actions):
         if actions['enter']:
             self.againBool = True
-            self.room_id  = ''
+            try:
+                ip, port = self.mulHelper.room_id_to_ip(self.room_id)
+
+                self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                self.client_socket.connect((ip, port))
+
+
+                playing_state = Playing (self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode=ONLINE_OPPONENT_IN_OTHER, my_color = RED,  client_socket = self.client_socket)    
+                playing_state.enter_state()
+
+
+            except Exception as e:
+                self.againBool = True
+                self.room_id = ''
+                # Handle the exception as needed, for example, you might want to close the socket or take other appropriate actions.
+          
+                        
         elif(actions['backspace']) and len(self.room_id)>0:
             self.room_id  = self.room_id[:-1]
         else:                    
@@ -107,14 +129,31 @@ class MultiplayerHostMenu(State):
         self.mulHelper = MultiplayerHelper()
 
         
-        
         self.ip_address, self.port = self.mulHelper.get_ip_address()
         self.room_id = self.mulHelper.ip_to_room_id(self.ip_address, self.port)
 
-        print(self.room_id)
     
 
     def update(self, delta_time, actions):
+
+        self.server_socket =socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        self.server_socket.bind((self.ip_address, self.port))
+
+        self.server_socket.listen(1)
+        print(f"Server listening on {self.ip_address}:{self.port}")
+
+        print(self.room_id)
+
+        self.client_socket, self.client_address = self.server_socket.accept()
+        print(f"Accepted connection from {self.client_address}")
+
+        self.server_socket.close()
+
+        playing_state = Playing(self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode= ONLINE_OPPONENT_IN_OTHER, my_color = BLUE, client_socket = self.client_socket)
+        playing_state.enter_state()
+
+
         if (actions['Esc']):
             self.exit_state()
 
