@@ -262,6 +262,8 @@ class MenuGUI:
 
     def render(self, display):
         self.display = display
+        
+        
         width_menu = 3 * self.font_size * self.n_options - 3 * self.font_size
         start_y = (self.game.DISPLAY_H - width_menu) // 2
         for idx, options_txt in enumerate(self.options_str):

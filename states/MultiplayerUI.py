@@ -17,7 +17,7 @@ class MultiplayerChoseMenu(State):
         self.options_str = ['host', 'clint']
 
         self.cur_option = 0
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=40,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_title_font_size,
                                x_pos=self.game.DISPLAY_W / 2)
 
     def update(self, delta_time, actions):

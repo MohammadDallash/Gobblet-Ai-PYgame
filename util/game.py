@@ -28,6 +28,8 @@ class Game():
         self.dt, self.prev_time = 0.0, 0.0
         self.ai_difficulty = 3
         self.state_stack = []
+        self.global_text_font_size = 23
+        self.global_title_font_size = 50
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
         pygame.display.set_caption('Space Gobblet')
