@@ -16,7 +16,7 @@ class MultiplayerChooseMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
 
-        self.options_str = ['host', 'clint']
+        self.options_str = ['Host a game', 'Connect to a game']
         self.cur_option = 0
         self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_title_font_size,
                                x_pos=self.game.DISPLAY_W / 2)
@@ -48,7 +48,7 @@ class MultiplayerChooseMenu(State):
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
 
-        self.helper.draw_text(display, 'Chose one', self.game.global_font_color, 60, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, 'Multiplayer', self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
     def enter_state(self):
@@ -109,11 +109,11 @@ class MultiplayerClientMenu(State):
 
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
-        self.helper.draw_text(display, 'write the room id and press enter', self.game.global_font_color, 35, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, 'Enter the host ID', self.game.global_font_color, 35, self.game.DISPLAY_W / 2, 50)
         self.helper.draw_text(display, self.room_id, self.game.global_font_color, 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
 
         if(self.againBool):
-            self.helper.draw_text(display, 'Err, try again', self.game.RED, 30, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
+            self.helper.draw_text(display, 'Error, Please try again.', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
 
 
 
@@ -176,9 +176,10 @@ class MultiplayerHostMenu(State):
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
 
-        self.helper.draw_text(display, 'Your room Id is:', self.game.global_font_color, 60, self.game.DISPLAY_W / 2, 50)
-        self.helper.draw_text(display, self.room_id, self.game.global_font_color, 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
-        self.helper.draw_text(display, 'Wait untill the other player joins', self.game.RED, 30, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
+        self.helper.draw_text(display, 'Your Room ID is:', self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, 50)
+        
+        self.helper.draw_text(display, self.room_id, self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
+        self.helper.draw_text(display, 'Waiting for a player to join...', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
 
 
 

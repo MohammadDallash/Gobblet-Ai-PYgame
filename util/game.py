@@ -28,7 +28,7 @@ class Game():
         self.dt, self.prev_time = 0.0, 0.0
         self.ai_difficulty = 3
         self.state_stack = []
-        self.global_text_font_size = 32
+        self.global_text_font_size = 25
         self.global_title_font_size = 50
         self.global_font_color = self.GREY
         self.title_screen = MainMenu(self)
