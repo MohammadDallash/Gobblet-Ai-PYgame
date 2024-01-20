@@ -12,7 +12,7 @@ ONLINE_OPPONENT_IN_OTHER= 1
 
 BLUE, RED = 0, 1
 
-class MultiplayerChoseMenu(State):
+class MultiplayerChooseMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
 
@@ -26,7 +26,7 @@ class MultiplayerChoseMenu(State):
 
         if actions['enter']:
             if(self.cur_option == 1):
-                multiplayerMenu_state =  MultiplayeClinetMenu(self.game)
+                multiplayerMenu_state =  MultiplayerClientMenu(self.game)
             else :
                 multiplayerMenu_state =  MultiplayerHostMenu(self.game)
             multiplayerMenu_state.enter_state()
@@ -37,7 +37,7 @@ class MultiplayerChoseMenu(State):
                 self.menuGUI.cur_option = i
                 if actions['LEFT_MOUSE_KEY_PRESS']:
                     if(self.cur_option == 1):
-                        multiplayerMenu_state =  MultiplayeClinetMenu(self.game)
+                        multiplayerMenu_state =  MultiplayerClientMenu(self.game)
                     else :
                         multiplayerMenu_state =  MultiplayerHostMenu(self.game)
                     multiplayerMenu_state.enter_state()
@@ -60,7 +60,7 @@ class MultiplayerChoseMenu(State):
 
 
 
-class MultiplayeClinetMenu(State):
+class MultiplayerClientMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
         self.mulHelper = MultiplayerHelper()
