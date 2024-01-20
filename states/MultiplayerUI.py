@@ -64,6 +64,9 @@ class MultiplayerClientMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
         self.mulHelper = MultiplayerHelper()
+        
+        print('you are a clinet and your local ip is', socket.gethostbyname(socket.gethostname()))
+        
 
         
         self.room_id  = ''
@@ -76,6 +79,8 @@ class MultiplayerClientMenu(State):
             self.againBool = True
             try:
                 ip, port = self.mulHelper.room_id_to_ip(self.room_id)
+                
+                print("you are trying to conect to", ip, port)
 
                 self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -90,6 +95,8 @@ class MultiplayerClientMenu(State):
             except Exception as e:
                 self.againBool = True
                 self.room_id = ''
+                
+                print(e)
                 # Handle the exception as needed, for example, you might want to close the socket or take other appropriate actions.
           
                         
@@ -134,6 +141,8 @@ class MultiplayerHostMenu(State):
         self.ip_address, self.port = self.mulHelper.get_ip_address()
         self.room_id = self.mulHelper.ip_to_room_id(self.ip_address, self.port)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
+        print('you are a server and your local ip and port is', self.ip_address, self.port)
 
     
 
