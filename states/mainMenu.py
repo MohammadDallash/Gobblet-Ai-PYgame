@@ -111,7 +111,7 @@ class Play_Mode(State):
             self.exit_state()
         if (actions['enter']):
             if(self.cur_option  == 3):
-                multiplayerMenu = MultiplayerChoseMenu(self.game) ##multi
+                multiplayerMenu = MultiplayerChooseMenu(self.game) ##multi
                 multiplayerMenu.enter_state()
             elif(self.cur_option  == 1): #player vs computer
                 playing_state = Playing(self.game, self.cur_option, opponent_type_in_other_mode=AI_OPPONENT_IN_OTHER)
@@ -123,7 +123,7 @@ class Play_Mode(State):
             x, y = pygame.mouse.get_pos()
             if self.menuGUI.mouse_collidepoint(x, y, self.cur_option):
                 if(self.cur_option  == 3):
-                    multiplayerMenu = MultiplayerChoseMenu(self.game)
+                    multiplayerMenu = MultiplayerChooseMenu(self.game)
                     multiplayerMenu.enter_state()
                 elif(self.cur_option  == 1): #TODO
                     playing_state = Playing(self.game, self.cur_option, opponent_type_in_other_mode=AI_OPPONENT_IN_OTHER)
