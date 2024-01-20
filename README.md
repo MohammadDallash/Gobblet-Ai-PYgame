@@ -5,7 +5,8 @@
 ![Alt text](.readme/Untitled.png)
 
 
-Welcome to Gobblet, a classic two-player abstract strategy game where players aim to line up four of their pieces in a row to win. This version of the game includes both Player vs Player and Player vs Computer modes, allowing you to challenge your friends or test your skills against a computer opponent.
+Welcome to Space Gobblers, the classic Gobblet two-player abstract strategy game where players aim to line up four of their pieces in a row to win.
+Navigate the cosmos, outmaneuver rivals, and become the supreme cosmic strategist in Space Gobblet!. This version of the game includes both Player vs Player and Player vs Computer and Computer vs Computer modes, allowing you to challenge your friends or test your skills against a computer opponent.
 
 ## Table of Contents
 
@@ -30,6 +31,11 @@ You can read more about the game rules [here](https://www.boardspace.net/gobblet
 2) 🌐 Online PvP: Compete globally against real players.
 3) 🤖 Player vs AI: Battle our intelligent AI opponent, which can be changed to be easy or hard.
 4) 🕹️ AI Showdown: Watch epic Computer vs Computer battles with different difficulties.
+
+
+## Game Snapshots 📸
+
+TBD
 
 
 
