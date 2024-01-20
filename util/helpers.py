@@ -191,7 +191,7 @@ class Helper:
         return text_rect
 
     def cpp_code(self, args):
-        file_name = 'test.cpp'
+        file_name = 'Algorithms.cpp'
 
         executable_name = file_name.split('.')[0]
         executable_path = os.path.join(sys._MEIPASS, executable_name) if hasattr(sys, '_MEIPASS') else executable_name
