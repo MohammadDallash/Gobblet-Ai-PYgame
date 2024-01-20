@@ -65,7 +65,7 @@ class Playing(State):
         
         self.turn = BLUE_PLAYER  # BLUE staconda arts the game
         self.players_names = ['Player 1', 'Player 2']
-        self.turn_text = self.players_names[self.turn - 1] + ' Turn'
+        self.turn_text = self.players_names[self.turn] + ' Turn'
         self.inventory_tiles = None
         self.board_tiles = [[], [], [], []]
         self.highlighted_tile_rect = None 
