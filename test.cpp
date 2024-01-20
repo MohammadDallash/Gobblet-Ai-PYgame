@@ -461,7 +461,7 @@ int static_evaluation(State curState)
 
     cblue[blue_count]++;
     cred[red_count]++;
-
+    other_diagonal = blue + red;
     // other_diagonal = blue + red;
     // if(red_count == -3 && blue_count == 1)red_close += 10;
     // if(blue_count == 3 && red_count == -1)blue_close += -10;
@@ -480,8 +480,10 @@ int static_evaluation(State curState)
         minn = min(column[i],minn);
     }
 
+    maxx = max(max(other_diagonal,main_diagonal),maxx);
+    minn = min(min(other_diagonal,main_diagonal),minn);
 
-    int result = (cblue[4]*10 + cblue[3]*5 + cblue[2]*2 + cblue[1]*1)  - (cred[4]*10 + cred[3]*5 + cred[2]*2 + cred[1]*1) + 10*(maxx + minn);
+    int result = (cblue[4]*10 + cblue[3]*5 + cblue[2]*2 + cblue[1]*1)  - (cred[4]*10 + cred[3]*5 + cred[2]*2 + cred[1]*1) + 25*(maxx + minn);
 
     calculated_states[current_hash] = result;
 
