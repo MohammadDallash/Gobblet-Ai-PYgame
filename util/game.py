@@ -30,7 +30,7 @@ class Game():
         self.state_stack = []
         self.global_text_font_size = 25
         self.global_title_font_size = 50
-        self.global_font_color = self.GREY
+        self.global_font_color = self.WHITE
         self.global_volume = 0.3
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()

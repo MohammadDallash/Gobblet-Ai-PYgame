@@ -204,9 +204,15 @@ class Playing(State):
 
             else:
                 if(self.mode == AI_VS_AI or self.opponent_type_in_other_mode == AI_OPPONENT_IN_OTHER):
+                    start = time.time()
+                    
                     state_Astext = self.helper.flush(self.turn, self.board,self.inventory)
                     s = (self.helper.cpp_code(state_Astext))
+                    
                     self.parse_input_string(s)
+                    end = time.time()
+                    print(f"operation took {1000*(end-start)}ms")
+                    
                 elif(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
                     s = self.client_socket.recv(1024).decode()
                     self.parse_input_string(s)
