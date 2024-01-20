@@ -10,12 +10,9 @@ Welcome to Gobblet, a classic two-player abstract strategy game where players ai
 ## Table of Contents
 
 - [Game Rules](#game-rules)
-- [Usage](#usage)
-  - [Player vs Player](#player-vs-player)
-  - [Player vs Computer](#player-vs-computer)
-- [Credits](#credits)
+- [Features](#Features)
 
-## Game Rules
+## Game Rules 🎮 
 
 Gobblet is played on a 4x4 board, and each player has 12 pieces of varying sizes. The goal is to line up four of your pieces in a row horizontally, vertically, or diagonally.
 
@@ -26,30 +23,24 @@ The rules are simple:
 You can read more about the game rules [here](https://www.boardspace.net/gobblet/english/gobblet_rules.pdf).
 
 
-## Usage
+## Features 🚀
 
-### Player vs Player
-
-To play against another person:
-
-```bash
-TBD
-```
-
-Follow the on-screen instructions to make your moves.
-
-### Player vs Computer
-
-To challenge the computer:
-
-```bash
-TBD
-```
-
-The computer AI will make its moves, and you will be prompted for your moves.
+### You can enjoy playing space gobblers in different modes like
+1) 💻 Local PvP: Challenge friends on the same computer.
+2) 🌐 Online PvP: Compete globally against real players.
+3) 🤖 Player vs AI: Battle our intelligent AI opponent, which can be changed to be easy or hard.
+4) 🕹️ AI Showdown: Watch epic Computer vs Computer battles with different difficulties.
 
 
 
 
 
-****Enjoy playing Gobblet!****
+
+
+
+
+
+
+
+
+**Enjoy playing Space Gobblers!**
