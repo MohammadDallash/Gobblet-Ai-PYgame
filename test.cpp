@@ -322,11 +322,6 @@ int static_evaluation(State curState)
     // scores for each row, column, diagonal.
     vector<int> row(4, 0);
     vector<int> column(4, 0);
-    unordered_map<int,int> cblue, cred;
-    cblue[0] = cblue[1] = cblue[2] = cblue[3] = cblue[4] = 0;
-    cred[0] = cred[1] = cred[2] = cred[3] = cred[4] = 0;
-
-
     int main_diagonal = 0;
     int other_diagonal = 0;
 
@@ -351,28 +346,24 @@ int static_evaluation(State curState)
         {
             // if the piece is red and not an empty tile.
             if (get_largest_piece(curState.board[i][j]) > ALL_BLUE and curState.board[i][j] != EMPTY_TILE){
-             //   red-=5; // its a red piece
-                red_count++;
+                red-=5; // its a red piece
+                red_count--;
                 red-=get_largest_piece_size(curState.board[i][j])*2; // also add its size
             }
 
             // if the piece is red blue and not an empty tile.
             if (get_largest_piece(curState.board[i][j]) < RED_SMALL and curState.board[i][j] != EMPTY_TILE){
-             //   blue+=5; // its a blue piece
+                blue+=5; // its a blue piece
                 blue_count++;
                 blue+=get_largest_piece_size(curState.board[i][j])*2; // also add its size
             }
         }
 
         row[i] = blue + red;
-
-        cblue[blue_count]++;
-        cred[red_count]++;
-
-        // if(red_count == -3 && blue_count == 1)red_close += 10;
-        // if(blue_count == 3 && red_count == -1)blue_close += -10;
-        // if(red_count == -4)red_won = -1000;
-        // if(blue_count == 4)blue_won = 1000;
+        if(red_count == -3 && blue_count == 1)red_close += 10;
+        if(blue_count == 3 && red_count == -1)blue_close += -10;
+        if(red_count == -4)red_won = -1000;
+        if(blue_count == 4)blue_won = 1000;
 
     }
 
@@ -382,28 +373,27 @@ int static_evaluation(State curState)
         int blue = 0;
         int red = 0;
         int blue_count=0,red_count=0;
-
         for (int j = 0; j < 4; j++)
         {
 
             if (get_largest_piece(curState.board[j][i]) > ALL_BLUE and curState.board[j][i] != EMPTY_TILE){
-               // red-=5; // its a red piece
-                red_count++;
+                red-=5; // its a red piece
+                red_count--;
                 red-=get_largest_piece_size(curState.board[j][i])*2; // also add its size
             }
 
             if (get_largest_piece(curState.board[j][i]) < RED_SMALL and curState.board[j][i] != EMPTY_TILE){
-               // blue+=5; // its a blue piece
+                blue+=5; // its a blue piece
                 blue_count++;
                 blue+=get_largest_piece_size(curState.board[j][i])*2; // also add its size
             }
         }
 
-        cblue[blue_count]++;
-        cred[red_count]++;
-
         column[i] = blue + red;
-
+        if(red_count == -3 && blue_count == 1)red_close += 10;
+        if(blue_count == 3 && red_count == -1)blue_close += -10;
+        if(red_count == -4)red_won = -1000;
+        if(blue_count == 4)blue_won = 1000;
     }
 
 
@@ -414,28 +404,26 @@ int static_evaluation(State curState)
     for (int i = 0; i < 4; i++)
     {
         if (get_largest_piece(curState.board[i][i]) > 15 and curState.board[i][i] != 0){
-            //red-=5; // its a red piece
-            red_count++;
+            red-=5; // its a red piece
+            red_count--;
             red-=get_largest_piece_size(curState.board[i][i])*2; // also add its size
 
         }
 
         if (get_largest_piece(curState.board[i][i]) < 16 and curState.board[i][i] != 0){
-            //blue+=5; // its a blue piece
+            blue+=5; // its a blue piece
             blue_count++;
             blue+=get_largest_piece_size(curState.board[i][i])*2; // also add its size
         }
 
     }
 
-    cblue[blue_count]++;
-    cred[red_count]++;
 
     main_diagonal = blue + red;
-    // if(red_count == -3 && blue_count == 1)red_close += 10;
-    // if(blue_count == 3 && red_count == -1)blue_close += -10;
-    // if(red_count == -4)red_won = -1000;
-    // if(blue_count == 4)blue_won = 1000;
+    if(red_count == -3 && blue_count == 1)red_close += 10;
+    if(blue_count == 3 && red_count == -1)blue_close += -10;
+    if(red_count == -4)red_won = -1000;
+    if(blue_count == 4)blue_won = 1000;
 
     blue = 0;
     red = 0;
@@ -446,30 +434,26 @@ int static_evaluation(State curState)
     for (int i = 0; i < 4; i++)
     {
         if (get_largest_piece(curState.board[i][3 - i]) > ALL_BLUE and curState.board[i][3 - i] != EMPTY_TILE){
-           // red-=5; // its a red piece
-            red_count++;
+            red-=5; // its a red piece
+            red_count--;
             red -= get_largest_piece_size(curState.board[i][3 - i])*2; // also add its size
         }
 
         if (get_largest_piece(curState.board[i][3 - i]) < RED_SMALL and curState.board[i][3 - i] != EMPTY_TILE){
-           // blue+=5; // its a blue piece
+            blue+=5; // its a blue piece
             blue_count++;
             blue += get_largest_piece_size(curState.board[i][3 - i])*2; // also add its size
         }
 
     }
+    other_diagonal = blue + red;
+    if(red_count == -3 && blue_count == 1)red_close += 10;
+    if(blue_count == 3 && red_count == -1)blue_close += -10;
+    if(red_count == -4)red_won = -1000;
+    if(blue_count == 4)blue_won = 1000;
 
-    cblue[blue_count]++;
-    cred[red_count]++;
-
-    // other_diagonal = blue + red;
-    // if(red_count == -3 && blue_count == 1)red_close += 10;
-    // if(blue_count == 3 && red_count == -1)blue_close += -10;
-    // if(red_count == -4)red_won = -1000;
-    // if(blue_count == 4)blue_won = 1000;
-
-    // // calculate the maximum - minimum
-     int maxx = INT_MIN, minn = INT_MAX;
+    // calculate the maximum - minimum
+    int maxx = INT_MIN, minn = INT_MAX;
 
     fori(4)
     {
@@ -479,9 +463,12 @@ int static_evaluation(State curState)
         maxx = max(column[i],maxx);
         minn = min(column[i],minn);
     }
+    maxx = max(max(other_diagonal,main_diagonal),maxx);
+    minn = min(min(other_diagonal,main_diagonal),minn);
+    int sum_inv1 = curState.inventory[0][0] + curState.inventory[0][1] + curState.inventory[0][2]; 
+    int sum_inv2 = curState.inventory[1][0] + curState.inventory[1][1] + curState.inventory[1][2];
 
-
-    int result = (cblue[4]*10 + cblue[3]*5 + cblue[2]*2 + cblue[1]*1)  - (cred[4]*10 + cred[3]*5 + cred[2]*2 + cred[1]*1) + 10*(maxx + minn);
+    int result =10*(maxx + minn) + 3*(red_close + blue_close) + red_won + blue_won;
 
     calculated_states[current_hash] = result;
 
