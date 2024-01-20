@@ -2,6 +2,9 @@
 
 ## Overview
 
+![Alt text](.readme/Untitled.png)
+
+
 Welcome to Gobblet, a classic two-player abstract strategy game where players aim to line up four of their pieces in a row to win. This version of the game includes both Player vs Player and Player vs Computer modes, allowing you to challenge your friends or test your skills against a computer opponent.
 
 ## Table of Contents
