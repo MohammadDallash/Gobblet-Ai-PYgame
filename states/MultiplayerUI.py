@@ -1,3 +1,5 @@
+from threading import Lock
+import threading
 from states.state import State
 import socket
 from util.helpers import MenuGUI
@@ -15,7 +17,6 @@ class MultiplayerChoseMenu(State):
         State.__init__(self, game)
 
         self.options_str = ['host', 'clint']
-
         self.cur_option = 0
         self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_title_font_size,
                                x_pos=self.game.DISPLAY_W / 2)
@@ -127,19 +128,28 @@ class MultiplayerHostMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
         self.mulHelper = MultiplayerHelper()
-
-        
+        self.done = False
+        self.x = None
+        self.lock = Lock()
         self.ip_address, self.port = self.mulHelper.get_ip_address()
         self.room_id = self.mulHelper.ip_to_room_id(self.ip_address, self.port)
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     
 
     def update(self, delta_time, actions):
 
-        self.server_socket =socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if(self.done):
+            self.x = threading.Thread(target=self.handle_thread).start()
 
+        if (actions['Esc']):
+            self.exit_state()
+            
+    def handle_thread(self):
+        
+        self.done = False
+        
         self.server_socket.bind((self.ip_address, self.port))
-
         self.server_socket.listen(1)
         print(f"Server listening on {self.ip_address}:{self.port}")
 
@@ -152,13 +162,13 @@ class MultiplayerHostMenu(State):
         self.game.client_socket =   self.client_socket
 
         self.server_socket.close()
-
+        
+        self.done = True
         playing_state = Playing(self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode= ONLINE_OPPONENT_IN_OTHER, my_color = BLUE)
+        
         playing_state.enter_state()
+        
 
-
-        if (actions['Esc']):
-            self.exit_state()
 
 
 
