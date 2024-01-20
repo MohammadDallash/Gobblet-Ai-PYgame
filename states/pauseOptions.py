@@ -14,7 +14,7 @@ class PauseOptions(State):
         self.Music = 'On'
 
         self.cur_option = 0
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=30,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_text_font_size,
                                x_pos=self.game.DISPLAY_W / 2,
                                justTxt=False)
 
@@ -74,7 +74,7 @@ class PoptionsSelect(State):
 
         self.cur_option = self.get_choose()
 
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=20,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_text_font_size,
                                x_pos=self.game.DISPLAY_W / 2 + 400, justTxt=False)
 
     def get_choose(self):

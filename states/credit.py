@@ -11,7 +11,7 @@ class Credit(State):
 
         self.cur_option = 0
 
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=20,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_text_font_size,
                                x_pos=self.game.DISPLAY_W / 2, justTxt=True)
 
     def update(self, delta_time, actions):
@@ -20,7 +20,7 @@ class Credit(State):
 
     def render(self, display):
         display.fill(self.game.BLUE)
-        self.helper.draw_text(display, 'Credits', self.game.WHITE, 80, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, 'Credits', self.game.WHITE, 80, self.game.DISPLAY_W / 2, self.game.global_title_text_size)
         self.menuGUI.render(display)
 
     def enter_state(self):
