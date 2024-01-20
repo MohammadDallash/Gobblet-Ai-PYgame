@@ -21,15 +21,16 @@ class Game():
         self.game_canvas = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
 
-        self.BLUE, self.WHITE, self.YELLOW, self.BROWN, self.RED = (0, 0, 0), (255, 255, 255), (255, 255, 0), (46, 32, 26), (255, 0 ,0)
+        self.BLUE, self.WHITE, self.YELLOW, self.BROWN, self.RED, self.GREY = (0, 0, 0), (255, 255, 255), (255, 255, 0), (46, 32, 26), (255, 0 ,0), (128,128,128)
 
         self.helper = Helper(self)
 
         self.dt, self.prev_time = 0.0, 0.0
         self.ai_difficulty = 3
         self.state_stack = []
-        self.global_text_font_size = 23
+        self.global_text_font_size = 32
         self.global_title_font_size = 50
+        self.global_font_color = self.GREY
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
         pygame.display.set_caption('Space Gobblet')

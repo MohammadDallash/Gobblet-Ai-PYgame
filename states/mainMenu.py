@@ -17,7 +17,7 @@ class MainMenu(State):
         State.__init__(self, game)
 
         self.options_str = ['Play', 'options', 'credit', 'quit']
-        self.Player_Mode = ['Player vs Player', 'Player vs Computer', 'Computer vs Computer', 'multiplayer']
+        self.Player_Mode = ['Player vs Player', 'Player vs Computer', 'AI Showdown', 'Online PvP']
 
         self.cur_option = 0
         
@@ -76,7 +76,7 @@ class MainMenu(State):
     def render(self, display):
         # display.fill(self.game.BLUE)
         display.blit(self.game.menubg, (0, 0))
-        self.helper.draw_text(display, 'Space Gobblers', self.game.WHITE, 80, self.game.DISPLAY_W / 2, self.game.global_title_font_size)
+        self.helper.draw_text(display, 'Space Gobblers', self.game.global_font_color, 80, self.game.DISPLAY_W / 2, self.game.global_title_font_size)
         self.menuGUI.render(display)
 
     def enter_state(self):

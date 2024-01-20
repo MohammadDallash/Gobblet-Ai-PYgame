@@ -267,7 +267,7 @@ class MenuGUI:
         width_menu = 3 * self.font_size * self.n_options - 3 * self.font_size
         start_y = (self.game.DISPLAY_H - width_menu) // 2
         for idx, options_txt in enumerate(self.options_str):
-            color = self.game.YELLOW if idx == self.cur_option and not self.justTxt else self.game.WHITE
+            color = self.game.YELLOW if idx == self.cur_option and not self.justTxt else self.game.global_font_color
             text_rect = self.game.helper.draw_text(
                 display, options_txt, color, self.font_size, self.x_pos, start_y + idx * 3 * self.font_size
             )

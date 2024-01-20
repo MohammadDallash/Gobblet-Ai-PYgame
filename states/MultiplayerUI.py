@@ -48,7 +48,7 @@ class MultiplayerChoseMenu(State):
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
 
-        self.helper.draw_text(display, 'Chose one', self.game.WHITE, 60, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, 'Chose one', self.game.global_font_color, 60, self.game.DISPLAY_W / 2, 50)
         self.menuGUI.render(display)
 
     def enter_state(self):
@@ -109,8 +109,8 @@ class MultiplayeClinetMenu(State):
 
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
-        self.helper.draw_text(display, 'write the room id and press enter', self.game.WHITE, 35, self.game.DISPLAY_W / 2, 50)
-        self.helper.draw_text(display, self.room_id, self.game.WHITE, 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
+        self.helper.draw_text(display, 'write the room id and press enter', self.game.global_font_color, 35, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, self.room_id, self.game.global_font_color, 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
 
         if(self.againBool):
             self.helper.draw_text(display, 'Err, try again', self.game.RED, 30, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
@@ -176,8 +176,8 @@ class MultiplayerHostMenu(State):
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
 
-        self.helper.draw_text(display, 'Your room Id is:', self.game.WHITE, 60, self.game.DISPLAY_W / 2, 50)
-        self.helper.draw_text(display, self.room_id, self.game.WHITE, 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
+        self.helper.draw_text(display, 'Your room Id is:', self.game.global_font_color, 60, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, self.room_id, self.game.global_font_color, 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
         self.helper.draw_text(display, 'Wait untill the other player joins', self.game.RED, 30, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
 
 
