@@ -3,7 +3,7 @@ import pygame
 import sys
 import os
 class MusicPlayer:
-    def __init__(self):
+    def __init__(self,global_vol):
         pygame.mixer.init()
         self.current_track = None
         if getattr(sys, 'frozen', False):
@@ -17,7 +17,7 @@ class MusicPlayer:
         self.background_sound = pygame.mixer.Sound(rf'{assets_path}/sound/background music.mp3')
         self.sfx = pygame.mixer.Sound(f'{assets_path}/sound/move_piece.mp3')
         self.win_sound = pygame.mixer.Sound(f'{assets_path}/sound/win sound.mp3')
-        self.master_volume = 1.0
+        self.master_volume = global_vol
         self.disable_background_music = False
 
     def load_track(self, track_path):
@@ -27,6 +27,7 @@ class MusicPlayer:
 
 
     def play(self, loop=-1):
+        self.background_sound.set_volume(self.master_volume)
         pygame.mixer.Channel(0).play(self.background_sound,loops=-1)
 
     def pause(self):

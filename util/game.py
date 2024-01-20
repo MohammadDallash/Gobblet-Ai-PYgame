@@ -31,6 +31,7 @@ class Game():
         self.global_text_font_size = 25
         self.global_title_font_size = 50
         self.global_font_color = self.GREY
+        self.global_volume = 0.3
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
         pygame.display.set_caption('Space Gobblet')
@@ -52,7 +53,7 @@ class Game():
         self.menubg = pygame.image.load(rf"{assets_path}/background/background(space).png")
         
         # background music
-        self.global_music_player = MusicPlayer()
+        self.global_music_player = MusicPlayer(self.global_volume)
         self.music_track = rf'{assets_path}/sound/background music.mp3'
         
         self.global_music_player.load_track(self.music_track)

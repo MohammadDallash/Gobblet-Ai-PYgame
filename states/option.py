@@ -62,9 +62,9 @@ class Option(State):
     def set_volume(self, val):
         self.volume = val
         if val == 'Higher':
-            self.game.global_music_player.set_volume(1.0)
+            self.game.global_music_player.set_volume(0.4)
         elif val=='Lower':
-            self.game.global_music_player.set_volume(0.5)
+            self.game.global_music_player.set_volume(0.1)
         else:
             self.game.global_music_player.set_volume(0.0)
 
