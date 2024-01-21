@@ -14,14 +14,19 @@
 
 using namespace std;
 
+int difficulty;
 
+int MXchild = 25;
 
 
 State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool buring, bool mutation)
 { 
     int evl;
     State temp;
-    vector<State> childs_States =generate_possible_states(postion, buring);
+    vector<State> childs_States =generate_possible_states(postion, buring &&(difficulty!=1) );
+
+    if (difficulty == 1 and childs_States.size() > MXchild)
+         childs_States.resize(MXchild);
 
     if(depth==0) return postion;
     if(postion.turn == 0)//maximizer
@@ -96,7 +101,7 @@ int main(int argc, char *argv[])
     }
 
 
-    int depth = atoi(argv[arg_index]);
+    difficulty = atoi(argv[arg_index]);
     // itr deepening
     State best_state;
     if(initial_state.turn==0) // max
@@ -104,7 +109,7 @@ int main(int argc, char *argv[])
     else best_state.static_evl = INT32_MAX;
 
 
-    for(int i = depth; i<=depth; i++)
+    for(int i = difficulty; i<=difficulty; i++)
     {
 
     auto state = minMax_alpha_beta(initial_state, i, INT32_MIN, INT32_MAX, true, true);
