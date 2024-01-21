@@ -31,6 +31,7 @@ class Game():
         self.global_text_font_size = 25
         self.global_title_font_size = 50
         self.global_font_color = self.WHITE
+        
         self.global_volume = 0.3
         self.title_screen = MainMenu(self)
         self.title_screen.enter_state()
@@ -47,7 +48,8 @@ class Game():
 
         self.icon = pygame.image.load(rf"{assets_path}/sprites/tiles/tileswhite2.png")
         pygame.display.set_icon(self.icon)
-        self.font_name = rf"{assets_path}/font/f.TTF"
+        self.text_font_name = rf"{assets_path}/font/f.TTF"
+        self.title_font_name = rf"{assets_path}/font/f.TTF"
         
         # menus background
         self.menubg = pygame.image.load(rf"{assets_path}/background/background(space).png")

@@ -76,7 +76,7 @@ class MainMenu(State):
     def render(self, display):
         # display.fill(self.game.BLUE)
         display.blit(self.game.menubg, (0, 0))
-        self.helper.draw_text(display, 'Space Gobblers', self.game.global_font_color, 80, self.game.DISPLAY_W / 2, self.game.global_title_font_size)
+        self.helper.draw_text(display, 'Space Gobblers', self.game.global_font_color, 80, self.game.DISPLAY_W / 2, self.game.global_title_font_size,True)
         self.menuGUI.render(display)
 
     def enter_state(self):

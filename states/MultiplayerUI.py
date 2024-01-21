@@ -48,7 +48,7 @@ class MultiplayerChooseMenu(State):
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
 
-        self.helper.draw_text(display, 'Multiplayer', self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, 'Multiplayer', self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, 50,True)
         self.menuGUI.render(display)
 
     def enter_state(self):

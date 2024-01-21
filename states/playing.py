@@ -367,7 +367,7 @@ class Playing(State):
         display.blit(self.bg, (0, 0))
 
         # Display the current turn text at the top of the screen
-        self.helper.draw_text(display, self.turn_text, self.game.global_font_color, 20, self.game.DISPLAY_W / 2, 30)
+        self.helper.draw_text(display, self.turn_text, self.game.global_font_color, 20, self.game.DISPLAY_W / 2, 30,True)
         self.map.draw_map_on_canvas(display)
 
         # if the mouse is near a certain tile.
