@@ -13,8 +13,9 @@
 
 
 using namespace std;
-
 int difficulty;
+
+int MXchild = 25;
 
 
 State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool buring, bool mutation)
@@ -23,8 +24,8 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
     State temp;
     vector<State> childs_States =generate_possible_states(postion, buring &&(difficulty!=1) );
 
-    if (difficulty == 1 and childs_States.size() > 30)
-         childs_States.resize(30);
+    if (difficulty == 1 and childs_States.size() > MXchild)
+         childs_States.resize(MXchild);
 
     if(depth==0) return postion;
     if(postion.turn == 0)//maximizer
