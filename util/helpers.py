@@ -183,9 +183,9 @@ class Helper:
 
     def draw_text(self, display, text, color, size, x, y,title = False):
         if(title):
-            font = pygame.font.Font(self.game.text_font_name, size)
-        else:
             font = pygame.font.Font(self.game.title_font_name, size)
+        else:
+            font = pygame.font.Font(self.game.text_font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
