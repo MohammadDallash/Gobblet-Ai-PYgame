@@ -16,7 +16,7 @@ using namespace std;
 
 int difficulty;
 
-int MXchild = 25;
+int MXchild = 35;
 
 
 State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool buring, bool mutation)
