@@ -1,2 +1,2 @@
 
- g++ .\AI\Algorithms.cpp .\AI\Util.cpp .\AI\Zobrist.cpp -o Algorithms.exe
+ g++ .\AI\*.cpp -o Algorithms.exe
