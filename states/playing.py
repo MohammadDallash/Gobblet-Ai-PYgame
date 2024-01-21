@@ -181,6 +181,9 @@ class Playing(State):
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)
             pause_menu.enter_state()
+            
+        if (actions["quit"]):
+            sys.exit()
 
 
 

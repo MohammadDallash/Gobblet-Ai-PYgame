@@ -13,7 +13,7 @@ class Game():
 
         self.running = True
         self.actions = {"left": False, "right": False, "up": False, "down": False, "Esc": False, "enter": False,
-                        "LEFT_MOUSE_KEY_PRESS": False, 'backspace': False}
+                        "LEFT_MOUSE_KEY_PRESS": False, 'backspace': False,"quit": False , "k_v": False}
 
         self.DISPLAY_W, self.DISPLAY_H = 1200, 720
     
@@ -101,6 +101,7 @@ class Game():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.actions['quit'] = True
                 self.running = False
 
             elif event.type == pygame.KEYDOWN:
@@ -130,6 +131,8 @@ class Game():
             self.actions['enter'] = True
         elif event.key == pygame.K_BACKSPACE:
             self.actions['backspace'] = True
+        elif event.key == pygame.K_v and event.mod & pygame.KMOD_CTRL:
+            self.actions['k_v'] = True
         
         char = event.unicode
         if char:
@@ -150,6 +153,8 @@ class Game():
             self.actions['enter'] = False
         elif event.key == pygame.K_BACKSPACE:
             self.actions['backspace'] = False
+        elif event.key == pygame.K_v and event.mod & pygame.KMOD_CTRL:
+            self.actions['k_v'] = False
         
         
 

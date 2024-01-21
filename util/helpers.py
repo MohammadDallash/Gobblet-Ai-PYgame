@@ -181,11 +181,15 @@ class Helper:
     def load_assets(self):
         pass
 
-    def draw_text(self, display, text, color, size, x, y,title = False):
+    def draw_text(self, display, text, color, size, x, y, title = False, is_default = False):
         if(title):
             font = pygame.font.Font(self.game.title_font_name, size)
         else:
             font = pygame.font.Font(self.game.text_font_name, size)
+         ##########################   
+        if(is_default):
+            font = pygame.font.Font(size=55)
+        ###########################
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
@@ -245,6 +249,7 @@ class Helper:
 
 
 class MenuGUI:
+    
     def __init__(self, game, options_str, cur_option, font_size, x_pos, justTxt=False):
         self.options_str = options_str
         self.n_options = len(self.options_str)

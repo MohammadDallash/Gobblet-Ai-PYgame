@@ -1,3 +1,4 @@
+import locale
 from threading import Lock
 import threading
 from states.state import State
@@ -67,7 +68,8 @@ class MultiplayerClientMenu(State):
         
         print('you are a clinet and your local ip is', socket.gethostbyname(socket.gethostname()))
         
-
+        pygame.scrap.init()
+        pygame.scrap.set_mode(pygame.SCRAP_CLIPBOARD)
         
         self.room_id  = ''
 
@@ -79,15 +81,10 @@ class MultiplayerClientMenu(State):
             self.againBool = True
             try:
                 ip, port = self.mulHelper.room_id_to_ip(self.room_id)
-                
                 print("you are trying to conect to", ip, port)
-
                 self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
                 self.client_socket.connect((ip, port))
-
                 self.game.client_socket =   self.client_socket
-
                 playing_state = Playing (self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode=ONLINE_OPPONENT_IN_OTHER, my_color = RED)    
                 playing_state.enter_state()
 
@@ -110,6 +107,11 @@ class MultiplayerClientMenu(State):
 
         if (actions['Esc']):
             self.exit_state()
+        
+        if(actions["k_v"]):
+                self.room_id += pygame.scrap.get(pygame.SCRAP_TEXT)[0:-1].decode("utf-8")
+           
+          
 
 
 
@@ -135,7 +137,7 @@ class MultiplayerHostMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
         self.mulHelper = MultiplayerHelper()
-        self.done = False
+        self.done = True
         self.x = None
         self.lock = Lock()
         self.ip_address, self.port = self.mulHelper.get_ip_address()
@@ -151,7 +153,8 @@ class MultiplayerHostMenu(State):
         if(self.done):
             self.x = threading.Thread(target=self.handle_thread).start()
 
-        if (actions['Esc']):
+        if (actions['Esc'] or actions["quit"]):
+            self.server_socket.close()
             self.exit_state()
             
     def handle_thread(self):
@@ -163,6 +166,8 @@ class MultiplayerHostMenu(State):
         print(f"Server listening on {self.ip_address}:{self.port}")
 
         print(self.room_id)
+        pygame.scrap.init()
+        pygame.scrap.put(pygame.SCRAP_TEXT,str(self.room_id).encode('utf-8'))
 
         self.client_socket, self.client_address = self.server_socket.accept()
         print(f"Accepted connection from {self.client_address}")
@@ -187,8 +192,11 @@ class MultiplayerHostMenu(State):
 
         self.helper.draw_text(display, 'Your Room ID is:', self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, 50)
         
-        self.helper.draw_text(display, self.room_id, self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
-        self.helper.draw_text(display, 'Waiting for a player to join...', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
+        self.helper.draw_text(display, self.room_id, self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2,is_default=True)
+        
+        self.helper.draw_text(display, 'Waiting for a player to join...', self.game.RED, self.game.global_text_font_size+10, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
+        self.helper.draw_text(display, 'Room ID is copied to clipboard!', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 160)
+
 
 
 
