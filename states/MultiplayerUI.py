@@ -153,10 +153,9 @@ class MultiplayerHostMenu(State):
         if(self.done):
             self.x = threading.Thread(target=self.handle_thread).start()
 
-        if (actions['Esc'] or actions["quit"]):
-            self.server_socket.close()
+        if (actions['Esc']):
             self.exit_state()
-            self.exit_state()
+
             
     def handle_thread(self):
         
