@@ -43,7 +43,6 @@ class MusicPlayer:
 
     def set_volume(self, volume):
         self.master_volume = volume
-        # Set the volume of the music (0.0 to 1.0)
         self.background_sound.set_volume(self.master_volume)
         
     def check_music(self):

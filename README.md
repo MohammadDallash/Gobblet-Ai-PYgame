@@ -21,7 +21,7 @@ The rules are simple:
 1. On your turn, you can either place a new piece on the board or move an existing piece to an empty spot.
 2. A larger piece can cover a smaller one, and players can move pieces to uncover their own or their opponent's pieces.
 
-You can read more about the game rules [here](https://www.boardspace.net/gobblet/english/gobblet_rules.pdf).
+You can read more about the game rules [here](https://www.boardspace.net/gobblet/english/gobblet_rules.pdf) or here [Watch this video](https://www.youtube.com/watch?v=aSaAjQY8_b0).
 
 
 ## Features 🚀
@@ -35,15 +35,11 @@ You can read more about the game rules [here](https://www.boardspace.net/gobblet
 
 ## Game Snapshots 📸
 
-TBD
+![Main Menu](.readme/snapshot1.png)
 
+![Gameplay](.readme/snapshot2.png)
 
-
-
-
-
-
-
+![Options](.readme/snapshot3.png)
 
 
 
