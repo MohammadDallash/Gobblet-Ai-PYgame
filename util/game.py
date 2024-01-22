@@ -28,7 +28,8 @@ class Game():
         self.dt, self.prev_time = 0.0, 0.0
         self.ai_difficulty = 3
         self.state_stack = []
-        self.global_text_font_size = 25
+        self.global_text_font_size = 40
+        self.global_options_text_size = 25
         self.global_title_font_size = 50
         self.global_font_color = self.WHITE
         

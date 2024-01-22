@@ -12,7 +12,7 @@ class WinnerMenu(State):
         self.winner = winner
         self.play_mode = play_mode
         self.cur_option = 0
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_title_font_size,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_text_font_size,
                                x_pos=self.game.DISPLAY_W / 2)
         self.my_color  =my_color
         self.opponent_type_in_other_mode = opponent_type_in_other_mode

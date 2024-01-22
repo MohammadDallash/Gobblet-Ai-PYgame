@@ -19,7 +19,7 @@ class MultiplayerChooseMenu(State):
 
         self.options_str = ['Host a game', 'Connect to a game']
         self.cur_option = 0
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_title_font_size,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_text_font_size,
                                x_pos=self.game.DISPLAY_W / 2)
 
     def update(self, delta_time, actions):
@@ -118,11 +118,11 @@ class MultiplayerClientMenu(State):
 
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
-        self.helper.draw_text(display, 'Enter the host ID', self.game.global_font_color, 35, self.game.DISPLAY_W / 2, 50)
-        self.helper.draw_text(display, self.room_id, self.game.global_font_color, 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2)
+        self.helper.draw_text(display, 'Enter the host ID', self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, 50)
+        self.helper.draw_text(display, self.room_id, self.game.global_font_color, 60, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 50, is_default=True)
 
         if(self.againBool):
-            self.helper.draw_text(display, 'Error, Please try again.', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
+            self.helper.draw_text(display, 'Error, Please try again.', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 250)
 
 
 
@@ -195,10 +195,10 @@ class MultiplayerHostMenu(State):
 
         self.helper.draw_text(display, 'Your Room ID is:', self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, 50)
         
-        self.helper.draw_text(display, self.room_id, self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2,is_default=True)
+        self.helper.draw_text(display, self.room_id, self.game.global_font_color, self.game.global_title_font_size, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 50,is_default=True)
         
-        self.helper.draw_text(display, 'Waiting for a player to join...', self.game.RED, self.game.global_text_font_size+10, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 190)
-        self.helper.draw_text(display, 'Room ID is copied to clipboard!', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 160)
+        self.helper.draw_text(display, 'Waiting for a player to join...', self.game.RED, self.game.global_options_text_size+10, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 240)
+        self.helper.draw_text(display, 'Room ID is copied to clipboard!', self.game.RED, self.game.global_options_text_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 160)
 
 
 

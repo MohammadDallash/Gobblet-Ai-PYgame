@@ -16,13 +16,13 @@ class MainMenu(State):
     def __init__(self, game):
         State.__init__(self, game)
 
-        self.options_str = ['Play', 'options', 'credit', 'quit']
+        self.options_str = ['Play', 'options', 'credits', 'quit']
         self.Player_Mode = ['Player vs Player', 'Player vs Computer', 'AI Showdown', 'Online PvP']
 
         self.cur_option = 0
         
 
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=30,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=40,
                                x_pos=self.game.DISPLAY_W / 2)
 
     def update(self, delta_time, actions):
@@ -94,7 +94,7 @@ class Play_Mode(State):
 
         self.cur_option = 0
 
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_text_font_size,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_options_text_size,
                                x_pos=self.game.DISPLAY_W / 2 + 400, justTxt=False)
 
 

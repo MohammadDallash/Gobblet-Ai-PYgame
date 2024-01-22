@@ -11,7 +11,7 @@ class Credit(State):
 
         self.cur_option = 0
 
-        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_text_font_size,
+        self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_options_text_size,
                                x_pos=self.game.DISPLAY_W / 2, justTxt=True)
 
     def update(self, delta_time, actions):

@@ -188,7 +188,7 @@ class Helper:
             font = pygame.font.Font(self.game.text_font_name, size)
          ##########################   
         if(is_default):
-            font = pygame.font.Font(size=55)
+            font = pygame.font.Font(size= 100)
         ###########################
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
