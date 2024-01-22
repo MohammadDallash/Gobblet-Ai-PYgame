@@ -143,8 +143,9 @@ class MultiplayerHostMenu(State):
 
     def update(self, delta_time, actions):
 
-        if(self.done):
-            self.x = threading.Thread(target=self.handle_thread).start()
+        # if(self.done):
+        #     self.x = threading.Thread(target=self.handle_thread).start()  
+        self.handle_thread()
 
         if (actions['Esc']):
             self.exit_state()
