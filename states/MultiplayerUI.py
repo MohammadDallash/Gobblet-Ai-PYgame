@@ -92,10 +92,7 @@ class MultiplayerClientMenu(State):
             except Exception as e:
                 self.againBool = True
                 self.room_id = ''
-                self.client_socket.close()
-                         
-          
-                        
+                                   
         elif(actions['backspace']) and len(self.room_id)>0:
             self.room_id  = self.room_id[:-1]
         else:                    
