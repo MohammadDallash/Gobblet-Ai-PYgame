@@ -93,8 +93,7 @@ class MultiplayerClientMenu(State):
                 self.againBool = True
                 self.room_id = ''
                 self.client_socket.close()
-                
-                
+                         
           
                         
         elif(actions['backspace']) and len(self.room_id)>0:
@@ -111,9 +110,6 @@ class MultiplayerClientMenu(State):
         if(actions["k_v"]):
                 self.room_id += pygame.scrap.get(pygame.SCRAP_TEXT)[0:-1].decode("utf-8")
            
-          
-
-
 
 
     def render(self, display):
@@ -160,34 +156,26 @@ class MultiplayerHostMenu(State):
     def handle_thread(self):
         
         self.done = False
-        try:
-            self.server_socket.bind((self.ip_address, self.port))
-            self.server_socket.listen(1)
-            print(f"Server listening on {self.ip_address}:{self.port}")
 
-            print(self.room_id)
-            pygame.scrap.init()
-            pygame.scrap.put(pygame.SCRAP_TEXT,str(self.room_id).encode('utf-8'))
+        self.server_socket.bind((self.ip_address, self.port))
+        self.server_socket.listen(1)
+        print(f"Server listening on {self.ip_address}:{self.port}")
 
-            self.client_socket, self.client_address = self.server_socket.accept()
-            print(f"Accepted connection from {self.client_address}")
-                
-            self.game.client_socket =   self.client_socket
+        print(self.room_id)
+        pygame.scrap.init()
+        pygame.scrap.put(pygame.SCRAP_TEXT,str(self.room_id).encode('utf-8'))
+
+        self.client_socket, self.client_address = self.server_socket.accept()
+        print(f"Accepted connection from {self.client_address}")
             
-        except Exception as e:
-            self.server_socket.close()
-            self.exit_state()
-            self.exit_state()
+        self.game.client_socket =   self.client_socket
+        
         
         self.done = True
         playing_state = Playing(self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode= ONLINE_OPPONENT_IN_OTHER, my_color = BLUE)
         
         playing_state.enter_state()
         
-
-
-
-
 
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
