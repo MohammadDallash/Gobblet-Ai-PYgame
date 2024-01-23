@@ -156,7 +156,8 @@ class MultiplayerHostMenu(State):
     def handle_thread(self):
         
         self.done = False
-
+        print(f"#########{(self.ip_address, self.port)}#########3")
+        
         self.server_socket.bind((self.ip_address, self.port))
         self.server_socket.listen(1)
         print(f"Server listening on {self.ip_address}:{self.port}")
@@ -171,9 +172,6 @@ class MultiplayerHostMenu(State):
         print(f"Accepted connection from {self.client_address}")
             
         self.game.client_socket =   self.client_socket
-        
-        
-        self.done = True
         playing_state = Playing(self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode= ONLINE_OPPONENT_IN_OTHER, my_color = BLUE)
         
         playing_state.enter_state()
