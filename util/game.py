@@ -81,9 +81,15 @@ class Game():
             # Check if the socket is closed by attempting to get the socket option
             sock.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR)
             return False  # The socket is still open
-        except socket.error as e:
-            # An error occurred, check if it's a known error indicating the socket is closed
-            if "bad file descriptor" in str(e) or "Transport endpoint is not connected" in str(e):
+        except OSError as os_error:
+            # Handle the specific OSError indicating the socket is closed
+            if os_error.errno == 10038:  # WinError 10038
+                return True  # The socket is closed
+            else:
+                raise  # Reraise the exception if it's not the expected OSError
+        except Exception as e:
+            # Check if the exception indicates the socket is closed
+            if isinstance(e, (socket.error, BrokenPipeError, ConnectionResetError)):
                 return True  # The socket is closed
             else:
                 raise  # Reraise the exception if it's not a known error
