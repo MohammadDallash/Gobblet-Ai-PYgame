@@ -118,6 +118,8 @@ class MultiplayerClientMenu(State):
 
         if(self.againBool):
             self.helper.draw_text(display, 'Error, Please try again.', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 250)
+        else :
+            self.helper.draw_text(display, 'You can press Ctrl+v for pasting', self.game.RED, self.game.global_text_font_size, self.game.DISPLAY_W / 2,self.game.DISPLAY_H - 250)
 
 
 
@@ -156,7 +158,6 @@ class MultiplayerHostMenu(State):
     def handle_thread(self):
         
         self.done = False
-        print(f"#########{(self.ip_address, self.port)}#########3")
         
         self.server_socket.bind((self.ip_address, self.port))
         self.server_socket.listen(1)
