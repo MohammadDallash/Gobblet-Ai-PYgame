@@ -160,11 +160,11 @@ class MultiplayerHostMenu(State):
         self.server_socket.listen(1)
         print(f"Server listening on {self.ip_address}:{self.port}")
 
+        self.client_socket, self.client_address = self.server_socket.accept()
         print(self.room_id)
         pygame.scrap.init()
         pygame.scrap.put(pygame.SCRAP_TEXT,str(self.room_id).encode('utf-8'))
 
-        self.client_socket, self.client_address = self.server_socket.accept()
         print(f"Accepted connection from {self.client_address}")
             
         self.game.client_socket =   self.client_socket
