@@ -122,6 +122,7 @@ class Game():
 
         if pygame.mouse.get_pressed()[0]:  # left click
             self.actions["LEFT_MOUSE_KEY_PRESS"] = True
+            time.sleep(0.07)
 
     def handle_keydown(self, event):
         if event.key in (pygame.K_a, pygame.K_LEFT):
