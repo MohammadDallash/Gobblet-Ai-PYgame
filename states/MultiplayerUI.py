@@ -21,6 +21,7 @@ class MultiplayerChooseMenu(State):
         self.cur_option = 0
         self.menuGUI = MenuGUI(self.game, self.options_str, self.cur_option, font_size=game.global_text_font_size,
                                x_pos=self.game.DISPLAY_W / 2)
+        self.x = None
 
     def update(self, delta_time, actions):
         self.cur_option = self.menuGUI.update_cur_opt(actions)
@@ -76,6 +77,7 @@ class MultiplayerClientMenu(State):
         self.room_id  = ''
 
         self.againBool = False
+        self.x = None
    
 
     def update(self, delta_time, actions):
@@ -127,7 +129,8 @@ class MultiplayerClientMenu(State):
         super().enter_state()
 
     def exit_state(self):
-        self.x.exit()
+        if(self.x != None):
+            self.x.exit()
         super().exit_state()
         
 
@@ -153,6 +156,10 @@ class MultiplayerHostMenu(State):
 
         if (actions['Esc']):
             self.exit_state()
+            try:
+                self.server_socket.close()
+            except Exception as e:
+                pass
 
             
     def handle_thread(self):
@@ -195,7 +202,8 @@ class MultiplayerHostMenu(State):
         super().enter_state()
 
     def exit_state(self):
-        self.x.exit()
+        if self.x != None:
+            self.x.exit()
         super().exit_state()
         
         
