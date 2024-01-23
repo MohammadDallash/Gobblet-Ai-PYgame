@@ -74,6 +74,12 @@ class Game():
             self.update_events()
             self.update()
             self.render()
+        
+        self.close_connection()
+
+    def close_connection(self):       
+        if(self.client_socket != None):
+            self.client_socket.close()
 
     def update(self):
         self.state_stack[-1].update(self.dt, self.actions)

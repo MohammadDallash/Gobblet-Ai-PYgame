@@ -52,6 +52,7 @@ class MainMenu(State):
                 pass
             else:
                 self.game.running = False
+                
 
         if (actions['Esc']):
             self.game.running = False

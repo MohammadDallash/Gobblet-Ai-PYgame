@@ -181,9 +181,6 @@ class Playing(State):
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)
             pause_menu.enter_state()
-            
-        if (actions["quit"]):
-            sys.exit()
 
 
 
@@ -391,8 +388,7 @@ class Playing(State):
         super().enter_state()
 
     def exit_state(self):
-        if(self.game.socket != None):
-            self.game.socket.close()
+        self.game.close_connection()
         super().exit_state()
 
     # checks for a winner at the beginning of each round.
@@ -521,8 +517,6 @@ class Playing(State):
 
     # handles events that happen when a player wins.
     def announce_winner(self,player):
-        if(self.client_socket != None):
-            self.client_socket.close()
         self.global_music_player.play_win_sound()
         time.sleep(3)
         self.global_music_player.play_background_sound()

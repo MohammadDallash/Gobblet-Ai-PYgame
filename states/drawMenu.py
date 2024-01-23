@@ -40,12 +40,14 @@ class DrawMenu(State):
                 playing_state.enter_state()
                 pass
             elif self.cur_option == 1:
-                self.exit_state()
-                self.exit_state()
-                self.exit_state()
+                for i in range (len (self.game.state_stack) -1 ): ##exit all the state except the menu one
+                    self.exit_state()
+                self.game.close_connection()
+                pass
                 pass
             else:
                 self.game.running = False
+
 
         if actions['Esc']:
             self.exit_state()
@@ -69,6 +71,7 @@ class DrawMenu(State):
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 2):
                 self.game.running = False
+
 
     def render(self, display):
         display.blit(self.game.menubg, (0, 0))
