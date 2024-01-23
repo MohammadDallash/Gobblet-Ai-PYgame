@@ -32,9 +32,9 @@ class PauseMenu(State):
                 p_options_state.enter_state()
                 pass
             elif self.cur_option == 2:
-                self.exit_state()
-                self.exit_state()
-                self.exit_state()
+                for i in range (len (self.game.state_stack) -1 ): ##exit all the state except the menu one
+                    self.exit_state()
+                self.game.close_connection()
                 pass
             else:
                 self.game.running = False
