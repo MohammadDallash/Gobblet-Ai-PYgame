@@ -90,6 +90,7 @@ class MultiplayerClientMenu(State):
 
 
             except Exception as e:
+                print(e)
                 self.againBool = True
                 self.room_id = ''
                                    
