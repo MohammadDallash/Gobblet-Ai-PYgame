@@ -177,6 +177,7 @@ class Playing(State):
         if(self.mode != AI_VS_AI or(self.turn == self.my_color and self.mode==PLAYER_VS_OTHER)):
             if not self.animation and actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click()
+            
 
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)
@@ -214,7 +215,11 @@ class Playing(State):
                     print(f"operation took {1000*(end-start)}ms")
                     
                 elif(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
-                    s = self.client_socket.recv(1024).decode()
+                    s = self.client_socket.recv(1024).decode() ##
+                    if s == 'byebye':
+                        self.exit_state()
+                        self.lock.release()
+                        return
                     self.parse_input_string(s)
         self.lock.release()
 
@@ -236,6 +241,7 @@ class Playing(State):
 
         if(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
             move = [self.source_values,self.destination_values]
+            
             self.client_socket.send(convert_move_to_str(move).encode())
             self.check_wins()
         self.refresh_UI()

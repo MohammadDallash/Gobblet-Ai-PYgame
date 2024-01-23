@@ -76,9 +76,23 @@ class Game():
             self.render()
         
         self.close_connection()
+    def is_socket_closed(self, sock):
+        try:
+            # Check if the socket is closed by attempting to get the socket option
+            sock.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR)
+            return False  # The socket is still open
+        except socket.error as e:
+            # An error occurred, check if it's a known error indicating the socket is closed
+            if "bad file descriptor" in str(e) or "Transport endpoint is not connected" in str(e):
+                return True  # The socket is closed
+            else:
+                raise  # Reraise the exception if it's not a known error
 
-    def close_connection(self):       
+    def close_connection(self):
         if(self.client_socket != None):
+            if not self.is_socket_closed(self.client_socket):
+                msg = 'byebye'
+                self.client_socket.send(msg.encode())
             self.client_socket.close()
 
     def update(self):
