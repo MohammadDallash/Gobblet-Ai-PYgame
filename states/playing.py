@@ -217,7 +217,8 @@ class Playing(State):
                 elif(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
                     s = self.client_socket.recv(1024).decode() ##
                     if s == 'byebye':
-                        self.exit_state()
+                        for i in range (len (self.game.state_stack) -1 ): ##exit all the state except the menu one
+                            self.exit_state()
                         self.lock.release()
                         return
                     self.parse_input_string(s)
@@ -241,8 +242,11 @@ class Playing(State):
 
         if(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
             move = [self.source_values,self.destination_values]
-            
-            self.client_socket.send(convert_move_to_str(move).encode())
+            try:
+                self.client_socket.send(convert_move_to_str(move).encode())
+            except Exception as e:
+                for i in range (len (self.game.state_stack) -1 ): ##exit all the state except the menu one
+                    self.exit_state()
             self.check_wins()
         self.refresh_UI()
 
