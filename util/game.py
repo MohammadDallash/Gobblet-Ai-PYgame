@@ -93,7 +93,10 @@ class Game():
             if not self.is_socket_closed(self.client_socket):
                 msg = 'byebye'
                 self.client_socket.send(msg.encode())
-            self.client_socket.close()
+            try:
+                self.client_socket.close()
+            except Exception as e:
+                pass
 
     def update(self):
         self.state_stack[-1].update(self.dt, self.actions)
