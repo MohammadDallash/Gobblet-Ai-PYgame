@@ -56,6 +56,8 @@ class MultiplayerChooseMenu(State):
         super().enter_state()
 
     def exit_state(self):
+        if self.x:
+            self.x.exit() 
         super().exit_state()
 
 
@@ -123,6 +125,7 @@ class MultiplayerClientMenu(State):
         super().enter_state()
 
     def exit_state(self):
+        self.x.exit()
         super().exit_state()
         
 
@@ -193,6 +196,7 @@ class MultiplayerHostMenu(State):
         super().enter_state()
 
     def exit_state(self):
+        self.x.exit()
         super().exit_state()
         
         
