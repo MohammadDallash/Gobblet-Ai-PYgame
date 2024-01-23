@@ -53,9 +53,9 @@ class PauseMenu(State):
                 p_options_state.enter_state()
                 pass
             if self.menuGUI.mouse_collidepoint(x, y, 2):
-                self.exit_state()
-                self.exit_state()
-                self.exit_state()
+                for i in range (len (self.game.state_stack) -1 ): ##exit all the state except the menu one
+                    self.exit_state()
+                self.game.close_connection()
             if self.menuGUI.mouse_collidepoint(x, y, 3):
                 self.game.running = False
 
