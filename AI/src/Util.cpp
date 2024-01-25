@@ -1,3 +1,4 @@
+#include <cstring> 
 #include "State.h"
 #include "Util.h"
 #include "iostream"
@@ -420,30 +421,18 @@ vector<State> generate_possible_states(State curState, bool sorting)
                     newState.board[i][j] &= ~(largest_piece);
 
 
-                    newState.lastMove[0] = {BOARD_MOVE, i, j};
-                    newState.lastMove[1] = {dest[0], dest[1], dest[2]};
+
+                    newState.lastMove[0][0] = BOARD_MOVE;
+                    newState.lastMove[0][1] = i;
+                    newState.lastMove[0][2]  = j;
+
+                    std::memcpy(newState.lastMove[1], dest, 3 * sizeof(int));
+
                     newState.turn = curState.turn ^ 1;
                     newState.static_evl=static_evaluation(newState);
 
                     possible_outcome_states.push_back(newState);
-
                 }
-
-                // for (auto dest : possible_destination[s])
-                // {
-
-                //     State newState = curState;
-
-                //     newState.board[dest[1]][dest[2]] |= largest_piece;
-                //     newState.board[i][j] &= ~(largest_piece);
-
-                //     newState.lastMove[0] = {BOARD_MOVE, i, j};
-                //     newState.lastMove[1] = dest;
-                //     newState.turn = curState.turn ^ 1;
-                //     newState.static_evl=static_evaluation(newState);
-
-                //     possible_outcome_states.push_back(newState);
-                // }
             }
         }
     }
@@ -470,31 +459,16 @@ vector<State> generate_possible_states(State curState, bool sorting)
                 newState.inventory[curState.turn][i] &= ~(largest_piece);
 
 
-                newState.lastMove[0] = {INVENTORY_MOVE, curState.turn, i};
+                newState.lastMove[0][0] = INVENTORY_MOVE;
+                newState.lastMove[0][1] = curState.turn;
+                newState.lastMove[0][2]  = i;
 
-                newState.lastMove[1] = {dest[0], dest[1], dest[2]};
+                std::memcpy(newState.lastMove[1], dest, 3 * sizeof(int));
                 newState.turn = curState.turn ^ 1;
                 newState.static_evl=static_evaluation(newState);
 
                 possible_outcome_states.push_back(newState);
             }
-
-            // for (auto dest : possible_destination[s])
-            // {
-            //     State newState = curState;
-
-            //     newState.board[dest[1]][dest[2]] |= largest_piece;
-
-            //     newState.inventory[curState.turn][i] &= ~(largest_piece);
-
-            //     newState.lastMove[0] = {INVENTORY_MOVE, curState.turn, i};
-            //     newState.lastMove[1] = dest;
-
-            //     newState.turn = curState.turn ^ 1;
-            //     newState.static_evl=static_evaluation(newState);
-
-            //     possible_outcome_states.push_back(newState);
-            // }
         }
     }
 

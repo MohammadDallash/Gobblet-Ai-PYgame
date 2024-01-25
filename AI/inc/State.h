@@ -25,7 +25,7 @@ struct State
      * [0,2,3]
      *
     each of src and dest = [t, i, j]  (t is INVENTORY_MOVE OR BORAD_MOVE)*/
-    vector<int> lastMove[2];
+    int lastMove[2][3];
     int static_evl;
 };
 
