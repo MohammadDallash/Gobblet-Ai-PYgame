@@ -14,7 +14,11 @@ int get_largest_piece_size(int n);
 void debug_state(State state);
 int static_evaluation(State curState);
 bool customSort( State a,  State b);
-vector<State> generate_possible_states(State curState, bool sorting);
+//vector<State> generate_possible_states(State curState, bool sorting);
+void generate_possible_states(State curState, bool sorting,  int &n_child, State* &a);
+
+
+
 
 
 

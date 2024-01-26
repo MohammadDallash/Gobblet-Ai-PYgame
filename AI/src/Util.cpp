@@ -361,10 +361,16 @@ int getFlattenedIndexInDst(int i, int j, int k)
 }
 
 
-vector<State> generate_possible_states(State curState, bool sorting)
+void generate_possible_states(State curState, bool sorting,  int &n_child, State* &a)
 {
-    if (checkWins(curState)) return { curState};
-    vector<State> possible_outcome_states; // Initialize vector with 5 copies of curState
+    if (checkWins(curState))
+    {
+        a = (State *)calloc(sizeof(State), 1);
+        n_child ++;
+        a[0] = curState;
+        
+        return ;
+    }
 
     //  locations where each size exists (in the board and the inventory)
 
@@ -372,6 +378,7 @@ vector<State> generate_possible_states(State curState, bool sorting)
 
 
     int *p = (int *)calloc(sizeof(int), 5);
+    a = (State *)calloc(sizeof(State), 120);
 
 
     // add each location to its corresponding size
@@ -388,7 +395,6 @@ vector<State> generate_possible_states(State curState, bool sorting)
             possible_destination[idx] = BOARD_MOVE;
             possible_destination[idx+1] = i;
             possible_destination[idx+2] = j;
-
         }
     }
 
@@ -431,7 +437,7 @@ vector<State> generate_possible_states(State curState, bool sorting)
                     newState.turn = curState.turn ^ 1;
                     newState.static_evl=static_evaluation(newState);
 
-                    possible_outcome_states.push_back(newState);
+                    a[n_child++] = newState;
                 }
             }
         }
@@ -467,7 +473,10 @@ vector<State> generate_possible_states(State curState, bool sorting)
                 newState.turn = curState.turn ^ 1;
                 newState.static_evl=static_evaluation(newState);
 
-                possible_outcome_states.push_back(newState);
+                
+                a[n_child++] = newState;
+
+
             }
         }
     }
@@ -476,7 +485,7 @@ vector<State> generate_possible_states(State curState, bool sorting)
     free(possible_destination);
 
     if(sorting)
-        sort(possible_outcome_states.begin(), possible_outcome_states.end(),customSort);
-
-    return possible_outcome_states;
+    {
+        sort(a, a + n_child, customSort);
+    }
 }

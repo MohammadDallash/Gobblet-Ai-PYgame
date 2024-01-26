@@ -22,24 +22,24 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
 { 
     int evl;
     State temp;
-    vector<State> childs_States =generate_possible_states(postion, buring &&(difficulty!=1) );
+    int n_child = 0;
+    State * a;
+    generate_possible_states(postion, buring &&(difficulty!=1) ,n_child ,a);
 
-    if (difficulty == 1 and childs_States.size() > MXchild)
-         childs_States.resize(MXchild);
 
     if(depth==0) return postion;
     if(postion.turn == 0)//maximizer
     {
         int largest_Eval=INT32_MIN;
-        reverse(childs_States.begin(), childs_States.end());
-        for(int i=0;i<childs_States.size();i++)
+        reverse(a,a + n_child );
+        for(int i=0;i<n_child;i++)
         {  
-            State largest_state =minMax_alpha_beta (childs_States[i], depth-1,alpha,beta, buring, mutation);
+            State largest_state =minMax_alpha_beta (a[i], depth-1,alpha,beta, buring, mutation);
             evl=largest_state.static_evl;
             alpha=max(evl,alpha);
             if(evl>largest_Eval or (evl== largest_Eval and mutation and rand()%3 == 1))
             {
-                temp = childs_States[i];
+                temp = a[i];
                 largest_Eval = evl;
             }
 
@@ -52,16 +52,16 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
     {
         
         int minest_Eval=INT32_MAX;
-        for(int i=0;i<childs_States.size();i++)
+        for(int i=0;i<n_child;i++)
         {
   
-            State minest_state =minMax_alpha_beta(childs_States[i], depth-1,alpha,beta, buring, mutation);
+            State minest_state =minMax_alpha_beta(a[i], depth-1,alpha,beta, buring, mutation);
             evl=minest_state.static_evl;
             beta=min(beta,evl);
 
             if(evl<minest_Eval or (evl== minest_Eval and mutation and rand()%3 == 1))
             {
-                temp = childs_States[i];
+                temp = a[i];
                 minest_Eval = evl;
             }
 
@@ -71,6 +71,8 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
             
         }
     }
+
+    free(a);
     return temp;
 }
 
