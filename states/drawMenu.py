@@ -1,5 +1,4 @@
 from states.state import State
-import time
 from util.helpers import MenuGUI
 import pygame
 

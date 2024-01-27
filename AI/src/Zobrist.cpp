@@ -3,7 +3,7 @@
 #include "State.h"
 
 using namespace std;
-unsigned long long zobTable[4][4][8];
+
 
 void fill_table()
 {

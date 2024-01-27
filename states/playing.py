@@ -209,7 +209,7 @@ class Playing(State):
                     
                     state_Astext = self.helper.flush(self.turn, self.board,self.inventory)
                     s = (self.helper.cpp_code(state_Astext))
-                    
+
                     self.parse_input_string(s)
                     end = time.time()
                     print(f"operation took {1000*(end-start)}ms")

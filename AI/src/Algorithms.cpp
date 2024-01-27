@@ -10,11 +10,18 @@
 #include "State.h"
 #include "Constant.h"
 #include "Util.h"
+#include "Zobrist.h"
+#include "map"
+
+
+// gp_hash_table<int, int> table;
 
 
 using namespace std;
 int difficulty;
-
+unsigned long long zobTable[4][4][8];
+map<unsigned long long, int> calculated_states;
+// gp_hash_table<unsigned long long, int> visited;
 int MXchild = 25;
 
 
@@ -22,13 +29,13 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
 { 
     int evl;
     State temp;
-    vector<State> childs_States =generate_possible_states(postion, buring &&(difficulty!=1) );
+    vector<State> childs_States = generate_possible_states(postion, buring &&(difficulty!=1) );
 
     if (difficulty == 1 and childs_States.size() > MXchild)
          childs_States.resize(MXchild);
 
     if(depth==0) return postion;
-    if(postion.turn == 0)//maximizer
+    if(postion.turn == 0) //maximizer
     {
         int largest_Eval=INT32_MIN;
         reverse(childs_States.begin(), childs_States.end());
@@ -55,7 +62,7 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
         for(int i=0;i<childs_States.size();i++)
         {
   
-            State minest_state =minMax_alpha_beta(childs_States[i], depth-1,alpha,beta, buring, mutation);
+            State minest_state = minMax_alpha_beta(childs_States[i], depth-1,alpha,beta, buring, mutation);
             evl=minest_state.static_evl;
             beta=min(beta,evl);
 
@@ -76,31 +83,32 @@ State minMax_alpha_beta (State postion ,int depth,int alpha , int beta, bool bur
 
 int main(int argc, char *argv[]) 
 {
-    // fill_table();
+    fill_table();
+    while(1){
 
     srand(static_cast<unsigned int>(time(0)));
     State initial_state;
 
     // Input the turn.
-    initial_state.turn = atoi(argv[1]);
+    cin >> initial_state.turn;
 
     // Input the board.
     int arg_index = 2;
     fori(BOARD_SIZE) {
         forj(BOARD_SIZE) {
-            initial_state.board[i][j] = atoi(argv[arg_index++]);
+          cin >>   initial_state.board[i][j];
         }
     }
 
     // Input the inventory.
     fori(NUMBER_OF_PLAYERS) {
         forj(INVENTORY_SIZE) {
-            initial_state.inventory[i][j] = atoi(argv[arg_index++]);
+            cin >>  initial_state.inventory[i][j];
         }
     }
 
 
-    difficulty = atoi(argv[arg_index]);
+    cin >> difficulty;
     // itr deepening
     State best_state;
     if(initial_state.turn==0) // max
@@ -124,10 +132,16 @@ int main(int argc, char *argv[])
     // print source values.
     fori(3) cout << best_state.lastMove[0][i] << " ";
 
-    cout << endl;
+    // cout << endl;
 
     // print destination values.
     fori(3) cout << best_state.lastMove[1][i] << " ";
+    }
+
+    for (auto x : visited)
+    {
+        cout << x.first << "    " << x.second << endl;
+    }
 
     return 0;
 }

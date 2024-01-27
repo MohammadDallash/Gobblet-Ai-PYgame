@@ -1,4 +1,3 @@
-import locale
 from threading import Lock
 import threading
 from states.state import State

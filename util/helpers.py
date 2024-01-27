@@ -177,6 +177,9 @@ def is_draw(last_blue,last_red):
 class Helper:
     def __init__(self, game):
         self.game = game
+                # result = subprocess.run(executing_command, shell=True, check=True, capture_output=True, text=True)
+        self.p = subprocess.Popen("Algorithms", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell = False)
+        
 
     def load_assets(self):
         pass
@@ -198,30 +201,34 @@ class Helper:
         return text_rect
 
     def cpp_code(self, args):
-        file_name = 'Algorithms.cpp'
+        # file_name = 'Algorithms.cpp'
+        print(args)
+        if self.p.poll() is None:    
+            self.p.stdin.write((f' {args} \n').encode('utf-8'))
+            self.p.stdin.flush()
+            out = (self.p.stdout.readline(12).decode()[0:-1])
+            print(out)
+            return out
 
-        executable_name = file_name.split('.')[0]
-        executable_path = os.path.join(sys._MEIPASS, executable_name) if hasattr(sys, '_MEIPASS') else executable_name
+        # executable_name = file_name.split('.')[0]
+        # executable_path = os.path.join(sys._MEIPASS, executable_name) if hasattr(sys, '_MEIPASS') else executable_name
 
-        if platform.system() == "Windows": 
-            executing_command = f"{executable_path} {args}"
+        # if platform.system() == "Windows": 
+        #     executing_command = f"{executable_path}"
 
-        else:
-            executing_command = f"./{executable_path} {args}"
+        # else:
+        #     executing_command = f"./{executable_path}"
         
 
-
+        # if self.game.ai_difficulty == 1:
+        #     time.sleep(1)
        
+        # try:
 
-        if self.game.ai_difficulty == 1:
-            time.sleep(1)
-       
-        try:
-            result = subprocess.run(executing_command, shell=True, check=True, capture_output=True, text=True)
-            return result.stdout
-        except subprocess.CalledProcessError as e:
-            print(f"Execution failed with error: {e}")
-            print("Error Output:", e.stderr)
+        #     return p.stdout
+        # except subprocess.CalledProcessError as e:
+        #     print(f"Execution failed with error: {e}")
+        #     print("Error Output:", e.stderr)
 
 
     def flush(self, turn=1, board=[[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]],

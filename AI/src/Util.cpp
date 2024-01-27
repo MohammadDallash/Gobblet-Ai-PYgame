@@ -2,6 +2,10 @@
 #include "Util.h"
 #include "iostream"
 #include "limits.h"
+#include "Zobrist.h"
+#include "map"
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
 
 using namespace std;
 
@@ -178,15 +182,17 @@ void debug_state(State state)
 //2- size of each piece in each row/column/diagonal
 
 
-// unordered_map<unsigned long long, int> calculated_states;
-
+extern map<unsigned long long, int> calculated_states;
+extern gp_hash_table<unsigned long long, int> visited;
 int static_evaluation(State curState)
 {
-    // unsigned long long current_hash = computeHash(curState.board,curState.turn);
-    // if(calculated_states.find(current_hash)!=calculated_states.end())
-    // {
-    //     return calculated_states[current_hash];
-    // }
+    unsigned long long current_hash = computeHash(curState.board,curState.turn);
+    if(calculated_states.find(current_hash)!=calculated_states.end())
+    {
+        int result = calculated_states[current_hash];
+        visited[result]++;
+        return result;
+    }
 
     // scores for each row, column, diagonal.
     vector<int> row(4, 0);
@@ -217,7 +223,7 @@ int static_evaluation(State curState)
             if (get_largest_piece(curState.board[i][j]) > ALL_BLUE and curState.board[i][j] != EMPTY_TILE){
                 red-=5; // its a red piece
                 red_count--;
-                red-=get_largest_piece_size(curState.board[i][j])*2; // also add its size
+                red-= get_largest_piece_size(curState.board[i][j])*2; // also add its size
             }
 
             // if the piece is red blue and not an empty tile.
@@ -339,7 +345,7 @@ int static_evaluation(State curState)
 
     int result =10*(maxx + minn) + 3*(red_close + blue_close) + red_won + blue_won;
 
-    // calculated_states[current_hash] = result;
+    calculated_states[current_hash] = result;
 
     return  result;
 }
