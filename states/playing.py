@@ -107,7 +107,7 @@ class Playing(State):
         self.animation_speed = 120
         self.slope = -1
 
-    
+    # initializes initial parameters for animation
     def set_animation_parameter(self, src, dst):
         if(src[0]==INVENTORY_MOVE):
             largest_piece_src = get_largest_piece(self.inventory[src[1]][src[2]])
@@ -134,13 +134,11 @@ class Playing(State):
         self.slope = (self.dst_for_anime_pos['y'] - self.src_for_anime_pos['y']) / (self.dst_for_anime_pos['x'] - self.src_for_anime_pos['x'] + 0.0001)
         self.destination_values = dst   
         self.animation = True
-        self.x = None
-
+        self.thread = None
         self.refresh_UI()
         
-
+    # handles calculations on a seperate thread.
     def handle_thread(self):
-        
         self.lock.acquire()
         self.done = False
         self.lock.release()
@@ -155,21 +153,20 @@ class Playing(State):
         self.lock.release()
         
 
-
+    # converts a message intercepted from c++ stdout/recieved from sockets to source and destanation. 
     def parse_input_string(self,input_string):
         # Convert the input string to a numeric array
         if input_string :
             numeric_array = [int(num) for num in input_string.split()]
             src = numeric_array[0:3]
             dst = numeric_array[3:6]
-            # print(src,dst)
             self.set_animation_parameter(src, dst)
             
     
     def update(self, delta_time, actions):
         
         if(self.done):
-            self.x = threading.Thread(target=self.handle_thread).start()
+            self.thread = threading.Thread(target=self.handle_thread).start()
             
         if(self.mode!=AI_VS_AI and ( not (self.turn == RED_TURN and self.mode == PLAYER_VS_OTHER) or self.turn == BLUE_TURN)):
             self.highlight_nearest_tile(pygame.mouse.get_pos())
@@ -178,13 +175,12 @@ class Playing(State):
             if not self.animation and actions['LEFT_MOUSE_KEY_PRESS']:
                 self.handle_mouse_click()
             
-
         if actions['Esc']:
             pause_menu = PauseMenu(self.game)
             pause_menu.enter_state()
 
 
-
+    # handles the operations that occur in each state (AI VS AI, AI VS Player, Player vs Player, etc)
     def handle_mode_operations(self):
         self.lock.acquire()
         if(self.mode == AI_VS_AI or (self.turn ==(1-self.my_color) and self.mode==PLAYER_VS_OTHER) ):
@@ -196,7 +192,6 @@ class Playing(State):
                     self.animated_tile_pos['x'] -= self.animation_speed
                     self.animated_tile_pos['y'] -= self.animation_speed * self.slope
                 else:
-                    # print(self.largest_peice_for_animation,  self.destination_values,'--------------------------------------')
                     self.board[self.destination_values[1]][self.destination_values[2]] |= self.largest_peice_for_animation
                     self.global_music_player.play_sfx()
                     self.animation = False
@@ -205,14 +200,11 @@ class Playing(State):
 
             else:
                 if(self.mode == AI_VS_AI or self.opponent_type_in_other_mode == AI_OPPONENT_IN_OTHER):
-                    start = time.time()
                     
                     state_Astext = self.helper.flush(self.turn, self.board,self.inventory)
                     s = (self.helper.cpp_code(state_Astext))
                     
                     self.parse_input_string(s)
-                    end = time.time()
-                    print(f"operation took {1000*(end-start)}ms")
                     
                 elif(self.opponent_type_in_other_mode == ONLINE_OPPONENT_IN_OTHER):
                     s = self.client_socket.recv(1024).decode() ##
@@ -224,17 +216,13 @@ class Playing(State):
                     self.parse_input_string(s)
         self.lock.release()
 
- 
-
-
-
-
+    # draw new changes on screen.
     def refresh_UI(self):
         self.board_tiles = self.map.reconstruct_map(self.board, self.source_selected, self.source_values)
         self.inventory_tiles = self.map.reconstruct_inventory(self.inventory, self.source_selected, self.source_values)
 
 
-
+    # apply move from source to destenation.
     def apply_move(self,src,src_i,src_j,dst,dst_i,dst_j):
         largest_piece_in_source = get_largest_piece(src[src_i][src_j])
         src[src_i][src_j] &= ~(largest_piece_in_source)
@@ -253,7 +241,7 @@ class Playing(State):
 
 
 
-
+    # handles events that occur during a mouse click, like checking the validity of the move, picking src-dst of a move, etc
     def handle_mouse_click(self):
         move_type, i, j, state = self.get_clicked_tile_id()
         source_type, source_i, source_j = self.source_values

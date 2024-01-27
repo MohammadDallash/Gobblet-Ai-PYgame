@@ -259,10 +259,10 @@ int static_evaluation(State curState)
         }
 
         column[i] = blue + red;
-        if(red_count == -3 && blue_count == 1)red_close += 10;
-        if(blue_count == 3 && red_count == -1)blue_close += -10;
-        if(red_count == -4)red_won = -1000;
-        if(blue_count == 4)blue_won = 1000;
+        if(red_count == -3 && blue_count == 1) red_close += 10;
+        if(blue_count == 3 && red_count == -1) blue_close += -10;
+        if(red_count == -4) red_won = -1000;
+        if(blue_count == 4) blue_won = 1000;
     }
 
 
@@ -316,10 +316,10 @@ int static_evaluation(State curState)
 
     }
     other_diagonal = blue + red;
-    if(red_count == -3 && blue_count == 1)red_close += 10;
-    if(blue_count == 3 && red_count == -1)blue_close += -10;
-    if(red_count == -4)red_won = -1000;
-    if(blue_count == 4)blue_won = 1000;
+    if(red_count == -3 && blue_count == 1) red_close += 10;
+    if(blue_count == 3 && red_count == -1) blue_close += -10;
+    if(red_count == -4) red_won = -1000;
+    if(blue_count == 4) blue_won = 1000;
 
     // calculate the maximum - minimum
     int maxx = INT_MIN, minn = INT_MAX;

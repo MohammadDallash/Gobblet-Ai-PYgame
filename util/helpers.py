@@ -160,20 +160,6 @@ def is_draw(last_blue,last_red):
     else:
         return False
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Helper:
     def __init__(self, game):
         self.game = game
@@ -186,10 +172,9 @@ class Helper:
             font = pygame.font.Font(self.game.title_font_name, size)
         else:
             font = pygame.font.Font(self.game.text_font_name, size)
-         ##########################   
+            
         if(is_default):
             font = pygame.font.Font(size= 100)
-        ###########################
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
@@ -208,10 +193,6 @@ class Helper:
 
         else:
             executing_command = f"./{executable_path} {args}"
-        
-
-
-       
 
         if self.game.ai_difficulty == 1:
             time.sleep(1)

@@ -139,7 +139,7 @@ class MultiplayerHostMenu(State):
         State.__init__(self, game)
         self.mulHelper = MultiplayerHelper()
         self.done = True
-        self.x = None
+        self.thread = None
         self.lock = Lock()
         self.ip_address, self.port = self.mulHelper.get_ip_address()
         self.room_id = self.mulHelper.ip_to_room_id(self.ip_address, self.port)
@@ -152,7 +152,7 @@ class MultiplayerHostMenu(State):
     def update(self, delta_time, actions):
 
         if(self.done):
-            self.x = threading.Thread(target=self.handle_thread).start()
+            self.thread = threading.Thread(target=self.handle_thread).start()
 
         if (actions['Esc']):
             self.exit_state()
@@ -161,24 +161,15 @@ class MultiplayerHostMenu(State):
             except Exception as e:
                 pass
 
-            
+    # handles calculations on a separate thread
     def handle_thread(self):
-        
         self.done = False
-        
         self.server_socket.bind((self.ip_address, self.port))
         self.server_socket.listen(1)
-        print(f"Server listening on {self.ip_address}:{self.port}")
-
-        print(self.room_id)
         pygame.scrap.init()
         pygame.scrap.put(pygame.SCRAP_TEXT,str(self.room_id).encode('utf-8'))
-
         self.client_socket, self.client_address = self.server_socket.accept()
-
-        self.server_socket.close()
-        print(f"Accepted connection from {self.client_address}")
-            
+        self.server_socket.close()            
         self.game.client_socket =   self.client_socket
         playing_state = Playing(self.game, PLAYER_VS_OTHER, opponent_type_in_other_mode= ONLINE_OPPONENT_IN_OTHER, my_color = BLUE)
         
@@ -202,8 +193,8 @@ class MultiplayerHostMenu(State):
         super().enter_state()
 
     def exit_state(self):
-        if self.x != None:
-            self.x.exit()
+        if self.thread != None:
+            self.thread.exit()
         super().exit_state()
         
         
