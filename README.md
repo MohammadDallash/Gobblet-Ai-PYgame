@@ -10,10 +10,12 @@ Navigate the cosmos, outmaneuver rivals, and become the supreme cosmic strategis
 
 ## Table of Contents
 
-- [Game Rules](#game-rules)
+- [Game Rules](#Game-Rules)
+- [Download](#Download)
 - [Features](#Features)
+- [Snapshots](#Game-Snapshots)
 
-## Game Rules 🎮 
+## Game Rules  🎮 
 
 Gobblet is played on a 4x4 board, and each player has 12 pieces of varying sizes. The goal is to line up four of your pieces in a row horizontally, vertically, or diagonally.
 
@@ -23,9 +25,11 @@ The rules are simple:
 
 You can read more about the game rules [here](https://www.boardspace.net/gobblet/english/gobblet_rules.pdf) or here [Watch this video](https://www.youtube.com/watch?v=aSaAjQY8_b0).
 
+## Download
+You can download the game by pressing [here](https://github.com/MohammadDallash/Gobblet-Ai-PYgame/releases/download/initial/Space_Gobblers_V1.0.exe) or by heading over to releases.
 
-## Features 🚀
 
+## Features  🚀
 ### You can enjoy playing space gobblers in different modes like
 1) 💻 Local PvP: Challenge friends on the same computer.
 2) 🌐 Online PvP: Compete globally against real players.
@@ -33,7 +37,7 @@ You can read more about the game rules [here](https://www.boardspace.net/gobblet
 4) 🕹️ AI Showdown: Watch epic Computer vs Computer battles with different difficulties.
 
 
-## Game Snapshots 📸
+## Game Snapshots  📸
 
 ![Main Menu](.readme/snapshot1.png)
 
